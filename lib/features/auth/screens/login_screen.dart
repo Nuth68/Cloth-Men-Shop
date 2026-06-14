@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
+import '../../../data/repositories/auth_repository.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/datasources/local/cache_service.dart';
+import '../../../core/constants/api_config.dart';
 const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
 const _kGrey = Color(0xFFAAAAAA);
@@ -50,6 +57,70 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cache = CacheService();
+        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final repo = AuthRepository(gql, cache);
+        return AuthBloc(repo);
+      },
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            context.go('/home');
+          } else if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        child: _LoginForm(
+          emailCtrl: _emailCtrl,
+          passCtrl: _passCtrl,
+          obscure: _obscure,
+          onToggleObscure: () => setState(() => _obscure = !_obscure),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginForm extends StatefulWidget {
+  final TextEditingController emailCtrl;
+  final TextEditingController passCtrl;
+  final bool obscure;
+  final VoidCallback onToggleObscure;
+
+  const _LoginForm({
+    required this.emailCtrl,
+    required this.passCtrl,
+    required this.obscure,
+    required this.onToggleObscure,
+  });
+
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
+  void _login() {
+    final email = widget.emailCtrl.text.trim();
+    final password = widget.passCtrl.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields')),
+      );
+      return;
+    }
+
+    context.read<AuthBloc>().add(
+          LoginEvent(email: email, password: password),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _kBg,
       body: SafeArea(
@@ -87,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                     const SizedBox(height: 10),
                     _Field(
-                      controller: _emailCtrl,
+                      controller: widget.emailCtrl,
                       hint: 'archive@monograph.com',
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -106,13 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 10),
                     _Field(
-                      controller: _passCtrl,
+                      controller: widget.passCtrl,
                       hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
-                      obscure: _obscure,
+                      obscure: widget.obscure,
                       suffix: GestureDetector(
-                        onTap: () => setState(() => _obscure = !_obscure),
+                        onTap: widget.onToggleObscure,
                         child: Icon(
-                          _obscure
+                          widget.obscure
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
                           size: 18,
@@ -126,9 +197,14 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _BlackBtn(
-                  label: 'SIGN IN',
-                  onTap: () => context.go('/home'),
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    final loading = state is AuthLoading;
+                    return _BlackBtn(
+                      label: loading ? 'SIGNING IN...' : 'SIGN IN',
+                      onTap: loading ? null : _login,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 32),
@@ -239,8 +315,8 @@ class _Field extends StatelessWidget {
 
 class _BlackBtn extends StatelessWidget {
   final String label;
-  final VoidCallback onTap;
-  const _BlackBtn({required this.label, required this.onTap});
+  final VoidCallback? onTap;
+  const _BlackBtn({required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -248,7 +324,7 @@ class _BlackBtn extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: 54,
-          color: _kBlack,
+          color: onTap != null ? _kBlack : _kGrey,
           alignment: Alignment.center,
           child: Text(label,
               style: _sans(13, w: FontWeight.w600, c: Colors.white, ls: 3)),

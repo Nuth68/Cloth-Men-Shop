@@ -7,8 +7,7 @@ import '../bloc/auth_state.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
-
-const _kApiBaseUrl = 'http://127.0.0.1:3000';
+import '../../../core/constants/api_config.dart';
 const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
 const _kGrey = Color(0xFFAAAAAA);
@@ -64,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocProvider(
       create: (_) {
         final cache = CacheService();
-        final gql = GraphqlService(baseUrl: _kApiBaseUrl, cache: cache);
+        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
         final repo = AuthRepository(gql, cache);
         return AuthBloc(repo);
       },

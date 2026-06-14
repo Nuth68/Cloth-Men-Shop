@@ -14,10 +14,23 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _onLoad(LoadProfile event, Emitter<ProfileState> emit) async {
     emit(const ProfileLoading());
     try {
+      final loggedIn = await _repository.isLoggedIn();
+      if (!loggedIn) {
+        emit(const ProfileUnauthenticated());
+        return;
+      }
       final user = await _repository.getCurrentUser();
       emit(ProfileLoaded(user));
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      final msg = e.toString();
+      if (msg.contains('401') ||
+          msg.contains('Unauthorized') ||
+          msg.contains('No token') ||
+          msg.contains('Timeout')) {
+        emit(const ProfileUnauthenticated());
+      } else {
+        emit(ProfileError(e.toString()));
+      }
     }
   }
 

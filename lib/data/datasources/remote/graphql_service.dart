@@ -21,10 +21,15 @@ class GraphqlService {
   final String baseUrl;
   final http.Client _client;
   final CacheService _cache;
+  final Duration _timeout;
 
-  GraphqlService({required this.baseUrl, required CacheService cache})
-      : _client = http.Client(),
-        _cache = cache;
+  GraphqlService({
+    required this.baseUrl,
+    required CacheService cache,
+    Duration timeout = const Duration(seconds: 10),
+  })  : _client = http.Client(),
+        _cache = cache,
+        _timeout = timeout;
 
   Future<Map<String, String>> _headers() async {
     final token = await _cache.getToken();
@@ -53,14 +58,16 @@ class GraphqlService {
     Map<String, dynamic>? variables,
   }) async {
     final uri = Uri.parse('$baseUrl/graphql');
-    final response = await _client.post(
-      uri,
-      headers: await _headers(),
-      body: jsonEncode({
-        'query': document,
-        if (variables != null) 'variables': variables,
-      }),
-    );
+    final response = await _client
+        .post(
+          uri,
+          headers: await _headers(),
+          body: jsonEncode({
+            'query': document,
+            if (variables != null) 'variables': variables,
+          }),
+        )
+        .timeout(_timeout);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -88,4 +95,12 @@ class GraphqlHttpException implements Exception {
 
   @override
   String toString() => 'GraphqlHttpException($statusCode): $message';
+}
+
+class GraphqlTimeoutException implements Exception {
+  final String message;
+  GraphqlTimeoutException(this.message);
+
+  @override
+  String toString() => 'GraphqlTimeoutException: $message';
 }

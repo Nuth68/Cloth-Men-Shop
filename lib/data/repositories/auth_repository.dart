@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../datasources/remote/graphql_service.dart';
 import '../datasources/local/cache_service.dart';
@@ -21,8 +22,13 @@ class AuthRepository {
       'email': email,
       'password': password,
     });
+    _checkErrors(res);
     final data = res.data!['login'] as Map<String, dynamic>;
-    await _cache.setToken(data['token'] as String);
+    final token = data['token'] as String;
+    debugPrint('AuthRepo: storing token: ${token.substring(0, 20)}...');
+    await _cache.setToken(token);
+    final stored = await _cache.getToken();
+    debugPrint('AuthRepo: token stored: ${stored != null}');
     return UserModel.fromJson(data['user'] as Map<String, dynamic>);
   }
 
@@ -40,6 +46,7 @@ class AuthRepository {
       'email': email,
       'password': password,
     });
+    _checkErrors(res);
     final data = res.data!['register'] as Map<String, dynamic>;
     await _cache.setToken(data['token'] as String);
     return UserModel.fromJson(data['user'] as Map<String, dynamic>);
@@ -52,6 +59,7 @@ class AuthRepository {
       }
     ''';
     final res = await _gql.query(query);
+    _checkErrors(res);
     return UserModel.fromJson(res.data!['me'] as Map<String, dynamic>);
   }
 
@@ -63,4 +71,22 @@ class AuthRepository {
     final token = await _cache.getToken();
     return token != null;
   }
+
+  void _checkErrors(GraphqlResponse res) {
+    if (res.errors != null && res.errors!.isNotEmpty) {
+      final msgs = res.errors!.map((e) => e.message).join('; ');
+      throw AuthGraphqlException(msgs);
+    }
+    if (res.data == null) {
+      throw AuthGraphqlException('No data returned');
+    }
+  }
+}
+
+class AuthGraphqlException implements Exception {
+  final String message;
+  AuthGraphqlException(this.message);
+
+  @override
+  String toString() => message;
 }
