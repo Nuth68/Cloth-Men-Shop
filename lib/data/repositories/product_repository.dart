@@ -1,38 +1,74 @@
 import '../models/product_model.dart';
 import '../models/category_model.dart';
-import '../datasources/remote/api_service.dart';
+import '../datasources/remote/graphql_service.dart';
+
+const _productFields = '''
+  id name description price imageUrl categoryId sizes colors fit isNew
+''';
 
 class ProductRepository {
-  final ApiService _api;
+  final GraphqlService _gql;
 
-  ProductRepository(this._api);
+  ProductRepository(this._gql);
 
   Future<List<ProductModel>> getProducts() async {
-    final data = await _api.get('/products');
-    return (data as List).map((e) => ProductModel.fromJson(e as Map<String, dynamic>)).toList();
+    const query = 'query Products { products { $_productFields } }';
+    final res = await _gql.query(query);
+    final list = res.data!['products'] as List<dynamic>;
+    return list
+        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<ProductModel>> getNewArrivals() async {
-    final data = await _api.get('/products/new');
-    return (data as List).map((e) => ProductModel.fromJson(e as Map<String, dynamic>)).toList();
+    const query = 'query NewArrivals { products(newArrivals: true) { $_productFields } }';
+    final res = await _gql.query(query);
+    final list = res.data!['products'] as List<dynamic>;
+    return list
+        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<List<ProductModel>> getProductsByCategory(String categoryId) async {
-    final data = await _api.get('/products', queryParameters: {'category_id': categoryId});
-    return (data as List).map((e) => ProductModel.fromJson(e as Map<String, dynamic>)).toList();
+  Future<List<ProductModel>> getProductsByCategory(int categoryId) async {
+    const query = '''
+      query ProductsByCategory(\$categoryId: Int) {
+        products(categoryId: \$categoryId) { $_productFields }
+      }
+    ''';
+    final res = await _gql.query(query, variables: {'categoryId': categoryId});
+    final list = res.data!['products'] as List<dynamic>;
+    return list
+        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<List<ProductModel>> filterProducts({String? size, String? color, String? fit}) async {
-    final params = <String, String>{};
-    if (size != null) params['size'] = size;
-    if (color != null) params['color'] = color;
-    if (fit != null) params['fit'] = fit;
-    final data = await _api.get('/products/filter', queryParameters: params);
-    return (data as List).map((e) => ProductModel.fromJson(e as Map<String, dynamic>)).toList();
+  Future<List<ProductModel>> filterProducts({
+    String? size,
+    String? color,
+    String? fit,
+  }) async {
+    const query = '''
+      query FilterProducts(\$sizes: [String!], \$color: String, \$fit: String) {
+        products(sizes: \$sizes, color: \$color, fit: \$fit) { $_productFields }
+      }
+    ''';
+    final res = await _gql.query(query, variables: {
+      if (size != null) 'sizes': [size],
+      if (color != null) 'color': color,
+      if (fit != null) 'fit': fit,
+    });
+    final list = res.data!['products'] as List<dynamic>;
+    return list
+        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    final data = await _api.get('/categories');
-    return (data as List).map((e) => CategoryModel.fromJson(e as Map<String, dynamic>)).toList();
+    const query = 'query Categories { categories { id name imageUrl } }';
+    final res = await _gql.query(query);
+    final list = res.data!['categories'] as List<dynamic>;
+    return list
+        .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

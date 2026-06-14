@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../local/cache_service.dart';
 
+
 class ApiService {
   final String baseUrl;
   final http.Client _client;

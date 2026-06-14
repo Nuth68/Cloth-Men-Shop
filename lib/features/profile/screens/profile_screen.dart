@@ -4,9 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/monograph_header.dart';
+import '../../../data/repositories/auth_repository.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/datasources/local/cache_service.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
+
+const _kApiBaseUrl = 'http://10.0.2.2:3000';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -14,7 +19,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc()..add(const LoadProfile()),
+      create: (_) {
+        final cache = CacheService();
+        final gql = GraphqlService(baseUrl: _kApiBaseUrl, cache: cache);
+        final repo = AuthRepository(gql, cache);
+        return ProfileBloc(repo)..add(const LoadProfile());
+      },
       child: const _ProfileView(),
     );
   }
