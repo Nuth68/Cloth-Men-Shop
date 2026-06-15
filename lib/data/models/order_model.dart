@@ -18,14 +18,14 @@ class OrderModel {
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         items: (json['items'] as List)
             .map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
             .toList(),
         total: (json['total'] as num).toDouble(),
         status: json['status'] as String,
         address: json['address'] as String,
-        createdAt: DateTime.parse(json['created_at'] as String),
+        createdAt: DateTime.parse(json['createdAt'] as String),
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +34,6 @@ class OrderModel {
         'total': total,
         'status': status,
         'address': address,
-        'created_at': createdAt.toIso8601String(),
+        'createdAt': createdAt.toIso8601String(),
       };
 }

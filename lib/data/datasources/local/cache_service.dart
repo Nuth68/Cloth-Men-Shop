@@ -1,33 +1,34 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CacheService {
   static const _tokenKey = 'auth_token';
   static const _onboardingKey = 'onboarding_complete';
 
-  Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
+  final FlutterSecureStorage _storage;
+
+  CacheService()
+      : _storage = const FlutterSecureStorage(
+          aOptions: AndroidOptions(encryptedSharedPreferences: true),
+        );
 
   Future<void> setToken(String token) async {
-    final prefs = await _prefs;
-    await prefs.setString(_tokenKey, token);
+    await _storage.write(key: _tokenKey, value: token);
   }
 
   Future<String?> getToken() async {
-    final prefs = await _prefs;
-    return prefs.getString(_tokenKey);
+    return _storage.read(key: _tokenKey);
   }
 
   Future<void> clearToken() async {
-    final prefs = await _prefs;
-    await prefs.remove(_tokenKey);
+    await _storage.delete(key: _tokenKey);
   }
 
   Future<void> setOnboardingComplete() async {
-    final prefs = await _prefs;
-    await prefs.setBool(_onboardingKey, true);
+    await _storage.write(key: _onboardingKey, value: 'true');
   }
 
   Future<bool> isOnboardingComplete() async {
-    final prefs = await _prefs;
-    return prefs.getBool(_onboardingKey) ?? false;
+    final val = await _storage.read(key: _onboardingKey);
+    return val == 'true';
   }
 }

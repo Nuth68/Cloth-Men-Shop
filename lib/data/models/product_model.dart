@@ -24,16 +24,16 @@ class ProductModel {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         name: json['name'] as String,
         description: json['description'] as String,
         price: (json['price'] as num).toDouble(),
-        imageUrl: json['image_url'] as String,
-        categoryId: json['category_id'] as String,
+        imageUrl: json['imageUrl'] as String,
+        categoryId: json['categoryId'].toString(),
         sizes: List<String>.from(json['sizes'] ?? []),
         colors: List<String>.from(json['colors'] ?? []),
         fit: json['fit'] as String? ?? 'Regular',
-        isNew: json['is_new'] as bool? ?? false,
+        isNew: json['isNew'] as bool? ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -41,11 +41,11 @@ class ProductModel {
         'name': name,
         'description': description,
         'price': price,
-        'image_url': imageUrl,
-        'category_id': categoryId,
+        'imageUrl': imageUrl,
+        'categoryId': categoryId,
         'sizes': sizes,
         'colors': colors,
         'fit': fit,
-        'is_new': isNew,
+        'isNew': isNew,
       };
 }

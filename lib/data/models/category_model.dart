@@ -10,14 +10,14 @@ class CategoryModel {
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         name: json['name'] as String,
-        imageUrl: json['image_url'] as String,
+        imageUrl: json['imageUrl'] as String,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
-        'image_url': imageUrl,
+        'imageUrl': imageUrl,
       };
 }

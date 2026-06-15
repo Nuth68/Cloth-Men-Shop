@@ -18,18 +18,18 @@ class CartItemModel {
   double get totalPrice => product.price * quantity;
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) => CartItemModel(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         product: ProductModel.fromJson(json['product'] as Map<String, dynamic>),
-        selectedSize: json['selected_size'] as String,
-        selectedColor: json['selected_color'] as String,
+        selectedSize: json['selectedSize'] as String,
+        selectedColor: json['selectedColor'] as String,
         quantity: json['quantity'] as int? ?? 1,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'product': product.toJson(),
-        'selected_size': selectedSize,
-        'selected_color': selectedColor,
+        'selectedSize': selectedSize,
+        'selectedColor': selectedColor,
         'quantity': quantity,
       };
 

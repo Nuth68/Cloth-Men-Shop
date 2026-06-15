@@ -4,6 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/monograph_header.dart';
+import '../../../data/repositories/auth_repository.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/datasources/local/cache_service.dart';
+import '../../../core/constants/api_config.dart';
+
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
@@ -14,7 +19,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc()..add(const LoadProfile()),
+      create: (_) {
+        final cache = CacheService();
+        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final repo = AuthRepository(gql, cache);
+        return ProfileBloc(repo)..add(const LoadProfile());
+      },
       child: const _ProfileView(),
     );
   }
@@ -30,6 +40,15 @@ class _ProfileView extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is ProfileUnauthenticated) {
+              return _buildGuestView(context);
+            }
+            if (state is ProfileError) {
+              return _buildGuestView(context);
+            }
             final userName = state is ProfileLoaded ? state.user.name : 'John Doe';
             final userEmail = state is ProfileLoaded ? state.user.email : 'john@example.com';
 
@@ -112,22 +131,7 @@ class _ProfileView extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 28),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: () => context.go('/login'),
-                          icon: const Icon(Icons.logout, size: 18),
-                          label: const Text('Log Out'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.slate,
-                            side: const BorderSide(color: AppColors.monoDivider),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _LogoutButton(),
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -135,6 +139,142 @@ class _ProfileView extends StatelessWidget {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGuestView(BuildContext context) {
+    return Column(
+      children: [
+        const MonographHeader(),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              const SizedBox(height: 60),
+              Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.person_outline, size: 64, color: AppColors.monoGrey),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Welcome to Your Archive',
+                      style: AppTypography.heading2,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Sign in to access your profile, orders, and saved items.',
+                      style: AppTypography.caption,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => context.go('/login'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0D0D0D),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        child: const Text(
+                          'SIGN IN',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () => context.go('/register'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          side: const BorderSide(color: Color(0xFF0D0D0D)),
+                        ),
+                        child: const Text(
+                          'CREATE ACCOUNT',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF0D0D0D),
+                            letterSpacing: 3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              _SettingsGroup(
+                title: 'Support',
+                items: [
+                  _SettingItem(
+                    icon: Icons.help_outline,
+                    label: 'Help Center',
+                    onTap: () {},
+                  ),
+                  _SettingItem(
+                    icon: Icons.info_outline,
+                    label: 'About',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () async {
+          final cache = CacheService();
+          await cache.clearToken();
+          context.go('/login');
+        },
+        icon: const Icon(Icons.logout, size: 18),
+        label: const Text('Log Out'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.slate,
+          side: const BorderSide(color: AppColors.monoDivider),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
       ),
     );

@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
-import '../../../data/models/user_model.dart';
+import '../../../data/repositories/auth_repository.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(const ProfileInitial()) {
+  final AuthRepository _repository;
+
+  ProfileBloc(this._repository) : super(const ProfileInitial()) {
     on<LoadProfile>(_onLoad);
     on<UpdateProfile>(_onUpdate);
   }
@@ -12,18 +14,31 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _onLoad(LoadProfile event, Emitter<ProfileState> emit) async {
     emit(const ProfileLoading());
     try {
-      // TODO: fetch from repository
-      emit(const ProfileLoaded(UserModel(id: '1', name: 'John Doe', email: 'john@example.com')));
+      final loggedIn = await _repository.isLoggedIn();
+      if (!loggedIn) {
+        emit(const ProfileUnauthenticated());
+        return;
+      }
+      final user = await _repository.getCurrentUser();
+      emit(ProfileLoaded(user));
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      final msg = e.toString();
+      if (msg.contains('401') ||
+          msg.contains('Unauthorized') ||
+          msg.contains('No token') ||
+          msg.contains('Timeout')) {
+        emit(const ProfileUnauthenticated());
+      } else {
+        emit(ProfileError(e.toString()));
+      }
     }
   }
 
   Future<void> _onUpdate(UpdateProfile event, Emitter<ProfileState> emit) async {
     emit(const ProfileLoading());
     try {
-      // TODO: update via repository
-      emit(ProfileLoaded(UserModel(id: '1', name: event.name, email: event.email)));
+      final user = await _repository.getCurrentUser();
+      emit(ProfileLoaded(user));
     } catch (e) {
       emit(ProfileError(e.toString()));
     }

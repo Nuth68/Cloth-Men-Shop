@@ -17,6 +17,10 @@ class ProfileLoaded extends ProfileState {
   const ProfileLoaded(this.user);
 }
 
+class ProfileUnauthenticated extends ProfileState {
+  const ProfileUnauthenticated();
+}
+
 class ProfileError extends ProfileState {
   final String message;
   const ProfileError(this.message);
