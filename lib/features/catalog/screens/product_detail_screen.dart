@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/product_model.dart';
+import '../../../data/models/cart_item_model.dart';
+import '../../cart/bloc/cart_bloc.dart';
+import '../../cart/bloc/cart_event.dart';
+import '../../wishlist/bloc/wishlist_bloc.dart';
+import '../../wishlist/bloc/wishlist_event.dart';
 import '../widgets/size_selector.dart';
 import '../widgets/color_selector.dart';
 import '../widgets/fit_guide_widget.dart';
@@ -11,14 +17,14 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = product ?? ProductModel(
-      id: 'default',
-      name: 'Product Name',
-      description: 'Premium quality fabric with a modern fit.',
-      price: 189.00,
-      imageUrl: '',
-      categoryId: 'cat_1',
-    );
+    final p = product;
+
+    if (p == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Product not found')),
+        body: const Center(child: Text('Product not found')),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -32,7 +38,12 @@ class ProductDetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite_outline, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              context.read<WishlistBloc>().add(AddToWishlist(p));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Added to wishlist'), duration: Duration(seconds: 1)),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.share_outlined, color: Colors.black),
@@ -89,7 +100,12 @@ class ProductDetailScreen extends StatelessWidget {
                         child: SizedBox(
                           height: 52,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<WishlistBloc>().add(AddToWishlist(p));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Added to wishlist'), duration: Duration(seconds: 1)),
+                              );
+                            },
                             icon: const Icon(Icons.favorite_outline, color: Colors.black),
                             label: const Text('WISHLIST',
                                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 12, letterSpacing: 0.5)),
@@ -107,7 +123,17 @@ class ProductDetailScreen extends StatelessWidget {
                         child: SizedBox(
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<CartBloc>().add(AddToCart(CartItemModel(
+                                id: p.id,
+                                product: p,
+                                selectedSize: 'M',
+                                selectedColor: p.colors.isNotEmpty ? p.colors.first : '',
+                              )));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Added to cart'), duration: Duration(seconds: 1)),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

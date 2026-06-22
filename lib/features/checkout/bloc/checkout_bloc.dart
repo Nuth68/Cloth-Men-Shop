@@ -13,7 +13,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   Future<void> _onPlaceOrder(PlaceOrderEvent event, Emitter<CheckoutState> emit) async {
     emit(const CheckoutLoading());
     try {
-      await _repository.placeOrder(items: [], total: 0, address: event.address);
+      await _repository.placeOrder(
+        items: event.items,
+        total: event.total,
+        address: event.address,
+      );
       emit(const CheckoutSuccess());
     } catch (e) {
       emit(CheckoutFailure(e.toString()));

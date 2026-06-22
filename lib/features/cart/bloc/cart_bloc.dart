@@ -8,6 +8,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<AddToCart>(_onAdd);
     on<RemoveFromCart>(_onRemove);
     on<UpdateQuantity>(_onUpdateQuantity);
+    on<ClearCart>((event, emit) => emit(const CartInitial()));
   }
 
   void _onAdd(AddToCart event, Emitter<CartState> emit) {
