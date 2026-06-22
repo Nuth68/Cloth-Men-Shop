@@ -19,3 +19,7 @@ class UpdateQuantity extends CartEvent {
   final int quantity;
   const UpdateQuantity(this.itemId, this.quantity);
 }
+
+class ClearCart extends CartEvent {
+  const ClearCart();
+}

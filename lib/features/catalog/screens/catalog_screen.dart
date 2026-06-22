@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../data/models/product_model.dart';
+import '../../../data/datasources/local/cache_service.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/repositories/product_repository.dart';
+import '../../../core/constants/api_config.dart';
+import '../bloc/catalog_bloc.dart';
+import '../bloc/catalog_event.dart';
+import '../bloc/catalog_state.dart';
 import '../widgets/product_card.dart';
 import '../widgets/filter_bottom_sheet.dart';
 
-final List<ProductModel> _products = [
-  ProductModel(id: '1', name: 'Structured Wool Blazer', description: 'Premium wool blend with modern tailoring.', price: 485.00,
-      imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=700&q=85', categoryId: 'cat_1', isNew: true),
-  ProductModel(id: '2', name: 'Merino Mock Neck', description: 'Fine merino wool for effortless layering.', price: 175.00,
-      imageUrl: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=700&q=85', categoryId: 'cat_2'),
-  ProductModel(id: '3', name: 'Pleated Trousers', description: 'Refined pleated silhouette in wool blend.', price: 298.00,
-      imageUrl: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=700&q=85', categoryId: 'cat_1'),
-  ProductModel(id: '4', name: 'Form Derby Shoe', description: 'Polished calfskin derby with structured sole.', price: 365.00,
-      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=85', categoryId: 'cat_3', isNew: true),
-  ProductModel(id: '5', name: 'Cashmere Overcoat', description: 'Double-faced cashmere with peak lapels.', price: 890.00,
-      imageUrl: 'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=700&q=85', categoryId: 'cat_1'),
-  ProductModel(id: '6', name: 'Silk Charmer Scarf', description: 'Hand-rolled silk twill with abstract pattern.', price: 110.00,
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=85', categoryId: 'cat_4'),
-  ProductModel(id: '7', name: 'Linen Cotton Shirt', description: 'Breezy linen-cotton poplin for warm days.', price: 195.00,
-      imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&q=85', categoryId: 'cat_2'),
-  ProductModel(id: '8', name: 'Leather Belt', description: 'Italian full-grain leather with brushed buckle.', price: 145.00,
-      imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700&q=85', categoryId: 'cat_4'),
-];
-
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cache = CacheService();
+        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final repo = ProductRepository(gql);
+        return CatalogBloc(repo)..add(const LoadCatalog());
+      },
+      child: const _CatalogView(),
+    );
+  }
+}
+
+class _CatalogView extends StatelessWidget {
+  const _CatalogView();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,11 @@ class CatalogScreen extends StatelessWidget {
             icon: const Icon(Icons.filter_list, color: Colors.black, size: 22),
             onPressed: () => showModalBottomSheet(
               context: context,
-              builder: (_) => const FilterBottomSheet(),
+              builder: (_) => FilterBottomSheet(
+                onApply: (size, color, fit) {
+                  context.read<CatalogBloc>().add(FilterCatalog(size: size, color: color, fit: fit));
+                },
+              ),
             ),
           ),
           IconButton(
@@ -53,19 +62,48 @@ class CatalogScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.68,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-        ),
-        itemBuilder: (_, index) => ProductCard(
-          product: _products[index],
-          onTap: () => context.push('/product-detail', extra: _products[index]),
-        ),
+      body: BlocBuilder<CatalogBloc, CatalogState>(
+        builder: (context, state) {
+          if (state is CatalogLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is CatalogError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(state.message, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => context.read<CatalogBloc>().add(const LoadCatalog()),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is CatalogLoaded) {
+            final products = state.products;
+            if (products.isEmpty) {
+              return const Center(child: Text('No products found'));
+            }
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: products.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.68,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemBuilder: (_, index) => ProductCard(
+                product: products[index],
+                onTap: () => context.push('/product-detail', extra: products[index]),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
