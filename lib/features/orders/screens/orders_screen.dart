@@ -1,67 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../../../data/models/order_model.dart';
-import '../../../data/models/cart_item_model.dart';
-import '../../../data/models/product_model.dart';
+import '../../../data/datasources/local/cache_service.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/repositories/order_repository.dart';
+import '../../../core/constants/api_config.dart';
+import '../bloc/orders_bloc.dart';
+import '../bloc/orders_event.dart';
+import '../bloc/orders_state.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
 
-  static final List<OrderModel> _orders = [
-    OrderModel(
-      id: '1024',
-      items: [
-        CartItemModel(
-          id: '1',
-          product: ProductModel(
-            id: 'p1', name: 'Structured Wool Blazer', description: 'Premium wool.', price: 485.00,
-            imageUrl: '', categoryId: 'cat_1',
-          ),
-          selectedSize: 'M', selectedColor: 'Noir',
-        ),
-      ],
-      total: 485.00,
-      status: 'Delivered',
-      address: '123 Main St, New York, NY 10001',
-      createdAt: DateTime(2024, 10, 15),
-    ),
-    OrderModel(
-      id: '1023',
-      items: [
-        CartItemModel(
-          id: '2',
-          product: ProductModel(
-            id: 'p2', name: 'Merino Mock Neck', description: 'Fine merino.', price: 175.00,
-            imageUrl: '', categoryId: 'cat_2',
-          ),
-          selectedSize: 'L', selectedColor: 'Ecru',
-        ),
-      ],
-      total: 175.00,
-      status: 'Shipped',
-      address: '123 Main St, New York, NY 10001',
-      createdAt: DateTime(2024, 10, 12),
-    ),
-    OrderModel(
-      id: '1022',
-      items: [
-        CartItemModel(
-          id: '3',
-          product: ProductModel(
-            id: 'p3', name: 'Pleated Trousers', description: 'Wool blend.', price: 298.00,
-            imageUrl: '', categoryId: 'cat_3',
-          ),
-          selectedSize: '32', selectedColor: 'Charcoal',
-        ),
-      ],
-      total: 298.00,
-      status: 'Processing',
-      address: '123 Main St, New York, NY 10001',
-      createdAt: DateTime(2024, 10, 8),
-    ),
-  ];
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cache = CacheService();
+        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final repo = OrderRepository(gql);
+        return OrdersBloc(repo)..add(const LoadOrders());
+      },
+      child: const _OrdersListView(),
+    );
+  }
+}
+
+class _OrdersListView extends StatelessWidget {
+  const _OrdersListView();
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +46,41 @@ class OrdersScreen extends StatelessWidget {
         title: const Text(AppStrings.orders,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
-      body: _orders.isEmpty
-          ? const EmptyStateWidget(message: 'No orders yet')
-          : ListView.separated(
+      body: BlocBuilder<OrdersBloc, OrdersState>(
+        builder: (context, state) {
+          if (state is OrdersLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is OrdersError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(state.message, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => context.read<OrdersBloc>().add(const LoadOrders()),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is OrdersLoaded) {
+            final orders = state.orders;
+            if (orders.isEmpty) {
+              return const EmptyStateWidget(message: 'No orders yet');
+            }
+            return ListView.separated(
               padding: const EdgeInsets.all(16),
-              itemCount: _orders.length,
+              itemCount: orders.length,
               separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (_, i) => _OrderCard(order: _orders[i]),
-            ),
+              itemBuilder: (_, i) => _OrderCard(order: orders[i]),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

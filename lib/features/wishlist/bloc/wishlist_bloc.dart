@@ -10,17 +10,17 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
 
   void _onAdd(AddToWishlist event, Emitter<WishlistState> emit) {
     if (state is WishlistUpdated) {
-      final ids = [...(state as WishlistUpdated).productIds, event.productId];
-      emit(WishlistUpdated(ids));
+      final products = [...(state as WishlistUpdated).products, event.product];
+      emit(WishlistUpdated(products));
     } else {
-      emit(WishlistUpdated([event.productId]));
+      emit(WishlistUpdated([event.product]));
     }
   }
 
   void _onRemove(RemoveFromWishlist event, Emitter<WishlistState> emit) {
     if (state is WishlistUpdated) {
-      final ids = (state as WishlistUpdated).productIds.where((id) => id != event.productId).toList();
-      emit(WishlistUpdated(ids));
+      final products = (state as WishlistUpdated).products.where((p) => p.id != event.productId).toList();
+      emit(products.isEmpty ? const WishlistInitial() : WishlistUpdated(products));
     }
   }
 }

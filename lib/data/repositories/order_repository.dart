@@ -1,5 +1,4 @@
 import '../models/order_model.dart';
-import '../models/cart_item_model.dart';
 import '../datasources/remote/graphql_service.dart';
 
 const _cartItemFields = '''

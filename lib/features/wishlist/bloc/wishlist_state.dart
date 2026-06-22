@@ -1,3 +1,5 @@
+import '../../../data/models/product_model.dart';
+
 abstract class WishlistState {
   const WishlistState();
 }
@@ -7,6 +9,6 @@ class WishlistInitial extends WishlistState {
 }
 
 class WishlistUpdated extends WishlistState {
-  final List<String> productIds;
-  const WishlistUpdated(this.productIds);
+  final List<ProductModel> products;
+  const WishlistUpdated(this.products);
 }
