@@ -25,4 +25,25 @@ class AppTheme {
           unselectedItemColor: AppColors.warmGray,
         ),
       );
+
+  static ThemeData get dark => ThemeData(
+        scaffoldBackgroundColor: AppColors.darkBg,
+        fontFamily: AppTypography.primaryFont,
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.white,
+          secondary: AppColors.accent,
+          surface: AppColors.darkCard,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.darkCard,
+          foregroundColor: AppColors.white,
+          elevation: 0,
+          centerTitle: true,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: AppColors.darkCard,
+          selectedItemColor: AppColors.white,
+          unselectedItemColor: AppColors.darkGrey,
+        ),
+      );
 }

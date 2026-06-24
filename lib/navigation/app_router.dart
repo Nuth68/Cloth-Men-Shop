@@ -17,6 +17,10 @@ import '../features/profile/screens/profile_screen.dart';
 import '../features/profile/screens/edit_profile_screen.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/auth/screens/register_screen.dart';
+import '../features/auth/screens/forgot_password_screen.dart';
+import '../features/auth/screens/reset_password_screen.dart';
+import '../features/catalog/screens/search_screen.dart';
+import '../features/catalog/screens/size_guide_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/stylist/screens/stylist_booking_screen.dart';
@@ -27,6 +31,19 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
     GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
     GoRoute(path: '/register', builder: (_, _) => const RegisterScreen()),
+    GoRoute(path: '/forgot-password', builder: (_, _) => const ForgotPasswordScreen()),
+    GoRoute(
+      path: '/reset-password',
+      builder: (_, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return ResetPasswordScreen(
+          email: extra?['email'] as String? ?? '',
+          token: extra?['token'] as String? ?? '',
+        );
+      },
+    ),
+    GoRoute(path: '/search', builder: (_, _) => const SearchScreen()),
+    GoRoute(path: '/size-guide', builder: (_, _) => const SizeGuideScreen()),
     ShellRoute(
       builder: (_, state, child) => MainShell(child: child),
       routes: [
