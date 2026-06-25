@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/theme_bloc.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/language_bloc.dart';
 import '../../../shared/widgets/monograph_header.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
@@ -112,6 +115,8 @@ class _ProfileView extends StatelessWidget {
                             label: 'Privacy',
                             onTap: () {},
                           ),
+                          _DarkModeItem(),
+                          _LanguageItem(),
                         ],
                       ),
                       const SizedBox(height: 6),
@@ -337,9 +342,161 @@ class _ProfileCard extends StatelessWidget {
   }
 }
 
+class _DarkModeItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeMode = context.watch<ThemeCubit>().state;
+    final isDark = themeMode == ThemeMode.dark;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.read<ThemeCubit>().toggle(),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Icon(Icons.dark_mode_outlined, size: 20, color: AppColors.slate),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text('Dark Mode', style: AppTypography.body),
+              ),
+              Switch(
+                value: isDark,
+                onChanged: (v) => context.read<ThemeCubit>().setDark(v),
+                activeColor: AppColors.accent,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showLanguageSheet(context),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Icon(Icons.language, size: 20, color: AppColors.slate),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text('Language', style: AppTypography.body),
+              ),
+              Text(
+                context.watch<LanguageCubit>().state.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.monoGrey,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, size: 20, color: AppColors.monoGrey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLanguageSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        final current = context.read<LanguageCubit>().state;
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Select Language',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 16),
+              _LangOption(
+                code: 'en',
+                label: 'English',
+                selected: current.languageCode == 'en',
+                onTap: () {
+                  context.read<LanguageCubit>().setLocale(const Locale('en'));
+                  Navigator.pop(ctx);
+                },
+              ),
+              _LangOption(
+                code: 'es',
+                label: 'Español',
+                selected: current.languageCode == 'es',
+                onTap: () {
+                  context.read<LanguageCubit>().setLocale(const Locale('es'));
+                  Navigator.pop(ctx);
+                },
+              ),
+              _LangOption(
+                code: 'fr',
+                label: 'Français',
+                selected: current.languageCode == 'fr',
+                onTap: () {
+                  context.read<LanguageCubit>().setLocale(const Locale('fr'));
+                  Navigator.pop(ctx);
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LangOption extends StatelessWidget {
+  final String code;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _LangOption({
+    required this.code,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Text(code.toUpperCase(),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+      title: Text(label),
+      trailing: selected ? const Icon(Icons.check, color: AppColors.accent) : null,
+      onTap: onTap,
+    );
+  }
+}
+
 class _SettingsGroup extends StatelessWidget {
   final String title;
-  final List<_SettingItem> items;
+  final List<Widget> items;
 
   const _SettingsGroup({required this.title, required this.items});
 

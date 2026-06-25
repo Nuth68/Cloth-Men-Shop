@@ -169,7 +169,7 @@ class _LoginFormState extends State<_LoginForm> {
                         Text('PASSWORD',
                             style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () => context.push('/forgot-password'),
                           child: Text('FORGOT?',
                               style: _sans(10, c: _kRed, w: FontWeight.w600, ls: 1.5)),
                         ),
