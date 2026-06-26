@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocProvider(
       create: (_) {
         final cache = CacheService();
-        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
         final repo = AuthRepository(gql, cache);
         return AuthBloc(repo);
       },

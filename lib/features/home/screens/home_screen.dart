@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadData() async {
     final cache = CacheService();
-    final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+    final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
     final repo = ProductRepository(gql);
     try {
       final products = await repo.getProducts();

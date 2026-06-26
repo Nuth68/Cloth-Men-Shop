@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() => _loading = true);
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.query(
         r'''query searchProducts($query: String!) {
           searchProducts(query: $query) {
