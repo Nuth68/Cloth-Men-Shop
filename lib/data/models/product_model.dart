@@ -7,6 +7,7 @@ class ProductModel {
   final String categoryId;
   final List<String> sizes;
   final List<String> colors;
+  final String brand;
   final String fit;
   final bool isNew;
 
@@ -19,6 +20,7 @@ class ProductModel {
     required this.categoryId,
     this.sizes = const [],
     this.colors = const [],
+    this.brand = 'Steav Fashion',
     this.fit = 'Regular',
     this.isNew = false,
   });
@@ -32,6 +34,7 @@ class ProductModel {
         categoryId: json['categoryId'].toString(),
         sizes: List<String>.from(json['sizes'] ?? []),
         colors: List<String>.from(json['colors'] ?? []),
+        brand: json['brand'] as String? ?? 'Steav Fashion',
         fit: json['fit'] as String? ?? 'Regular',
         isNew: json['isNew'] as bool? ?? false,
       );
@@ -45,6 +48,7 @@ class ProductModel {
         'categoryId': categoryId,
         'sizes': sizes,
         'colors': colors,
+        'brand': brand,
         'fit': fit,
         'isNew': isNew,
       };

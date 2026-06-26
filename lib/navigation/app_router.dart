@@ -220,23 +220,23 @@ class _MainShellState extends State<MainShell> {
   final List<NavItem> _items = const [
     NavItem(
       label: 'Home',
-      icon: Icons.shopping_bag_outlined,
-      activeIcon: Icons.shopping_bag,
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
     ),
     NavItem(
       label: 'Lookbook',
-      icon: Icons.menu_book_outlined,
-      activeIcon: Icons.menu_book,
+      icon: Icons.dashboard_customize_outlined,
+      activeIcon: Icons.dashboard_customize,
     ),
     NavItem(
       label: 'Stylist',
-      icon: Icons.design_services_outlined,
-      activeIcon: Icons.design_services,
+      icon: Icons.star_outline_rounded,
+      activeIcon: Icons.star_rate_rounded,
     ),
     NavItem(
       label: 'Account',
-      icon: Icons.person_outline,
-      activeIcon: Icons.person,
+      icon: Icons.person_2_outlined,
+      activeIcon: Icons.person_2_rounded,
     ),
   ];
 
@@ -258,6 +258,7 @@ class _MainShellState extends State<MainShell> {
     final selectedIndex = _indexFor(location);
 
     return Scaffold(
+      extendBody: true,
       body: widget.child,
       bottomNavigationBar: FashionBottomNav(
         selectedIndex: selectedIndex,
