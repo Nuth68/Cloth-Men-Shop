@@ -1,23 +1,55 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
+
+class SizeSelectorController {
+  String _selected = 'M';
+  String get selectedSize => _selected;
+
+  final _controller = StreamController<String>.broadcast();
+  Stream<String> get onChanged => _controller.stream;
+
+  void select(String size) {
+    _selected = size;
+    _controller.add(size);
+  }
+
+  void dispose() => _controller.close();
+}
 
 class SizeSelector extends StatefulWidget {
-  const SizeSelector({super.key});
+  final SizeSelectorController? controller;
+
+  const SizeSelector({super.key, this.controller});
 
   @override
   State<SizeSelector> createState() => _SizeSelectorState();
 }
 
 class _SizeSelectorState extends State<SizeSelector> {
-  String _selected = 'M';
+  late String _selected;
   final List<String> _sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.controller?.selectedSize ?? 'M';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Size', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        Text(
+          'Size',
+          style: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.w500,
+            color: AppColors.monoBlack,
+          ),
+        ),
         const SizedBox(height: 8),
         Row(
           children: _sizes.map((size) {
@@ -27,12 +59,23 @@ class _SizeSelectorState extends State<SizeSelector> {
               child: ChoiceChip(
                 label: Text(size),
                 selected: isSelected,
-                onSelected: (_) => setState(() => _selected = size),
-                selectedColor: AppColors.charcoal,
-                backgroundColor: AppColors.lightGray,
-                labelStyle: TextStyle(
-                  color: isSelected ? AppColors.white : AppColors.charcoal,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                onSelected: (_) {
+                  AppHaptics.selection();
+                  setState(() => _selected = size);
+                  widget.controller?.select(size);
+                },
+                selectedColor: AppColors.monoBlack,
+                backgroundColor: AppColors.monoLightGrey,
+                labelStyle: AppTypography.bodySmall.copyWith(
+                  color: isSelected
+                      ? AppColors.white
+                      : AppColors.monoBlack,
+                  fontWeight:
+                      isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+                side: BorderSide.none,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             );

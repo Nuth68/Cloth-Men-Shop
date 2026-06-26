@@ -102,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 28),
-              Text('MONOGRAPH', style: _serif(26, w: FontWeight.w400, ls: 6)),
+              Text('Steav Fashion', style: _serif(26, w: FontWeight.w400, ls: 6)),
               const SizedBox(height: 2),
               const Divider(color: _kDivider, height: 1),
               const SizedBox(height: 72),
@@ -130,7 +130,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Text('EMAIL ADDRESS',
                         style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                     const SizedBox(height: 10),
-                    _Field(controller: _emailCtrl, hint: 'archive@monograph.com'),
+                    _Field(controller: _emailCtrl, hint: 'archive@Steav Fashion.com'),
                   ],
                 ),
               ),

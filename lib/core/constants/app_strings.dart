@@ -1,7 +1,7 @@
 class AppStrings {
   AppStrings._();
 
-  static const String appName = 'StyleThread';
+  static const String appName = 'Steav Fashion';
   static const String shop = 'Shop';
   static const String lookbook = 'Lookbook';
   static const String stylist = 'Stylist';

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../shared/widgets/custom_text_field.dart';
+import '../../../shared/widgets/custom_button.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
@@ -37,16 +41,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Edit Profile',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
+        title: Text('Edit Profile',
+            style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -68,8 +72,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 48,
-                          backgroundColor: Colors.grey.shade200,
-                          child: Icon(Icons.person, size: 40, color: Colors.grey.shade500),
+                          backgroundColor: AppColors.monoLightGrey,
+                          child: Icon(Icons.person,
+                              size: 40, color: AppColors.monoGrey),
                         ),
                         Positioned(
                           bottom: 0,
@@ -77,39 +82,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Container(
                             width: 32,
                             height: 32,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
+                            decoration: const BoxDecoration(
+                              color: AppColors.monoBlack,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
+                            child: const Icon(Icons.camera_alt,
+                                color: AppColors.white, size: 16),
                           ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 32),
-                  _buildField(label: 'FULL NAME', controller: _nameCtrl, validator: (v) => v == null || v.isEmpty ? 'Required' : null),
+                  CustomTextField(
+                    label: 'FULL NAME',
+                    controller: _nameCtrl,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Required' : null,
+                  ),
                   const SizedBox(height: 20),
-                  _buildField(label: 'EMAIL ADDRESS', controller: _emailCtrl, keyboardType: TextInputType.emailAddress, validator: (v) {
-                    if (v == null || v.isEmpty) return 'Required';
-                    if (!v.contains('@')) return 'Invalid email';
-                    return null;
-                  }),
+                  CustomTextField(
+                    label: 'EMAIL ADDRESS',
+                    controller: _emailCtrl,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Required';
+                      if (!v.contains('@')) return 'Invalid email';
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 20),
-                  _buildField(label: 'PHONE (OPTIONAL)', controller: _phoneCtrl, keyboardType: TextInputType.phone),
+                  CustomTextField(
+                    label: 'PHONE (OPTIONAL)',
+                    controller: _phoneCtrl,
+                    keyboardType: TextInputType.phone,
+                  ),
                   const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _save,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: const Text('SAVE CHANGES',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1)),
-                    ),
+                  CustomButton(
+                    label: 'SAVE CHANGES',
+                    onPressed: _save,
                   ),
                 ],
               ),
@@ -117,34 +128,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildField({
-    required String label,
-    required TextEditingController controller,
-    TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 1.5, color: Colors.grey)),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          validator: validator,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey.shade50,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
-          style: const TextStyle(fontSize: 15),
-        ),
-      ],
     );
   }
 }

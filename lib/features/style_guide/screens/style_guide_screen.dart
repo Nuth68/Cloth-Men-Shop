@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
-
-const _black = Color(0xFF111111);
-const _offWhite = Color(0xFFF5F4F0);
-const _mid = Color(0xFF888888);
-
-const _imgColors = [
-  Color(0xFF3D3830),
-  Color(0xFF5C4A3A),
-  Color(0xFF2A2E35),
-  Color(0xFF4A4040),
-  Color(0xFF1E2228),
-  Color(0xFF3B3530),
-];
 
 class LookbookScreen extends StatefulWidget {
   const LookbookScreen({super.key});
@@ -27,7 +17,7 @@ class _LookbookScreenState extends State<LookbookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -36,15 +26,18 @@ class _LookbookScreenState extends State<LookbookScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-            _HeroSection(),
-            const SizedBox(height: 4),
-            _GridSection(),
-            const SizedBox(height: 32),
-            _FitSection(
-              fitIndex: _fitIndex,
-              onFitChanged: (i) => setState(() => _fitIndex = i),
-            ),
-            const SizedBox(height: 40),
+                    _HeroSection(),
+                    const SizedBox(height: 4),
+                    _GridSection(),
+                    const SizedBox(height: 32),
+                    _FitSection(
+                      fitIndex: _fitIndex,
+                      onFitChanged: (i) {
+                        AppHaptics.selection();
+                        setState(() => _fitIndex = i);
+                      },
+                    ),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -56,42 +49,38 @@ class _LookbookScreenState extends State<LookbookScreen> {
   }
 }
 
-
-
 class _HeroSection extends StatelessWidget {
+  static const _imgColors = Color(0xFF3D3830);
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'AUTUMN / WINTER 2024',
-          style: TextStyle(
-            fontSize: 10,
+          style: AppTypography.labelSmall.copyWith(
             letterSpacing: 2.5,
-            color: _mid,
-            fontFamily: 'Georgia',
+            color: AppColors.monoGrey,
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'The Motion of\nCraft',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Georgia',
-            fontSize: 32,
-            fontWeight: FontWeight.w700,
-            height: 1.15,
-            color: _black,
+          style: AppTypography.displayLarge.copyWith(
+            color: AppColors.monoBlack,
+            letterSpacing: 2,
           ),
         ),
         const SizedBox(height: 6),
-        Container(width: 30, height: 1.5, color: _black),
+        Container(
+            width: 30, height: 1.5, color: AppColors.monoBlack),
         const SizedBox(height: 16),
         Stack(
           children: [
             _PlaceholderImage(
-              color: _imgColors[0],
+              color: _imgColors,
               height: 240,
               width: double.infinity,
             ),
@@ -100,11 +89,12 @@ class _HeroSection extends StatelessWidget {
               right: 10,
               child: Container(
                 padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.black45,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.volume_off, color: Colors.white, size: 14),
+                child: const Icon(Icons.volume_off,
+                    color: Colors.white, size: 14),
               ),
             ),
             Positioned(
@@ -112,27 +102,14 @@ class _HeroSection extends StatelessWidget {
               left: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'RUNWAY CLIP',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 9,
-                      letterSpacing: 2,
-                      fontFamily: 'Georgia',
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Structured\nFluidity',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Georgia',
-                      height: 1.2,
-                    ),
-                  ),
+                children: [
+                  Text('RUNWAY CLIP',
+                      style: AppTypography.labelSmall.copyWith(
+                          color: Colors.white70, letterSpacing: 2)),
+                  const SizedBox(height: 4),
+                  Text('Structured\nFluidity',
+                      style: AppTypography.displayMedium.copyWith(
+                          color: AppColors.white)),
                 ],
               ),
             ),
@@ -140,18 +117,12 @@ class _HeroSection extends StatelessWidget {
               bottom: 16,
               right: 16,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                color: Colors.white,
-                child: const Text(
-                  'SHOP \u2192',
-                  style: TextStyle(
-                    color: _black,
-                    fontSize: 11,
-                    letterSpacing: 1.5,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Georgia',
-                  ),
-                ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 8),
+                color: AppColors.white,
+                child: Text('SHOP →',
+                    style: AppTypography.button.copyWith(
+                        color: AppColors.monoBlack)),
               ),
             ),
           ],
@@ -162,6 +133,13 @@ class _HeroSection extends StatelessWidget {
 }
 
 class _GridSection extends StatelessWidget {
+  static const _imgColors = [
+    Color(0xFF5C4A3A),
+    Color(0xFF4A4040),
+    Color(0xFF2A2E35),
+    Color(0xFF3B3530),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -170,16 +148,16 @@ class _GridSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: _ShoppableImage(color: _imgColors[1], height: 200)),
+              Expanded(child: _ShoppableImage(color: _imgColors[0], height: 200)),
               const SizedBox(width: 4),
-              Expanded(child: _ShoppableImage(color: _imgColors[3], height: 200)),
+              Expanded(child: _ShoppableImage(color: _imgColors[2], height: 200)),
             ],
           ),
           const SizedBox(height: 4),
           Stack(
             children: [
               _PlaceholderImage(
-                color: _imgColors[2],
+                color: _imgColors[1],
                 height: 180,
                 width: double.infinity,
               ),
@@ -187,17 +165,12 @@ class _GridSection extends StatelessWidget {
                 top: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
                   color: Colors.white,
-                  child: const Text(
-                    'BEHIND THE SCENES',
-                    style: TextStyle(
-                      fontSize: 9,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.w600,
-                      color: _black,
-                    ),
-                  ),
+                  child: Text('BEHIND THE SCENES',
+                      style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.monoBlack)),
                 ),
               ),
             ],
@@ -205,9 +178,9 @@ class _GridSection extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             children: [
-              Expanded(child: _ShoppableImage(color: _imgColors[4], height: 200)),
+              Expanded(child: _ShoppableImage(color: _imgColors[3], height: 200)),
               const SizedBox(width: 4),
-              Expanded(child: _ShoppableImage(color: _imgColors[5], height: 200)),
+              Expanded(child: _ShoppableImage(color: _imgColors[0], height: 200)),
             ],
           ),
         ],
@@ -219,14 +192,14 @@ class _GridSection extends StatelessWidget {
 class _ShoppableImage extends StatelessWidget {
   final Color color;
   final double height;
-
   const _ShoppableImage({required this.color, required this.height});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _PlaceholderImage(color: color, height: height, width: double.infinity),
+        _PlaceholderImage(
+            color: color, height: height, width: double.infinity),
         Positioned(
           bottom: 10,
           left: 10,
@@ -236,7 +209,8 @@ class _ShoppableImage extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.shopping_bag_outlined, size: 14, color: _black),
+            child: const Icon(Icons.shopping_bag_outlined,
+                size: 14, color: AppColors.monoBlack),
           ),
         ),
       ],
@@ -247,7 +221,6 @@ class _ShoppableImage extends StatelessWidget {
 class _FitSection extends StatelessWidget {
   final int fitIndex;
   final ValueChanged<int> onFitChanged;
-
   const _FitSection({required this.fitIndex, required this.onFitChanged});
 
   static const _labels = ['RUNS SMALL', 'TRUE TO SIZE', 'RUNS LARGE'];
@@ -255,19 +228,14 @@ class _FitSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: _offWhite,
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+      color: AppColors.monoOffWhite,
+      padding:
+          const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       child: Column(
         children: [
-          const Text(
-            'The Precision of Fit',
-            style: TextStyle(
-              fontFamily: 'Georgia',
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: _black,
-            ),
-          ),
+          Text('The Precision of Fit',
+              style: AppTypography.heading1.copyWith(
+                  color: AppColors.monoBlack)),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -278,7 +246,9 @@ class _FitSection extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: fitIndex == i ? _black : _mid,
+                  color: fitIndex == i
+                      ? AppColors.monoBlack
+                      : AppColors.monoGrey,
                 ),
               );
             }),
@@ -292,26 +262,25 @@ class _FitSection extends StatelessWidget {
                 onTap: () => onFitChanged(i),
                 child: Text(
                   _labels[i],
-                  style: TextStyle(
-                    fontSize: 10,
-                    letterSpacing: 1.5,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                    color: selected ? _black : _mid,
+                  style: AppTypography.labelSmall.copyWith(
+                    fontWeight:
+                        selected ? FontWeight.w700 : FontWeight.w400,
+                    color: selected
+                        ? AppColors.monoBlack
+                        : AppColors.monoGrey,
                   ),
                 ),
               );
             }),
           ),
           const SizedBox(height: 20),
-          const Text(
-            '\u201cEngineered to drape perfectly on the frame,\nmaintaining its architectural integrity throughout\nthe day.\u201d',
+          Text(
+            '"Engineered to drape perfectly on the frame,\nmaintaining its architectural integrity throughout\nthe day."',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Georgia',
-              fontSize: 13,
+            style: AppTypography.serif(13,
+                height: 1.6,
+                color: AppColors.monoBlack).copyWith(
               fontStyle: FontStyle.italic,
-              height: 1.6,
-              color: _black,
             ),
           ),
         ],
@@ -322,9 +291,7 @@ class _FitSection extends StatelessWidget {
 
 class _PlaceholderImage extends StatelessWidget {
   final Color color;
-  final double height;
-  final double width;
-
+  final double height, width;
   const _PlaceholderImage({
     required this.color,
     required this.height,

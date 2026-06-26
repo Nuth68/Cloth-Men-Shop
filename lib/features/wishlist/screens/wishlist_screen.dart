@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
 import '../../../data/models/product_model.dart';
+import '../../../shared/widgets/shimmer_loading.dart';
+import '../../../shared/widgets/animated_list_item.dart';
 import '../bloc/wishlist_bloc.dart';
 import '../bloc/wishlist_event.dart';
 import '../bloc/wishlist_state.dart';
-
-TextStyle _serif(double sz,
-    {FontWeight w = FontWeight.w400, Color c = AppColors.monoBlack, double h = 1.2, double ls = 0}) {
-  return TextStyle(fontFamily: 'Georgia', fontSize: sz, fontWeight: w, color: c, height: h, letterSpacing: ls);
-}
-
-TextStyle _sans(double sz,
-    {FontWeight w = FontWeight.w400, Color c = AppColors.monoBlack, double ls = 0.5}) {
-  return TextStyle(fontFamily: 'Helvetica Neue', fontSize: sz, fontWeight: w, color: c, letterSpacing: ls);
-}
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -26,46 +22,82 @@ class WishlistScreen extends StatelessWidget {
       backgroundColor: AppColors.white,
       body: BlocBuilder<WishlistBloc, WishlistState>(
         builder: (context, state) {
-          final products = state is WishlistUpdated ? state.products : <ProductModel>[];
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(child: SizedBox(height: MediaQuery.of(context).padding.top)),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Favorites', style: _serif(28, w: FontWeight.w700)),
-                      const SizedBox(height: 4),
-                      Text('${products.length} items saved', style: _sans(10, c: AppColors.monoGrey, ls: 0.3)),
-                      const SizedBox(height: 20),
-                      const Divider(color: AppColors.monoDivider, height: 1),
-                    ],
+          final products =
+              state is WishlistUpdated ? state.products : <ProductModel>[];
+          return RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(milliseconds: 300));
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).padding.top,
                   ),
                 ),
-              ),
-              if (products.isEmpty)
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 60),
-                    child: Center(child: Text('No favorites yet', style: TextStyle(color: Colors.grey))),
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Favorites',
+                          style: AppTypography.displayLarge.copyWith(
+                            color: AppColors.monoBlack,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${products.length} items saved',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.monoGrey,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Divider(
+                            color: AppColors.monoDivider, height: 1),
+                      ],
+                    ),
                   ),
                 ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    if (index >= products.length) return null;
-                    return _FavCard(
-                      product: products[index],
-                      onRemove: () => context.read<WishlistBloc>().add(RemoveFromWishlist(products[index].id)),
-                    );
-                  },
-                  childCount: products.length,
+                if (products.isEmpty)
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 60),
+                      child: Center(
+                        child: Text(
+                          'No favorites yet',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                  ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (index >= products.length) return null;
+                      return AnimatedListItem(
+                        index: index,
+                        child: _FavCard(
+                          product: products[index],
+                          onRemove: () {
+                            AppHaptics.medium();
+                            context.read<WishlistBloc>().add(
+                                RemoveFromWishlist(products[index].id));
+                          },
+                        ),
+                      );
+                    },
+                    childCount: products.length,
+                  ),
                 ),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 40)),
-            ],
+                const SliverToBoxAdapter(
+                    child: SizedBox(height: 40)),
+              ],
+            ),
           );
         },
       ),
@@ -80,65 +112,95 @@ class _FavCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+    return Slidable(
+      key: Key('fav-${product.id}'),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (_) => onRemove(),
+            backgroundColor: AppColors.error,
+            foregroundColor: AppColors.white,
+            icon: Icons.delete_outline,
+            label: 'REMOVE',
+          ),
+        ],
+      ),
       child: GestureDetector(
-        onTap: () => context.push('/product-detail', extra: product),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
-                AspectRatio(
+        onTap: () {
+          AppHaptics.light();
+          context.push('/product-detail', extra: product);
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              Hero(
+                tag: 'product-${product.id}',
+                child: AspectRatio(
                   aspectRatio: 3 / 4,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: Image.network(product.imageUrl, fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Container(color: AppColors.monoOffWhite)),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(product.name, style: _sans(13, w: FontWeight.w500, ls: 0.3)),
-                          const SizedBox(height: 3),
-                          Text(product.colors.isNotEmpty ? product.colors.first : '', style: _sans(10, c: AppColors.monoGrey, ls: 0.8)),
-                        ],
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      imageUrl: product.imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) =>
+                          ShimmerLoading.productCard(),
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColors.monoLightGrey,
                       ),
                     ),
-                    Text('\$${product.price.toStringAsFixed(0)}', style: _sans(13, w: FontWeight.w500)),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Divider(color: AppColors.monoDivider, height: 1),
-              ],
-            ),
-            Positioned(
-              top: 32,
-              right: 10,
-              child: GestureDetector(
-                onTap: onRemove,
-                child: Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: AppColors.white.withValues(alpha: 0.85),
-                    shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close, color: AppColors.monoBlack, size: 14),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
+                          style: AppTypography.sans(
+                            13,
+                            weight: FontWeight.w500,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          product.colors.isNotEmpty
+                              ? product.colors.first
+                              : '',
+                          style: AppTypography.sans(
+                            10,
+                            color: AppColors.monoGrey,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '\$${product.price.toStringAsFixed(0)}',
+                    style: AppTypography.sans(
+                      13,
+                      weight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(
+                  color: AppColors.monoDivider, height: 1),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

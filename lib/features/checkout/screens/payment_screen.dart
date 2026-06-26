@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
+import '../../../shared/widgets/custom_button.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
-
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
@@ -26,29 +29,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Payment',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
+        title: Text('Payment',
+            style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('CARD DETAILS',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1.5, color: Colors.grey)),
+            Text('CARD DETAILS',
+                style: AppTypography.labelSmall.copyWith(
+                    letterSpacing: 1.5, color: AppColors.monoGrey)),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.grey.shade900,
+                color: AppColors.monoBlack,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -57,73 +61,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('****', style: TextStyle(fontSize: 22, color: Colors.white70, letterSpacing: 4)),
+                      const Text('••••',
+                          style: TextStyle(fontSize: 22, color: Colors.white70, letterSpacing: 4)),
                       const Icon(Icons.credit_card, color: Colors.white70, size: 28),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  TextField(
-                    controller: _cardCtrl,
-                    keyboardType: TextInputType.number,
-                    maxLength: 19,
-                    decoration: InputDecoration(
-                      hintText: 'Card Number',
-                      hintStyle: TextStyle(color: Colors.grey.shade500),
-                      border: InputBorder.none,
-                      counterText: '',
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 2),
-                    cursorColor: Colors.white,
-                  ),
+                  _DarkField(controller: _cardCtrl, hint: 'Card Number', maxLength: 19, keyboardType: TextInputType.number),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _expiryCtrl,
-                          decoration: InputDecoration(
-                            hintText: 'MM/YY',
-                            hintStyle: TextStyle(color: Colors.grey.shade500),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
-                          cursorColor: Colors.white,
-                        ),
-                      ),
+                      Expanded(child: _DarkField(controller: _expiryCtrl, hint: 'MM/YY')),
                       const SizedBox(width: 24),
-                      Expanded(
-                        child: TextField(
-                          controller: _cvvCtrl,
-                          keyboardType: TextInputType.number,
-                          maxLength: 4,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: 'CVV',
-                            hintStyle: TextStyle(color: Colors.grey.shade500),
-                            border: InputBorder.none,
-                            counterText: '',
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
-                          cursorColor: Colors.white,
-                        ),
-                      ),
+                      Expanded(child: _DarkField(controller: _cvvCtrl, hint: 'CVV', obscure: true, maxLength: 4, keyboardType: TextInputType.number)),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: _nameCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Cardholder Name',
-                      hintStyle: TextStyle(color: Colors.grey.shade500),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                    cursorColor: Colors.white,
-                  ),
+                  _DarkField(controller: _nameCtrl, hint: 'Cardholder Name'),
                 ],
               ),
             ),
@@ -131,42 +85,70 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFF2D5A3D).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lock, size: 16, color: Colors.green.shade700),
+                  const Icon(Icons.lock, size: 16, color: AppColors.success),
                   const SizedBox(width: 8),
                   Text('Secured with 256-bit encryption',
-                      style: TextStyle(fontSize: 13, color: Colors.green.shade700)),
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
                 ],
               ),
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('Total', style: TextStyle(fontSize: 16, color: Colors.grey)),
-                Text('\$660.00', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              children: [
+                Text('Total', style: AppTypography.bodyLarge.copyWith(color: AppColors.monoGrey)),
+                Text('\$660.00', style: AppTypography.price.copyWith(color: AppColors.monoBlack)),
               ],
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => context.go('/orders'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Text('PAY \$660.00',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1)),
-              ),
+            CustomButton(
+              label: 'PAY \$660.00',
+              onPressed: () {
+                AppHaptics.heavy();
+                context.go('/orders');
+              },
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DarkField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hint;
+  final bool obscure;
+  final int? maxLength;
+  final TextInputType? keyboardType;
+  const _DarkField({
+    required this.controller,
+    required this.hint,
+    this.obscure = false,
+    this.maxLength,
+    this.keyboardType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      keyboardType: keyboardType,
+      maxLength: maxLength,
+      style: const TextStyle(color: Colors.white, fontSize: 16, letterSpacing: 1),
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey.shade500),
+        border: InputBorder.none,
+        counterText: '',
+        contentPadding: EdgeInsets.zero,
       ),
     );
   }

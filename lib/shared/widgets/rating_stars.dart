@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class RatingStars extends StatelessWidget {
   final double rating;
@@ -11,11 +12,16 @@ class RatingStars extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
-        final filled = index < rating;
+        final filled = index < rating.floor();
+        final half = !filled && index < rating;
         return Icon(
-          filled ? Icons.star : Icons.star_border,
+          filled
+              ? Icons.star
+              : half
+                  ? Icons.star_half
+                  : Icons.star_border,
           size: size,
-          color: const Color(0xFF8B7355),
+          color: AppColors.brass,
         );
       }),
     );

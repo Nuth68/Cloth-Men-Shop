@@ -60,7 +60,7 @@ class ChatRepository {
         senderName: 'Elena Vance',
         senderAvatarUrl: 'https://i.pravatar.cc/150?u=elena',
         text:
-            "Hello! I've curated a few pieces that perfectly capture the 'Monograph' aesthetic you're looking for. These emphasize clean lines and superior drape.",
+            "Hello! I've curated a few pieces that perfectly capture the 'Steav Fashion' aesthetic you're looking for. These emphasize clean lines and superior drape.",
         timestamp: DateTime.now().subtract(const Duration(minutes: 46)),
         isFromStylist: true,
         isRead: true,

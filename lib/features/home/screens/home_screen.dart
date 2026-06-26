@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/monograph_header.dart';
+import '../../../shared/widgets/loading_indicator.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/repositories/product_repository.dart';
@@ -38,12 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final newArrivals = await repo.getNewArrivals();
       final allProducts = await repo.getProducts();
+      if (!mounted) return;
       setState(() {
         _newArrivals = newArrivals;
         _bestsellers = allProducts.take(4).toList();
         _loading = false;
       });
     } catch (_) {
+      if (!mounted) return;
       setState(() => _loading = false);
     }
   }
@@ -57,20 +60,46 @@ class _HomeScreenState extends State<HomeScreen> {
             MonographHeader(
               onSearch: () {},
               onBag: () => context.push('/cart'),
+              elevated: true,
             ),
             Expanded(
               child: _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : CustomScrollView(
-                      slivers: [
-                        const SliverToBoxAdapter(child: HeroSection()),
-                        const SliverToBoxAdapter(child: PressBanner()),
-                        const SliverToBoxAdapter(child: CategoryBar()),
-                        SliverToBoxAdapter(child: NewArrivalsSection(products: _newArrivals)),
-                        SliverToBoxAdapter(child: BestsellersSection(products: _bestsellers)),
-                        const SliverToBoxAdapter(child: PhilosophySection()),
-                        const SliverToBoxAdapter(child: SizedBox(height: 24)),
-                      ],
+                  ? SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          LoadingIndicator.shimmerBanner(),
+                          const SizedBox(height: 8),
+                          LoadingIndicator.shimmerProductGrid(count: 4),
+                          const SizedBox(height: 8),
+                          LoadingIndicator.shimmerProductGrid(count: 2),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadData,
+                      child: CustomScrollView(
+                        slivers: [
+                          const SliverToBoxAdapter(child: HeroSection()),
+                          const SliverToBoxAdapter(child: PressBanner()),
+                          const SliverToBoxAdapter(child: CategoryBar()),
+                          SliverToBoxAdapter(
+                            child: NewArrivalsSection(
+                              products: _newArrivals,
+                            ),
+                          ),
+                          SliverToBoxAdapter(
+                            child: BestsellersSection(
+                              products: _bestsellers,
+                            ),
+                          ),
+                          const SliverToBoxAdapter(
+                            child: PhilosophySection(),
+                          ),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 24),
+                          ),
+                        ],
+                      ),
                     ),
             ),
           ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-const _kBg = Color(0xFFF2F1EF);
-const _kBlack = Color(0xFF0D0D0D);
+import '../../core/theme/app_colors.dart';
+import '../../shared/widgets/steav_fashion_logo.dart';
+import '../../data/datasources/local/cache_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,47 +11,92 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _logoFadeSlide;
+  late final Animation<double> _screenFadeOut;
+  bool _isCheckingOnboarding = true;
+
   @override
   void initState() {
     super.initState();
-    _navigate();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    );
+
+    _logoFadeSlide = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.35, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _screenFadeOut = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.75, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _checkOnboarding();
+    _controller.forward();
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
+        _navigate();
+      }
+    });
   }
 
-  Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 2));
+  Future<void> _checkOnboarding() async {
+    final cache = CacheService();
+    final complete = await cache.isOnboardingComplete();
+    if (mounted) {
+      setState(() => _isCheckingOnboarding = !complete);
+    }
+  }
+
+  void _navigate() {
     if (!mounted) return;
-    context.go('/login');
+    if (_isCheckingOnboarding) {
+      context.go('/onboarding');
+    } else {
+      context.go('/login');
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _kBg,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'MONOGRAPH',
-              style: TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 28,
-                fontWeight: FontWeight.w400,
-                color: _kBlack,
-                letterSpacing: 6,
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: _kBlack,
-              ),
-            ),
-          ],
+    return FadeTransition(
+      opacity: _screenFadeOut,
+      child: Scaffold(
+        backgroundColor: AppColors.monoOffWhite,
+        body: Center(
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Steav Fashion logo with SF mark
+                  Opacity(
+                    opacity: _logoFadeSlide.value,
+                    child: Transform.translate(
+                      offset: Offset(0, (1 - _logoFadeSlide.value) * 20),
+                      child: SteavFashionLogo.large(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
