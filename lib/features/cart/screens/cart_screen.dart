@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
@@ -23,29 +25,44 @@ class _CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          AppStrings.cart,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+        title: Text(
+          'Cart',
+          style: AppTypography.heading2.copyWith(
+            color: AppColors.monoBlack,
+          ),
         ),
-        actions: const [],
       ),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
           if (state is CartInitial) {
-            return const EmptyStateWidget(message: AppStrings.emptyCart);
+            return const EmptyStateWidget(
+              state: EmptyState.empty,
+              title: 'Your cart is empty',
+              message: 'Add items to get started.',
+              actionLabel: 'Shop Now',
+              onAction: null,
+              icon: Icons.shopping_bag_outlined,
+            );
           }
           if (state is CartUpdated) {
             final items = state.items;
             if (items.isEmpty) {
-              return const EmptyStateWidget(message: AppStrings.emptyCart);
+              return EmptyStateWidget(
+                state: EmptyState.empty,
+                title: 'Your cart is empty',
+                message: 'Add items to get started.',
+                actionLabel: 'Shop Now',
+                icon: Icons.shopping_bag_outlined,
+                onAction: () => context.go('/shop'),
+              );
             }
             return Column(
               children: [
@@ -55,47 +72,74 @@ class _CartView extends StatelessWidget {
                     itemCount: items.length,
                     itemBuilder: (_, i) => CartItemTile(
                       item: items[i],
-                      onRemove: () => context.read<CartBloc>().add(RemoveFromCart(items[i].id)),
+                      onRemove: () => context
+                          .read<CartBloc>()
+                          .add(RemoveFromCart(items[i].id)),
+                      onQuantityChanged: (qty) => context
+                          .read<CartBloc>()
+                          .add(UpdateQuantity(items[i].id, qty)),
                     ),
                   ),
                 ),
+                // Bottom checkout bar
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(top: BorderSide(color: Colors.grey.shade200)),
+                  decoration: const BoxDecoration(
+                    color: AppColors.white,
+                    border: Border(
+                      top: BorderSide(color: AppColors.monoDivider),
+                    ),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(AppStrings.total,
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                          Text('\$${state.total.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => context.push('/checkout'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: const Text(AppStrings.checkout,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
+                  child: SafeArea(
+                    top: false,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total',
+                              style: AppTypography.bodyLarge.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.monoBlack,
+                              ),
+                            ),
+                            Text(
+                              '\$${state.total.toStringAsFixed(2)}',
+                              style: AppTypography.price.copyWith(
+                                color: AppColors.monoBlack,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              AppHaptics.heavy();
+                              context.push('/checkout');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.monoBlack,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              'CHECKOUT',
+                              style: AppTypography.button.copyWith(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

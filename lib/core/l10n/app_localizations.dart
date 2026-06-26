@@ -10,7 +10,7 @@ class AppLocalizations {
 
   static const _localizedStrings = <String, Map<String, String>>{
     'en': {
-      'appName': 'StyleThread',
+      'appName': 'Steav Fashion',
       'home': 'Home',
       'shop': 'Shop',
       'lookbook': 'Lookbook',
@@ -38,7 +38,7 @@ class AppLocalizations {
       'reviews': 'Reviews',
     },
     'es': {
-      'appName': 'StyleThread',
+      'appName': 'Steav Fashion',
       'home': 'Inicio',
       'shop': 'Tienda',
       'lookbook': 'Catálogo',
@@ -66,7 +66,7 @@ class AppLocalizations {
       'reviews': 'Opiniones',
     },
     'fr': {
-      'appName': 'StyleThread',
+      'appName': 'Steav Fashion',
       'home': 'Accueil',
       'shop': 'Boutique',
       'lookbook': 'Catalogue',

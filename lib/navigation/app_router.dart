@@ -25,61 +25,185 @@ import '../features/splash/splash_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/stylist/screens/stylist_booking_screen.dart';
 import '../features/stylist/screens/stylist_chat_screen.dart';
+import '../features/onboarding/onboarding_screen.dart';
+
+/// Shared page transition used by most push routes.
+CustomTransitionPage<T> _slideFadeTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 300),
+    reverseTransitionDuration: const Duration(milliseconds: 250),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.06, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        )),
+        child: FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+          ),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
+/// Slide-up transition for product detail (iOS-style modal feel).
+CustomTransitionPage<T> _slideUpTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 350),
+    reverseTransitionDuration: const Duration(milliseconds: 300),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        )),
+        child: FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+          ),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
-    GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
-    GoRoute(path: '/register', builder: (_, _) => const RegisterScreen()),
-    GoRoute(path: '/forgot-password', builder: (_, _) => const ForgotPasswordScreen()),
-    GoRoute(
-      path: '/reset-password',
-      builder: (_, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return ResetPasswordScreen(
-          email: extra?['email'] as String? ?? '',
-          token: extra?['token'] as String? ?? '',
-        );
-      },
-    ),
-    GoRoute(path: '/search', builder: (_, _) => const SearchScreen()),
-    GoRoute(path: '/size-guide', builder: (_, _) => const SizeGuideScreen()),
+    GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
+    GoRoute(path: '/login', pageBuilder: (context, state) => _slideFadeTransition(context: context, state: state, child: const LoginScreen())),
+    GoRoute(path: '/register', pageBuilder: (context, state) => _slideFadeTransition(context: context, state: state, child: const RegisterScreen())),
+
+    // ── Shell (bottom nav tabs) ──
     ShellRoute(
       builder: (_, state, child) => MainShell(child: child),
       routes: [
         GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
         GoRoute(path: '/shop', builder: (_, _) => const CatalogScreen()),
         GoRoute(path: '/lookbook', builder: (_, _) => const LookbookScreen()),
-        GoRoute(path: '/stylist', builder: (_, _) => const StylistBookingScreen()),
+        GoRoute(
+          path: '/stylist',
+          builder: (_, _) => const StylistBookingScreen(),
+        ),
         GoRoute(path: '/account', builder: (_, _) => const ProfileScreen()),
       ],
     ),
+
+    // ── Push routes with transitions ──
     GoRoute(
       path: '/product-detail',
-      builder: (_, state) => ProductDetailScreen(product: state.extra as ProductModel?),
+      pageBuilder: (context, state) => _slideUpTransition(
+        context: context,
+        state: state,
+        child: ProductDetailScreen(product: state.extra as ProductModel?),
+      ),
     ),
-    GoRoute(path: '/wishlist', builder: (_, _) => const WishlistScreen()),
-    GoRoute(path: '/cart', builder: (_, _) => const CartScreen()),
-    GoRoute(path: '/checkout', builder: (_, _) => const CheckoutScreen()),
-    GoRoute(path: '/address', builder: (_, _) => const AddressScreen()),
-    GoRoute(path: '/payment', builder: (_, _) => const PaymentScreen()),
-    GoRoute(path: '/orders', builder: (_, _) => const OrdersScreen()),
+    GoRoute(
+      path: '/wishlist',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const WishlistScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/cart',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const CartScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/checkout',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const CheckoutScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/address',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const AddressScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/payment',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const PaymentScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/orders',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const OrdersScreen(),
+      ),
+    ),
     GoRoute(
       path: '/order-detail',
-      builder: (_, state) => OrderDetailScreen(order: state.extra as OrderModel),
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: OrderDetailScreen(order: state.extra as OrderModel),
+      ),
     ),
-    GoRoute(path: '/edit-profile', builder: (_, _) => const EditProfileScreen()),
+    GoRoute(
+      path: '/edit-profile',
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: const EditProfileScreen(),
+      ),
+    ),
     GoRoute(
       path: '/stylist-chat',
-      builder: (_, state) {
-        final extra = state.extra as Map<String, String>?;
-        return StylistChatScreen(
-          conversationId: extra?['conversationId'] ?? 'conv_1',
-          stylistName: extra?['stylistName'] ?? 'Elena Vance',
-          stylistAvatarUrl: extra?['stylistAvatarUrl'] ?? 'https://i.pravatar.cc/150?u=elena',
-          stylistSpecialty: extra?['stylistSpecialty'] ?? 'EXPERT STYLIST',
-        );
-      },
+      pageBuilder: (context, state) => _slideFadeTransition(
+        context: context,
+        state: state,
+        child: (() {
+          final extra = state.extra as Map<String, String>?;
+          return StylistChatScreen(
+            conversationId: extra?['conversationId'] ?? 'conv_1',
+            stylistName: extra?['stylistName'] ?? 'Elena Vance',
+            stylistAvatarUrl:
+                extra?['stylistAvatarUrl'] ?? 'https://i.pravatar.cc/150?u=elena',
+            stylistSpecialty:
+                extra?['stylistSpecialty'] ?? 'EXPERT STYLIST',
+          );
+        })(),
+      ),
     ),
   ],
 );
@@ -94,17 +218,38 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   final List<NavItem> _items = const [
-    NavItem(label: 'Home', icon: Icon(Icons.shopping_bag_outlined)),
-    NavItem(label: 'Lookbook', icon: Icon(Icons.menu_book_outlined)),
-    NavItem(label: 'Stylist', icon: Icon(Icons.design_services_outlined)),
-    NavItem(label: 'Account', icon: Icon(Icons.person_outline)),
+    NavItem(
+      label: 'Home',
+      icon: Icons.shopping_bag_outlined,
+      activeIcon: Icons.shopping_bag,
+    ),
+    NavItem(
+      label: 'Lookbook',
+      icon: Icons.menu_book_outlined,
+      activeIcon: Icons.menu_book,
+    ),
+    NavItem(
+      label: 'Stylist',
+      icon: Icons.design_services_outlined,
+      activeIcon: Icons.design_services,
+    ),
+    NavItem(
+      label: 'Account',
+      icon: Icons.person_outline,
+      activeIcon: Icons.person,
+    ),
   ];
 
-  final List<String> _routes = ['/home', '/lookbook', '/stylist', '/account'];
+  final List<String> _routes = [
+    '/home',
+    '/lookbook',
+    '/stylist',
+    '/account',
+  ];
 
   int _indexFor(String location) {
     final idx = _routes.indexOf(location);
-    return idx >= 0 ? idx : 1;
+    return idx >= 0 ? idx : 0;
   }
 
   @override

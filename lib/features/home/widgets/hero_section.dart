@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
-import 'home_typography.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../shared/widgets/shimmer_loading.dart';
 import 'home_constants.dart';
 
 class HeroSection extends StatelessWidget {
@@ -13,9 +15,13 @@ class HeroSection extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.network(heroUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => Container(color: const Color(0xFF1C1C1C))),
+          CachedNetworkImage(
+            imageUrl: heroUrl,
+            fit: BoxFit.cover,
+            placeholder: (_, __) => ShimmerLoading.banner(height: 460),
+            errorWidget: (_, __, ___) =>
+                Container(color: AppColors.monoBlack),
+          ),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -27,13 +33,22 @@ class HeroSection extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 20, right: 20, bottom: 28,
+            left: 20,
+            right: 20,
+            bottom: 28,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Volume 04: The\nArchitecture of\nTailoring',
-                    style: monoSerif(26, weight: FontWeight.w700, color: AppColors.white, height: 1.18)),
+                Text(
+                  'Volume 04: The\nArchitecture of\nTailoring',
+                  style: AppTypography.serif(
+                    26,
+                    weight: FontWeight.w700,
+                    color: AppColors.white,
+                    height: 1.18,
+                  ),
+                ),
                 const SizedBox(height: 18),
                 _OutlineBtn(label: 'SHOP THE LOOK'),
               ],
@@ -54,9 +69,18 @@ class _OutlineBtn extends StatelessWidget {
         onTap: () {},
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-          decoration: BoxDecoration(border: Border.all(color: AppColors.white)),
-          child: Text(label,
-              style: monoSans(9, weight: FontWeight.w500, color: AppColors.white, letterSpacing: 2.2)),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.white),
+          ),
+          child: Text(
+            label,
+            style: AppTypography.sans(
+              9,
+              weight: FontWeight.w500,
+              color: AppColors.white,
+              letterSpacing: 2.2,
+            ),
+          ),
         ),
       );
 }

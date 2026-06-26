@@ -8,37 +8,12 @@ import '../../../data/repositories/auth_repository.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../core/constants/api_config.dart';
-const _kBg = Color(0xFFF2F1EF);
-const _kBlack = Color(0xFF0D0D0D);
-const _kGrey = Color(0xFFAAAAAA);
-const _kDivider = Color(0xFFD8D6D2);
-const _kRed = Color(0xFFB94040);
-const _kHint = Color(0xFFBBBBBB);
-
-TextStyle _serif(double sz,
-        {FontWeight w = FontWeight.w400,
-        Color c = _kBlack,
-        double h = 1.2,
-        double ls = 1.0}) =>
-    TextStyle(
-        fontFamily: 'Georgia',
-        fontSize: sz,
-        fontWeight: w,
-        color: c,
-        height: h,
-        letterSpacing: ls);
-
-TextStyle _sans(double sz,
-        {FontWeight w = FontWeight.w400, Color c = _kBlack, double ls = 0.5}) =>
-    TextStyle(
-        fontFamily: 'Helvetica Neue',
-        fontSize: sz,
-        fontWeight: w,
-        color: c,
-        letterSpacing: ls);
+import '../../../core/utils/haptics.dart';
+import '../../../shared/widgets/steav_fashion_logo.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -46,13 +21,50 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _emailFocus = FocusNode();
+  final _passFocus = FocusNode();
   bool _obscure = true;
+  String? _emailError;
+  String? _passError;
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
+    _emailFocus.dispose();
+    _passFocus.dispose();
     super.dispose();
+  }
+
+  void _handleAuthState(BuildContext context, AuthState state) {
+    if (state is AuthSuccess) {
+      context.go('/home');
+    } else if (state is AuthFailure) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  void _login() {
+    setState(() {
+      _emailError = _emailCtrl.text.trim().isEmpty ? 'Required' : null;
+      _passError = _passCtrl.text.isEmpty ? 'Required' : null;
+    });
+    if (_emailError != null || _passError != null) return;
+    AppHaptics.medium();
+    setState(() => _isLoading = true);
+    context.read<AuthBloc>().add(LoginEvent(
+      email: _emailCtrl.text.trim(),
+      password: _passCtrl.text,
+    ));
   }
 
   @override
@@ -65,317 +77,230 @@ class _LoginScreenState extends State<LoginScreen> {
         return AuthBloc(repo);
       },
       child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthSuccess) {
-            context.go('/home');
-          } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
-        },
-        child: _LoginForm(
-          emailCtrl: _emailCtrl,
-          passCtrl: _passCtrl,
-          obscure: _obscure,
-          onToggleObscure: () => setState(() => _obscure = !_obscure),
-        ),
-      ),
-    );
-  }
-}
-
-class _LoginForm extends StatefulWidget {
-  final TextEditingController emailCtrl;
-  final TextEditingController passCtrl;
-  final bool obscure;
-  final VoidCallback onToggleObscure;
-
-  const _LoginForm({
-    required this.emailCtrl,
-    required this.passCtrl,
-    required this.obscure,
-    required this.onToggleObscure,
-  });
-
-  @override
-  State<_LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<_LoginForm> {
-  void _login() {
-    final email = widget.emailCtrl.text.trim();
-    final password = widget.passCtrl.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
-      return;
-    }
-
-    context.read<AuthBloc>().add(
-          LoginEvent(email: email, password: password),
-        );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _kBg,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 28),
-              Text('MONOGRAPH', style: _serif(26, w: FontWeight.w400, ls: 6)),
-              const SizedBox(height: 2),
-              const Divider(color: _kDivider, height: 1),
-              const SizedBox(height: 72),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Column(
-                  children: [
-                    Text('WELCOME BACK',
-                        style: _serif(26, w: FontWeight.w600, ls: 2.5)),
-                    const SizedBox(height: 14),
-                    Text(
-                      'Please enter your credentials to access your archive.',
-                      textAlign: TextAlign.center,
-                      style: _sans(14, c: const Color(0xFF555555), ls: 0.1),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 44),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('EMAIL ADDRESS',
-                        style: _sans(10, w: FontWeight.w600, ls: 1.8)),
-                    const SizedBox(height: 10),
-                    _Field(
-                      controller: widget.emailCtrl,
-                      hint: 'archive@monograph.com',
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('PASSWORD',
-                            style: _sans(10, w: FontWeight.w600, ls: 1.8)),
-                        GestureDetector(
-                          onTap: () => context.push('/forgot-password'),
-                          child: Text('FORGOT?',
-                              style: _sans(10, c: _kRed, w: FontWeight.w600, ls: 1.5)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    _Field(
-                      controller: widget.passCtrl,
-                      hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
-                      obscure: widget.obscure,
-                      suffix: GestureDetector(
-                        onTap: widget.onToggleObscure,
-                        child: Icon(
-                          widget.obscure
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          size: 18,
-                          color: _kGrey,
+        listener: _handleAuthState,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Logo ──
+                      SteavFashionLogo.medium(),
+                      const SizedBox(height: 48),
+                      // ── Heading ──
+                      Text(
+                        'Sign in',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica Neue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black,
+                          letterSpacing: -0.5,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    final loading = state is AuthLoading;
-                    return _BlackBtn(
-                      label: loading ? 'SIGNING IN...' : 'SIGN IN',
-                      onTap: loading ? null : _login,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    const Expanded(child: Divider(color: _kDivider)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Text('OR CONTINUE WITH',
-                          style: _sans(9, c: _kGrey, ls: 1.6)),
-                    ),
-                    const Expanded(child: Divider(color: _kDivider)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 160,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: _kBg,
-                    border: Border.all(color: _kDivider),
-                    borderRadius: BorderRadius.circular(2),
+                      const SizedBox(height: 40),
+                      // ── Email ──
+                      _label('Email'),
+                      const SizedBox(height: 8),
+                      _field(
+                        controller: _emailCtrl,
+                        focusNode: _emailFocus,
+                        hint: 'you@example.com',
+                        error: _emailError,
+                        onChanged: (_) {
+                          if (_emailError != null) setState(() => _emailError = null);
+                        },
+                        onSubmitted: (_) => _passFocus.requestFocus(),
+                      ),
+                      if (_emailError != null) _error(_emailError!),
+                      const SizedBox(height: 24),
+                      // ── Password ──
+                      _label('Password'),
+                      const SizedBox(height: 8),
+                      _field(
+                        controller: _passCtrl,
+                        focusNode: _passFocus,
+                        hint: '········',
+                        obscure: _obscure,
+                        error: _passError,
+                        onChanged: (_) {
+                          if (_passError != null) setState(() => _passError = null);
+                        },
+                        onSubmitted: (_) => _login(),
+                        suffix: GestureDetector(
+                          onTap: () => setState(() => _obscure = !_obscure),
+                          child: Icon(
+                            _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      if (_passError != null) _error(_passError!),
+                      const SizedBox(height: 36),
+                      // ── Button ──
+                      SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                            disabledBackgroundColor: Colors.grey.shade400,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  'SIGN IN',
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica Neue',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 3,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 48),
+                      // ── Links ──
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => context.go('/register'),
+                            child: const Text(
+                              'Create account',
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontSize: 13,
+                                color: Colors.black,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => context.go('/home'),
+                            child: const Text(
+                              'Skip',
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  child: const Center(child: _GoogleIcon()),
                 ),
               ),
-              const SizedBox(height: 36),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Don't have an account?  ",
-                      style: _sans(13, c: const Color(0xFF555555), ls: 0.1)),
-                  GestureDetector(
-                    onTap: () => context.go('/register'),
-                    child: Column(
-                      children: [
-                        Text('CREATE ACCOUNT',
-                            style: _sans(13, w: FontWeight.w700, ls: 0.5)),
-                        const SizedBox(height: 1),
-                        Container(height: 1, color: _kBlack, width: 114),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              GestureDetector(
-                onTap: () => context.go('/home'),
-                child: Text('GUEST CHECKOUT',
-                    style: _sans(12, c: const Color(0xFF777777), ls: 1.5)),
-              ),
-              const SizedBox(height: 40),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
-}
 
-class _Field extends StatelessWidget {
-  final TextEditingController controller;
-  final String hint;
-  final bool obscure;
-  final TextInputType keyboardType;
-  final Widget? suffix;
+  Widget _label(String text) {
+    return Text(
+      text.toUpperCase(),
+      style: const TextStyle(
+        fontFamily: 'Helvetica Neue',
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: Colors.grey,
+        letterSpacing: 1.5,
+      ),
+    );
+  }
 
-  const _Field({
-    required this.controller,
-    required this.hint,
-    this.obscure = false,
-    this.keyboardType = TextInputType.text,
-    this.suffix,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _field({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String hint,
+    bool obscure = false,
+    String? error,
+    ValueChanged<String>? onChanged,
+    ValueChanged<String>? onSubmitted,
+    Widget? suffix,
+  }) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       obscureText: obscure,
-      keyboardType: keyboardType,
-      style: _sans(15, ls: obscure ? 4 : 0.2),
-      cursorColor: _kBlack,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      style: const TextStyle(
+        fontFamily: 'Helvetica Neue',
+        fontSize: 16,
+        color: Colors.black,
+        letterSpacing: 0.2,
+      ),
+      cursorColor: Colors.black,
+      cursorWidth: 1,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: _sans(15, c: _kHint, ls: 0.2),
-        suffixIcon: suffix != null
-            ? Padding(padding: const EdgeInsets.only(right: 4), child: suffix)
-            : null,
+        hintStyle: const TextStyle(
+          fontFamily: 'Helvetica Neue',
+          fontSize: 16,
+          color: Color(0xFFCCCCCC),
+        ),
+        suffixIcon: suffix,
         suffixIconConstraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: _kDivider, width: 1),
+        filled: true,
+        fillColor: const Color(0xFFF5F5F5),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
         ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: _kBlack, width: 1.2),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: error != null
+              ? const BorderSide(color: Color(0xFFCC3333), width: 1)
+              : BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.only(bottom: 10),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black, width: 1),
+        ),
         isDense: true,
       ),
     );
   }
-}
 
-class _BlackBtn extends StatelessWidget {
-  final String label;
-  final VoidCallback? onTap;
-  const _BlackBtn({required this.label, this.onTap});
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          height: 54,
-          color: onTap != null ? _kBlack : _kGrey,
-          alignment: Alignment.center,
-          child: Text(label,
-              style: _sans(13, w: FontWeight.w600, c: Colors.white, ls: 3)),
+  Widget _error(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontFamily: 'Helvetica Neue',
+          fontSize: 11,
+          color: Color(0xFFCC3333),
+          fontWeight: FontWeight.w500,
         ),
-      );
-}
-
-class _GoogleIcon extends StatelessWidget {
-  const _GoogleIcon();
-  @override
-  Widget build(BuildContext context) =>
-      CustomPaint(size: const Size(26, 26), painter: _GPainter());
-}
-
-class _GPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final c = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2;
-
-    _arc(canvas, c, r, -20, 100, const Color(0xFF4285F4));
-    _arc(canvas, c, r, 80, 130, const Color(0xFFEA4335));
-    _arc(canvas, c, r, 210, 90, const Color(0xFFFBBC05));
-    _arc(canvas, c, r, 300, 80, const Color(0xFF34A853));
-
-    canvas.drawCircle(c, r * 0.58, Paint()..color = Colors.white);
-
-    final barPaint = Paint()
-      ..color = const Color(0xFF4285F4)
-      ..strokeWidth = r * 0.36
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(Offset(c.dx - 0.05, c.dy), Offset(c.dx + r * 0.62, c.dy), barPaint);
-  }
-
-  void _arc(Canvas canvas, Offset center, double radius, double startDeg,
-      double sweepDeg, Color color) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = radius * 0.36;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius * 0.82),
-      _rad(startDeg),
-      _rad(sweepDeg),
-      false,
-      paint,
+      ),
     );
   }
-
-  double _rad(double deg) => deg * 3.14159265 / 180;
-
-  @override
-  bool shouldRepaint(_) => false;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import 'home_typography.dart';
+import '../../../core/theme/app_typography.dart';
 
 class PressBanner extends StatelessWidget {
   const PressBanner({super.key});
@@ -20,10 +20,21 @@ class PressBanner extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _press
-              .map((p) => Text(p.$1,
+              .map(
+                (p) => Text(
+                  p.$1,
                   style: p.$2
-                      ? monoSerif(15, color: AppColors.monoBlack.withValues(alpha: 0.5))
-                      : monoSans(11, color: AppColors.monoBlack.withValues(alpha: 0.4), letterSpacing: 1.2)))
+                      ? AppTypography.serif(
+                          15,
+                          color: AppColors.monoBlack.withValues(alpha: 0.5),
+                        )
+                      : AppTypography.sans(
+                          11,
+                          color: AppColors.monoBlack.withValues(alpha: 0.4),
+                          letterSpacing: 1.2,
+                        ),
+                ),
+              )
               .toList(),
         ),
       );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import 'home_typography.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
 
 class CategoryBar extends StatefulWidget {
   const CategoryBar({super.key});
@@ -26,7 +27,7 @@ class _CategoryBarState extends State<CategoryBar> {
       color: AppColors.white,
       child: Column(
         children: [
-          const Divider(height: 1, color: AppColors.monoLightGrey),
+          const Divider(height: 1, color: AppColors.monoDivider),
           SizedBox(
             height: 76,
             child: ListView.builder(
@@ -36,20 +37,35 @@ class _CategoryBarState extends State<CategoryBar> {
               itemBuilder: (_, i) {
                 final sel = i == _sel;
                 return GestureDetector(
-                  onTap: () => setState(() => _sel = i),
-                  child: SizedBox(
+                  onTap: () {
+                    AppHaptics.selection();
+                    setState(() => _sel = i);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     width: 82,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(_cats[i].$2,
-                            size: 22, color: sel ? AppColors.monoBlack : AppColors.monoGrey),
+                        Icon(
+                          _cats[i].$2,
+                          size: 22,
+                          color: sel
+                              ? AppColors.monoBlack
+                              : AppColors.monoGrey,
+                        ),
                         const SizedBox(height: 5),
-                        Text(_cats[i].$1,
-                            style: monoSans(8.5,
-                                weight: sel ? FontWeight.w600 : FontWeight.w400,
-                                color: sel ? AppColors.monoBlack : AppColors.monoGrey,
-                                letterSpacing: 0.8)),
+                        Text(
+                          _cats[i].$1,
+                          style: AppTypography.sans(
+                            8.5,
+                            weight: sel ? FontWeight.w600 : FontWeight.w400,
+                            color: sel
+                                ? AppColors.monoBlack
+                                : AppColors.monoGrey,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -57,7 +73,7 @@ class _CategoryBarState extends State<CategoryBar> {
               },
             ),
           ),
-          const Divider(height: 1, color: AppColors.monoLightGrey),
+          const Divider(height: 1, color: AppColors.monoDivider),
         ],
       ),
     );

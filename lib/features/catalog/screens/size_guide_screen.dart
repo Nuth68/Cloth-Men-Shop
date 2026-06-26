@@ -86,7 +86,7 @@ class _SizeGuideScreenState extends State<SizeGuideScreen> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: _kDivider),
               ),
               child: Column(
@@ -167,7 +167,7 @@ class _GenderTab extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? _kBlack : Colors.white,
           border: Border.all(color: _kDivider),
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(label,
             style: _sans(12,
