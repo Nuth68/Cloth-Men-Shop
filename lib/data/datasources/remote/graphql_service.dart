@@ -18,16 +18,17 @@ class GraphqlError {
 }
 
 class GraphqlService {
-  final String baseUrl;
+  final List<String> baseUrls;
   final http.Client _client;
   final CacheService _cache;
   final Duration _timeout;
 
   GraphqlService({
-    required this.baseUrl,
+    required List<String> baseUrls,
     required CacheService cache,
     Duration timeout = const Duration(seconds: 10),
-  })  : _client = http.Client(),
+  })  : baseUrls = List.unmodifiable(baseUrls),
+        _client = http.Client(),
         _cache = cache,
         _timeout = timeout;
 
@@ -57,32 +58,42 @@ class GraphqlService {
     String document, {
     Map<String, dynamic>? variables,
   }) async {
-    final uri = Uri.parse('$baseUrl/graphql');
-    final response = await _client
-        .post(
-          uri,
-          headers: await _headers(),
-          body: jsonEncode({
-            'query': document,
-            if (variables != null) 'variables': variables,
-          }),
-        )
-        .timeout(_timeout);
+    http.Response? lastResponse;
+    for (final url in baseUrls) {
+      try {
+        final uri = Uri.parse('$url/graphql');
+        final response = await _client
+            .post(
+              uri,
+              headers: await _headers(),
+              body: jsonEncode({
+                'query': document,
+                if (variables != null) 'variables': variables,
+              }),
+            )
+            .timeout(_timeout);
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>?;
-      final errors = (body['errors'] as List<dynamic>?)
-          ?.map((e) => GraphqlError(
-                message: e['message'] as String,
-                locations: e['locations'] as List<dynamic>?,
-                path: e['path'] as List<dynamic>?,
-              ))
-          .toList();
-      return GraphqlResponse(data: data, errors: errors);
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          final body = jsonDecode(response.body) as Map<String, dynamic>;
+          final data = body['data'] as Map<String, dynamic>?;
+          final errors = (body['errors'] as List<dynamic>?)
+              ?.map((e) => GraphqlError(
+                    message: e['message'] as String,
+                    locations: e['locations'] as List<dynamic>?,
+                    path: e['path'] as List<dynamic>?,
+                  ))
+              .toList();
+          return GraphqlResponse(data: data, errors: errors);
+        }
+        lastResponse = response;
+      } catch (_) {
+        continue;
+      }
     }
-
-    throw GraphqlHttpException(response.statusCode, response.body);
+    if (lastResponse != null) {
+      throw GraphqlHttpException(lastResponse.statusCode, lastResponse.body);
+    }
+    throw Exception('All endpoints unreachable');
   }
 
   void dispose() => _client.close();
