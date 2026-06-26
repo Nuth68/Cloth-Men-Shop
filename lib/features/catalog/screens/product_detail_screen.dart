@@ -41,7 +41,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     setState(() => _loadingReviews = true);
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.query(
         r'''query reviews($productId: Int!) {
           reviews(productId: $productId) {
@@ -70,7 +70,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.mutate(
         r'''mutation createReview($input: CreateReviewInput!) {
           createReview(createReviewInput: $input) {

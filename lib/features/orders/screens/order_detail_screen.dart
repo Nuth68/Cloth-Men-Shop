@@ -21,7 +21,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     setState(() => _loading = true);
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.mutate(
         r'''mutation cancelOrder($id: Int!, $reason: String!) {
           cancelOrder(id: $id, reason: $reason)
@@ -62,7 +62,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     setState(() => _loading = true);
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.mutate(
         r'''mutation returnOrder($id: Int!, $reason: String!) {
           returnOrder(id: $id, reason: $reason)

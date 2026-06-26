@@ -51,7 +51,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return BlocProvider(
       create: (_) {
         final cache = CacheService();
-        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
         final repo = OrderRepository(gql);
         return CheckoutBloc(repo);
       },

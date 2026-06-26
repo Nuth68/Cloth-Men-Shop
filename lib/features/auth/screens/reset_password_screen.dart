@@ -82,7 +82,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     setState(() => _loading = true);
     try {
       final cache = CacheService();
-      final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+      final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final res = await gql.mutate(
         r'''mutation resetPassword($token: String!, $newPassword: String!) {
           resetPassword(token: $token, newPassword: $newPassword)

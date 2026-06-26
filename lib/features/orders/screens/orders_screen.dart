@@ -20,7 +20,7 @@ class OrdersScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) {
         final cache = CacheService();
-        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
         final repo = OrderRepository(gql);
         return OrdersBloc(repo)..add(const LoadOrders());
       },

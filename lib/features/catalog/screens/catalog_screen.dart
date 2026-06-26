@@ -19,7 +19,7 @@ class CatalogScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) {
         final cache = CacheService();
-        final gql = GraphqlService(baseUrl: ApiConfig.baseUrl, cache: cache);
+        final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
         final repo = ProductRepository(gql);
         return CatalogBloc(repo)..add(const LoadCatalog());
       },
