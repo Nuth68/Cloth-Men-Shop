@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _emailError;
   String? _passError;
   bool _isLoading = false;
+  AuthBloc? _authBloc;
 
   @override
   void dispose() {
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_emailError != null || _passError != null) return;
     AppHaptics.medium();
     setState(() => _isLoading = true);
-    context.read<AuthBloc>().add(LoginEvent(
+    _authBloc!.add(LoginEvent(
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     ));
@@ -74,7 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
         final cache = CacheService();
         final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
         final repo = AuthRepository(gql, cache);
-        return AuthBloc(repo);
+        _authBloc = AuthBloc(repo);
+        return _authBloc!;
       },
       child: BlocListener<AuthBloc, AuthState>(
         listener: _handleAuthState,

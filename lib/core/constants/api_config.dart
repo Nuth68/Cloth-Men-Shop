@@ -7,6 +7,9 @@ abstract class ApiConfig {
     if (kIsWeb) {
       return ["http://127.0.0.1:3002"];
     }
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return ["http://10.0.2.2:3002"];
+    }
     return ["http://127.0.0.1:3002"];
   }
 }
