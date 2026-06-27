@@ -38,7 +38,11 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     return Center(
+=======
+    return const Center(
+>>>>>>> Stashed changes
       child: CircularProgressIndicator(color: AppColors.monoBlack),
     );
   }

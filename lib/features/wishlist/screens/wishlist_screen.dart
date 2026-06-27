@@ -142,7 +142,11 @@ class _FavCard extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 3 / 4,
                   child: ClipRRect(
+<<<<<<< Updated upstream
                     borderRadius: BorderRadius.circular(12),
+=======
+                    borderRadius: BorderRadius.circular(2),
+>>>>>>> Stashed changes
                     child: CachedNetworkImage(
                       imageUrl: product.imageUrl,
                       fit: BoxFit.cover,

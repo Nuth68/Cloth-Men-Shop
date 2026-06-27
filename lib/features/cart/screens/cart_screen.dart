@@ -30,7 +30,11 @@ class _CartView extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
+<<<<<<< Updated upstream
           icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
+=======
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+>>>>>>> Stashed changes
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -84,7 +88,11 @@ class _CartView extends StatelessWidget {
                 // Bottom checkout bar
                 Container(
                   padding: const EdgeInsets.all(16),
+<<<<<<< Updated upstream
                   decoration: BoxDecoration(
+=======
+                  decoration: const BoxDecoration(
+>>>>>>> Stashed changes
                     color: AppColors.white,
                     border: Border(
                       top: BorderSide(color: AppColors.monoDivider),
@@ -127,7 +135,11 @@ class _CartView extends StatelessWidget {
                                   vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius:
+<<<<<<< Updated upstream
                                     BorderRadius.circular(12),
+=======
+                                    BorderRadius.circular(2),
+>>>>>>> Stashed changes
                               ),
                             ),
                             child: Text(

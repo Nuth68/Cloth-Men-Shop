@@ -31,6 +31,10 @@ class ColorSelector extends StatefulWidget {
 class _ColorSelectorState extends State<ColorSelector> {
   int _selected = 0;
 
+<<<<<<< Updated upstream
+=======
+  // Map display colors to actual color names
+>>>>>>> Stashed changes
   static final List<_ColorEntry> _colors = [
     _ColorEntry('Navy', AppColors.navy),
     _ColorEntry('Black', AppColors.monoBlack),
@@ -48,7 +52,11 @@ class _ColorSelectorState extends State<ColorSelector> {
           'Color',
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w500,
+<<<<<<< Updated upstream
             color: AppColors.textPrimary,
+=======
+            color: AppColors.monoBlack,
+>>>>>>> Stashed changes
           ),
         ),
         const SizedBox(height: 8),

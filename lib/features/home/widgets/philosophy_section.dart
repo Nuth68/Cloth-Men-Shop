@@ -31,7 +31,11 @@ class PhilosophySection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+<<<<<<< Updated upstream
                 'THE Steav Fashion PHILOSOPHY',
+=======
+                'THE MONOGRAPH PHILOSOPHY',
+>>>>>>> Stashed changes
                 style: AppTypography.sans(
                   8.5,
                   color: AppColors.monoGrey,

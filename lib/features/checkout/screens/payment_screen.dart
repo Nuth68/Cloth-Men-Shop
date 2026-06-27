@@ -34,11 +34,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
+<<<<<<< Updated upstream
           icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Payment',
             style: AppTypography.heading2.copyWith(color: AppColors.textPrimary)),
+=======
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('Payment',
+            style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
+>>>>>>> Stashed changes
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -52,8 +60,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
+<<<<<<< Updated upstream
                 color: AppColors.solidDark,
                 borderRadius: BorderRadius.circular(12),
+=======
+                color: AppColors.monoBlack,
+                borderRadius: BorderRadius.circular(8),
+>>>>>>> Stashed changes
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,8 +98,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
+<<<<<<< Updated upstream
                 color: AppColors.success.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
+=======
+                color: const Color(0xFF2D5A3D).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(4),
+>>>>>>> Stashed changes
               ),
               child: Row(
                 children: [
@@ -102,7 +120,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Total', style: AppTypography.bodyLarge.copyWith(color: AppColors.monoGrey)),
+<<<<<<< Updated upstream
                 Text('\$660.00', style: AppTypography.price.copyWith(color: AppColors.textPrimary)),
+=======
+                Text('\$660.00', style: AppTypography.price.copyWith(color: AppColors.monoBlack)),
+>>>>>>> Stashed changes
               ],
             ),
             const SizedBox(height: 24),

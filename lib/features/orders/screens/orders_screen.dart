@@ -45,7 +45,11 @@ class _OrdersListView extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
+<<<<<<< Updated upstream
           icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
+=======
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+>>>>>>> Stashed changes
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Orders',
@@ -118,13 +122,21 @@ class _OrderCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.white,
+<<<<<<< Updated upstream
           borderRadius: BorderRadius.circular(12),
+=======
+          borderRadius: BorderRadius.circular(4),
+>>>>>>> Stashed changes
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
         child: Row(
           children: [
             ClipRRect(
+<<<<<<< Updated upstream
               borderRadius: BorderRadius.circular(12),
+=======
+              borderRadius: BorderRadius.circular(4),
+>>>>>>> Stashed changes
               child: SizedBox(
                 width: 56,
                 height: 56,

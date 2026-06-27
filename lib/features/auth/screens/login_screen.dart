@@ -9,7 +9,10 @@ import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../core/constants/api_config.dart';
 import '../../../core/utils/haptics.dart';
+<<<<<<< Updated upstream
 import '../../../shared/widgets/steav_fashion_logo.dart';
+=======
+>>>>>>> Stashed changes
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,7 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _emailError;
   String? _passError;
   bool _isLoading = false;
+<<<<<<< Updated upstream
   AuthBloc? _authBloc;
+=======
+>>>>>>> Stashed changes
 
   @override
   void dispose() {
@@ -62,7 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_emailError != null || _passError != null) return;
     AppHaptics.medium();
     setState(() => _isLoading = true);
+<<<<<<< Updated upstream
     _authBloc!.add(LoginEvent(
+=======
+    context.read<AuthBloc>().add(LoginEvent(
+>>>>>>> Stashed changes
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     ));
@@ -93,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ── Logo ──
+<<<<<<< Updated upstream
                       SteavFashionLogo.medium(),
                       const SizedBox(height: 48),
                       // ── Heading ──
@@ -106,6 +117,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           letterSpacing: -0.5,
                         ),
                       ),
+=======
+                      Text(
+                        'MONOGRAPH',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica Neue',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          letterSpacing: 6,
+                        ),
+                      ),
+                      const SizedBox(height: 64),
+                      // ── Heading ──
+                      Text(
+                        'Sign in',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica Neue',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+>>>>>>> Stashed changes
                       const SizedBox(height: 40),
                       // ── Email ──
                       _label('Email'),
@@ -158,7 +193,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             disabledBackgroundColor: Colors.grey.shade400,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
+<<<<<<< Updated upstream
                               borderRadius: BorderRadius.circular(12),
+=======
+                              borderRadius: BorderRadius.zero,
+>>>>>>> Stashed changes
                             ),
                           ),
                           child: _isLoading
@@ -273,18 +312,32 @@ class _LoginScreenState extends State<LoginScreen> {
         fillColor: const Color(0xFFF5F5F5),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
+<<<<<<< Updated upstream
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
+=======
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+>>>>>>> Stashed changes
           borderSide: error != null
               ? const BorderSide(color: Color(0xFFCC3333), width: 1)
               : BorderSide.none,
         ),
+<<<<<<< Updated upstream
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.black, width: 1),
+=======
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Colors.black, width: 1),
+>>>>>>> Stashed changes
         ),
         isDense: true,
       ),

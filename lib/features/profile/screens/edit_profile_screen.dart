@@ -46,7 +46,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
+<<<<<<< Updated upstream
           icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
+=======
+          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+>>>>>>> Stashed changes
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Edit Profile',
@@ -82,11 +86,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Container(
                             width: 32,
                             height: 32,
+<<<<<<< Updated upstream
                             decoration: BoxDecoration(
                               color: AppColors.monoBlack,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(Icons.camera_alt,
+=======
+                            decoration: const BoxDecoration(
+                              color: AppColors.monoBlack,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.camera_alt,
+>>>>>>> Stashed changes
                                 color: AppColors.white, size: 16),
                           ),
                         ),

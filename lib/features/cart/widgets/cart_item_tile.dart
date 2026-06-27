@@ -42,7 +42,11 @@ class CartItemTile extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
           color: AppColors.white,
+<<<<<<< Updated upstream
           borderRadius: BorderRadius.circular(12),
+=======
+          borderRadius: BorderRadius.circular(4),
+>>>>>>> Stashed changes
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
         child: Row(
@@ -96,7 +100,11 @@ class CartItemTile extends StatelessWidget {
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppColors.monoLightGrey.withValues(alpha: 0.5),
+<<<<<<< Updated upstream
                         borderRadius: BorderRadius.circular(12),
+=======
+                        borderRadius: BorderRadius.circular(2),
+>>>>>>> Stashed changes
                       ),
                       child: Text(
                         '${item.selectedSize} / ${item.selectedColor}',
@@ -165,7 +173,11 @@ class _QtyButton extends StatelessWidget {
         height: 24,
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.monoDivider),
+<<<<<<< Updated upstream
           borderRadius: BorderRadius.circular(12),
+=======
+          borderRadius: BorderRadius.circular(2),
+>>>>>>> Stashed changes
         ),
         child: Icon(icon, size: 14, color: AppColors.monoBlack),
       ),

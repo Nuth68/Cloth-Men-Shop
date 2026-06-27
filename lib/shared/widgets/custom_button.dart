@@ -52,13 +52,20 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     final isDark = Theme.of(context).brightness == Brightness.dark;
+=======
+>>>>>>> Stashed changes
     final child = isLoading
         ? SizedBox(
             height: 20,
             width: 20,
             child: CircularProgressIndicator(
+<<<<<<< Updated upstream
               color: _foregroundColor(isDark),
+=======
+              color: _foregroundColor,
+>>>>>>> Stashed changes
               strokeWidth: 2,
             ),
           )
@@ -66,13 +73,21 @@ class CustomButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
+<<<<<<< Updated upstream
                 Icon(icon, size: 16, color: _foregroundColor(isDark)),
+=======
+                Icon(icon, size: 16, color: _foregroundColor),
+>>>>>>> Stashed changes
                 const SizedBox(width: 8),
               ],
               Flexible(
                 child: Text(
                   label,
+<<<<<<< Updated upstream
                   style: AppTypography.button.copyWith(color: _foregroundColor(isDark)),
+=======
+                  style: AppTypography.button.copyWith(color: _foregroundColor),
+>>>>>>> Stashed changes
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -88,7 +103,11 @@ class CustomButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
+<<<<<<< Updated upstream
               backgroundColor: isDark ? AppColors.brass : AppColors.monoBlack,
+=======
+              backgroundColor: AppColors.monoBlack,
+>>>>>>> Stashed changes
               disabledBackgroundColor: AppColors.monoGrey,
               shape: AppDecorations.buttonShape,
               padding: EdgeInsets.zero,
@@ -104,10 +123,14 @@ class CustomButton extends StatelessWidget {
           child: OutlinedButton(
             onPressed: isLoading ? null : onPressed,
             style: OutlinedButton.styleFrom(
+<<<<<<< Updated upstream
               side: BorderSide(
                 color: isDark ? AppColors.textPrimary : AppColors.monoBlack,
                 width: 1,
               ),
+=======
+              side: const BorderSide(color: AppColors.monoBlack, width: 1),
+>>>>>>> Stashed changes
               shape: AppDecorations.buttonShape,
               padding: EdgeInsets.zero,
             ),
@@ -126,6 +149,7 @@ class CustomButton extends StatelessWidget {
     }
   }
 
+<<<<<<< Updated upstream
   Color _foregroundColor(bool isDark) {
     switch (variant) {
       case CustomButtonVariant.primary:
@@ -133,6 +157,15 @@ class CustomButton extends StatelessWidget {
       case CustomButtonVariant.outline:
       case CustomButtonVariant.text:
         return isDark ? AppColors.textPrimary : AppColors.monoBlack;
+=======
+  Color get _foregroundColor {
+    switch (variant) {
+      case CustomButtonVariant.primary:
+        return AppColors.white;
+      case CustomButtonVariant.outline:
+      case CustomButtonVariant.text:
+        return AppColors.monoBlack;
+>>>>>>> Stashed changes
     }
   }
 }

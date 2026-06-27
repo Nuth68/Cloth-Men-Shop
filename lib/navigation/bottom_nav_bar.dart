@@ -30,6 +30,7 @@ class FashionBottomNav extends StatefulWidget {
   State<FashionBottomNav> createState() => _FashionBottomNavState();
 }
 
+<<<<<<< Updated upstream
 class _FashionBottomNavState extends State<FashionBottomNav> {
   @override
   Widget build(BuildContext context) {
@@ -118,7 +119,109 @@ class _FashionBottomNavState extends State<FashionBottomNav> {
               }),
             ),
           ],
+=======
+class _FashionBottomNavState extends State<FashionBottomNav>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _indicatorController;
+
+  @override
+  void initState() {
+    super.initState();
+    _indicatorController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+  }
+
+  @override
+  void dispose() {
+    _indicatorController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final availableItems = widget.items.take(4).toList();
+
+    return Container(
+      height: 72 + bottomPadding,
+      decoration: const BoxDecoration(
+        color: AppColors.white,
+        border: Border(
+          top: BorderSide(color: AppColors.monoDivider, width: 0.5),
+>>>>>>> Stashed changes
         ),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 70,
+            child: Row(
+              children: List.generate(availableItems.length, (index) {
+                final sel = index == widget.selectedIndex;
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      AppHaptics.light();
+                      widget.onTap(index);
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Animated indicator bar
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
+                          margin: const EdgeInsets.only(bottom: 6),
+                          height: 2,
+                          width: sel ? 32.0 : 0,
+                          color:
+                              sel ? AppColors.monoBlack : Colors.transparent,
+                        ),
+                        // Icon with cross-fade
+                        SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              sel
+                                  ? (availableItems[index].activeIcon)
+                                  : availableItems[index].icon,
+                              key: ValueKey('${index}_$sel'),
+                              size: 20,
+                              color: sel
+                                  ? AppColors.monoBlack
+                                  : AppColors.monoGrey,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // Label
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight:
+                                sel ? FontWeight.w600 : FontWeight.w400,
+                            letterSpacing: 0.5,
+                            color: sel
+                                ? AppColors.monoBlack
+                                : AppColors.monoGrey,
+                          ),
+                          child: Text(availableItems[index].label),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: bottomPadding),
+        ],
       ),
     );
   }
