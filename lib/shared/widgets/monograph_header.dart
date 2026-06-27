@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import 'steav_fashion_logo.dart';
 
 class MonographHeader extends StatelessWidget {
   final VoidCallback? onSearch;
@@ -34,39 +33,14 @@ class MonographHeader extends StatelessWidget {
             : null,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
           children: [
             GestureDetector(
               onTap: onSearch,
-              child: Icon(
-                Icons.search,
-                color: AppColors.textPrimary,
                 size: 22,
               ),
             ),
             const Spacer(),
-            SteavFashionLogo.small(),
-            const Spacer(),
-            if (actions != null) ...actions!,
-            if (onNotification != null)
-              GestureDetector(
-                onTap: onNotification,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: AppColors.textPrimary,
-                    size: 22,
-                  ),
-                ),
-              ),
-            if (onBag != null)
-              GestureDetector(
-                onTap: onBag,
-                child: Icon(
-                  Icons.shopping_bag_outlined,
-                  color: AppColors.textPrimary,
                   size: 22,
                 ),
               ),

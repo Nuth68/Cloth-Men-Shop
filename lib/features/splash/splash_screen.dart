@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
-import '../../shared/widgets/steav_fashion_logo.dart';
 import '../../data/datasources/local/cache_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,7 +28,6 @@ class _SplashScreenState extends State<SplashScreen>
     _logoFadeSlide = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.35, curve: Curves.easeOutCubic),
       ),
     );
 
@@ -85,12 +83,10 @@ class _SplashScreenState extends State<SplashScreen>
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Steav Fashion logo with SF mark
                   Opacity(
                     opacity: _logoFadeSlide.value,
                     child: Transform.translate(
                       offset: Offset(0, (1 - _logoFadeSlide.value) * 20),
-                      child: SteavFashionLogo.large(),
                     ),
                   ),
                 ],

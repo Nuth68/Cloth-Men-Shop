@@ -93,8 +93,6 @@ CustomTransitionPage<T> _slideUpTransition<T>({
   );
 }
 
-GoRouter appRouter({GlobalKey<NavigatorState>? navigatorKey}) => GoRouter(
-  navigatorKey: navigatorKey,
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
@@ -223,23 +221,6 @@ class _MainShellState extends State<MainShell> {
   final List<NavItem> _items = const [
     NavItem(
       label: 'Home',
-      icon: Icons.home_outlined,
-      activeIcon: Icons.home_rounded,
-    ),
-    NavItem(
-      label: 'Lookbook',
-      icon: Icons.dashboard_customize_outlined,
-      activeIcon: Icons.dashboard_customize,
-    ),
-    NavItem(
-      label: 'Stylist',
-      icon: Icons.star_outline_rounded,
-      activeIcon: Icons.star_rate_rounded,
-    ),
-    NavItem(
-      label: 'Account',
-      icon: Icons.person_2_outlined,
-      activeIcon: Icons.person_2_rounded,
     ),
   ];
 

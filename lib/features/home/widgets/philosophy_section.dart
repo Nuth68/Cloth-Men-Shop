@@ -31,7 +31,6 @@ class PhilosophySection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'THE Steav Fashion PHILOSOPHY',
                 style: AppTypography.sans(
                   8.5,
                   color: AppColors.monoGrey,

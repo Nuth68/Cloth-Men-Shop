@@ -69,12 +69,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.favorite_outline, color: AppColors.textPrimary),
             onPressed: () {
               AppHaptics.medium();
               wishlistBloc.add(AddToWishlist(p));
@@ -87,7 +85,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.share_outlined, color: AppColors.textPrimary),
             onPressed: () {},
           ),
         ],
@@ -113,40 +110,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       opacity: 1,
                       duration: const Duration(milliseconds: 400),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.brass,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'NEW ARRIVAL',
-                          style: AppTypography.labelSmall.copyWith(color: AppColors.solidDark),
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
                   ],
-                  Text(
-                    p.name,
-                    style: AppTypography.heading1.copyWith(color: AppColors.textPrimary),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '\$${p.price.toStringAsFixed(2)}',
-                    style: AppTypography.price.copyWith(color: AppColors.textPrimary),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    p.description,
-                    style: AppTypography.bodyMedium.copyWith(color: AppColors.monoGrey, height: 1.5),
-                  ),
-                  const SizedBox(height: 24),
-                  SizeSelector(controller: _sizeController),
-                  const SizedBox(height: 20),
-                  ColorSelector(controller: _colorController),
-                  const SizedBox(height: 20),
                   FitGuideWidget(controller: _fitController),
                   const SizedBox(height: 32),
+                  // Action buttons
                   Row(
                     children: [
                       Expanded(
@@ -158,19 +129,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               wishlistBloc.add(AddToWishlist(p));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('${p.name} added to wishlist'),
                                   duration: const Duration(seconds: 1),
                                 ),
                               );
                             },
-                            icon: Icon(Icons.favorite_outline, size: 16, color: AppColors.textPrimary),
-                            label: Text(
-                              'WISHLIST',
-                              style: AppTypography.button.copyWith(color: AppColors.textPrimary),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.monoDivider),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
                         ),
@@ -186,24 +148,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               cartBloc.add(AddToCart(CartItemModel(
                                 id: p.id,
                                 product: p,
-                                selectedSize: _sizeController.selectedSize,
-                                selectedColor: _colorController.selectedColor ??
-                                    (p.colors.isNotEmpty ? p.colors.first : ''),
-                              )));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${p.name} added to cart'),
                                   duration: const Duration(seconds: 1),
                                 ),
                               );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.monoBlack,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                            child: Text(
-                              'ADD TO CART',
-                              style: AppTypography.button.copyWith(color: AppColors.white),
                             ),
                           ),
                         ),

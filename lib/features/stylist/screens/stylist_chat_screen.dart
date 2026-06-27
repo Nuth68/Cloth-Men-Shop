@@ -92,7 +92,6 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
             backgroundColor: AppColors.white,
             elevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back,
                   color: AppColors.monoBlack),
               onPressed: () => Navigator.pop(context),
             ),
@@ -177,7 +176,6 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
         Container(
           padding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
             color: AppColors.white,
             border: Border(
                 top: BorderSide(color: AppColors.monoDivider)),
@@ -217,7 +215,6 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.monoBlack,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                 ),

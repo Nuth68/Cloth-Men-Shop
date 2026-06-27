@@ -48,7 +48,6 @@ class _ColorSelectorState extends State<ColorSelector> {
           'Color',
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 8),

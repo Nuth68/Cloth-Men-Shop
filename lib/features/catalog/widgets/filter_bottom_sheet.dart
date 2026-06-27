@@ -40,7 +40,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       maxChildSize: 0.85,
       builder: (context, scrollController) {
         return Container(
-          decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
@@ -136,7 +135,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               // Bottom bar
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
                   color: AppColors.white,
                   border: Border(
                     top: BorderSide(color: AppColors.monoDivider),
@@ -155,7 +153,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.monoBlack,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
                       _activeFilterCount > 0
@@ -196,7 +193,6 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected ? AppColors.monoBlack : AppColors.white,
-          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color:
                 selected ? AppColors.monoBlack : AppColors.monoDivider,

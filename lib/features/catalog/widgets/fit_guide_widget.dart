@@ -75,7 +75,6 @@ class _FitGuideWidgetState extends State<FitGuideWidget> {
                 ),
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             );
