@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/theme_bloc.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/language_bloc.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
 import '../../../shared/widgets/loading_indicator.dart';
@@ -82,6 +85,11 @@ class _ProfileView extends StatelessWidget {
                         _SettingItem(icon: Icons.lock_outline, label: 'Privacy', onTap: () {}),
                       ]),
                       const SizedBox(height: 6),
+                      _SettingsGroup(title: 'Appearance', items: [
+                        _DarkModeToggle(),
+                        _LanguageSelector(),
+                      ]),
+                      const SizedBox(height: 6),
                       _SettingsGroup(title: 'Support', items: [
                         _SettingItem(icon: Icons.help_outline, label: 'Help Center', onTap: () {}),
                         _SettingItem(icon: Icons.info_outline, label: 'About', onTap: () {}),
@@ -131,6 +139,12 @@ class _ProfileView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              const SizedBox(height: 6),
+              _SettingsGroup(title: 'Appearance', items: [
+                _DarkModeToggle(),
+                _LanguageSelector(),
+              ]),
+              const SizedBox(height: 6),
               _SettingsGroup(title: 'Support', items: [
                 _SettingItem(icon: Icons.help_outline, label: 'Help Center', onTap: () {}),
                 _SettingItem(icon: Icons.info_outline, label: 'About', onTap: () {}),
@@ -154,7 +168,7 @@ class _LogoutButton extends StatelessWidget {
           AppHaptics.medium();
           final cache = CacheService();
           await cache.clearToken();
-          context.go('/login');
+          if (context.mounted) context.go('/login');
         },
         icon: const Icon(Icons.logout, size: 18),
         label: const Text('Log Out'),
@@ -212,7 +226,7 @@ class _ProfileCard extends StatelessWidget {
 
 class _SettingsGroup extends StatelessWidget {
   final String title;
-  final List<_SettingItem> items;
+  final List<Widget> items;
   const _SettingsGroup({required this.title, required this.items});
 
   @override
@@ -246,6 +260,111 @@ class _SettingsGroup extends StatelessWidget {
   }
 }
 
+class _DarkModeToggle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeCubit>().state == ThemeMode.dark;
+    return InkWell(
+      onTap: () => context.read<ThemeCubit>().toggle(),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              size: 20,
+              color: AppColors.textPrimary,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context).translate('darkMode'),
+                style: AppTypography.bodyLarge.copyWith(color: AppColors.textPrimary),
+              ),
+            ),
+            Switch.adaptive(
+              value: isDark,
+              onChanged: (_) => context.read<ThemeCubit>().toggle(),
+              activeTrackColor: isDark ? AppColors.brass : AppColors.monoBlack,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageSelector extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.watch<LanguageCubit>().state;
+    final langName = {
+      'en': 'English',
+      'es': 'Español',
+      'fr': 'Français',
+    }[locale.languageCode] ?? 'English';
+    return InkWell(
+      onTap: () => _showLanguagePicker(context),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(Icons.language_outlined, size: 20, color: AppColors.textPrimary),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text('Language', style: AppTypography.bodyLarge.copyWith(color: AppColors.textPrimary)),
+            ),
+            Text(langName, style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey)),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, size: 20, color: AppColors.textPrimary),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2))),
+              const SizedBox(height: 16),
+              Text('Select Language', style: AppTypography.heading2),
+              const SizedBox(height: 8),
+              _langOption(context, 'English', const Locale('en')),
+              _langOption(context, 'Español', const Locale('es')),
+              _langOption(context, 'Français', const Locale('fr')),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _langOption(BuildContext context, String label, Locale locale) {
+    final active = context.read<LanguageCubit>().state == locale;
+    return ListTile(
+      title: Text(label),
+      trailing: active ? Icon(Icons.check, color: AppColors.textPrimary) : null,
+      onTap: () {
+        context.read<LanguageCubit>().setLocale(locale);
+        Navigator.pop(context);
+      },
+    );
+  }
+}
+
 class _SettingItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -264,10 +383,10 @@ class _SettingItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.monoGrey),
+            Icon(icon, size: 20, color: AppColors.textPrimary),
             const SizedBox(width: 14),
-            Expanded(child: Text(label, style: AppTypography.bodyLarge.copyWith(color: AppColors.monoBlack))),
-            const Icon(Icons.chevron_right, size: 20, color: AppColors.monoGrey),
+            Expanded(child: Text(label, style: AppTypography.bodyLarge.copyWith(color: AppColors.textPrimary))),
+            Icon(Icons.chevron_right, size: 20, color: AppColors.textPrimary),
           ],
         ),
       ),

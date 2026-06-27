@@ -426,11 +426,11 @@ class _LookCardWide extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.arrow_forward, size: 18, color: AppColors.monoBlack),
+                      child: Icon(Icons.arrow_forward, size: 18, color: AppColors.monoBlack),
                     ),
                   ],
                 ),

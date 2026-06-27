@@ -69,12 +69,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_outline, color: AppColors.monoBlack),
+            icon: Icon(Icons.favorite_outline, color: AppColors.textPrimary),
             onPressed: () {
               AppHaptics.medium();
               wishlistBloc.add(AddToWishlist(p));
@@ -87,7 +87,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.share_outlined, color: AppColors.monoBlack),
+            icon: Icon(Icons.share_outlined, color: AppColors.textPrimary),
             onPressed: () {},
           ),
         ],
@@ -115,12 +115,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.monoBlack,
+                          color: AppColors.brass,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           'NEW ARRIVAL',
-                          style: AppTypography.labelSmall.copyWith(color: AppColors.white),
+                          style: AppTypography.labelSmall.copyWith(color: AppColors.solidDark),
                         ),
                       ),
                     ),
@@ -128,12 +128,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ],
                   Text(
                     p.name,
-                    style: AppTypography.heading1.copyWith(color: AppColors.monoBlack),
+                    style: AppTypography.heading1.copyWith(color: AppColors.textPrimary),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '\$${p.price.toStringAsFixed(2)}',
-                    style: AppTypography.price.copyWith(color: AppColors.monoBlack),
+                    style: AppTypography.price.copyWith(color: AppColors.textPrimary),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -163,13 +163,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.favorite_outline, size: 16),
+                            icon: Icon(Icons.favorite_outline, size: 16, color: AppColors.textPrimary),
                             label: Text(
                               'WISHLIST',
-                              style: AppTypography.button.copyWith(color: AppColors.monoBlack),
+                              style: AppTypography.button.copyWith(color: AppColors.textPrimary),
                             ),
                             style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: AppColors.monoDivider),
+                              side: BorderSide(color: AppColors.monoDivider),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),

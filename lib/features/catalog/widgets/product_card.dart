@@ -56,14 +56,14 @@ class ProductCard extends StatelessWidget {
                             // Quick-add to cart
                           },
                           borderRadius: BorderRadius.circular(20),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 16,
-                              color: AppColors.monoBlack,
-                            ),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.shopping_bag_outlined,
+                          size: 16,
+                          color: AppColors.monoBlack,
+                        ),
+                      ),
                         ),
                       ),
                     ),

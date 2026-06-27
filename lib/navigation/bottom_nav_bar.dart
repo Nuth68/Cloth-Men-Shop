@@ -33,6 +33,7 @@ class FashionBottomNav extends StatefulWidget {
 class _FashionBottomNavState extends State<FashionBottomNav> {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final tabs = widget.items.take(4).toList();
     final barWidth = MediaQuery.of(context).size.width - 48;
@@ -42,11 +43,11 @@ class _FashionBottomNavState extends State<FashionBottomNav> {
       height: 48 + bottomPadding,
       margin: const EdgeInsets.fromLTRB(24, 0, 24, 6),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: isDark ? AppColors.darkCard : AppColors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: AppColors.monoBlack.withValues(alpha: 0.06),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
             blurRadius: 12,
             offset: const Offset(0, 2),
           ),
@@ -66,7 +67,7 @@ class _FashionBottomNavState extends State<FashionBottomNav> {
               child: Container(
                 width: tabWidth - 8,
                 decoration: BoxDecoration(
-                  color: AppColors.monoBlack,
+                  color: isDark ? AppColors.brass : AppColors.monoBlack,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -88,7 +89,11 @@ class _FashionBottomNavState extends State<FashionBottomNav> {
                         Icon(
                           sel ? tabs[i].activeIcon : tabs[i].icon,
                           size: 18,
-                          color: sel ? AppColors.white : AppColors.monoGrey,
+                          color: sel
+                              ? (isDark
+                                  ? AppColors.solidDark
+                                  : AppColors.white)
+                              : AppColors.monoGrey,
                         ),
                         const SizedBox(height: 1),
                         Text(
@@ -96,8 +101,14 @@ class _FashionBottomNavState extends State<FashionBottomNav> {
                           style: TextStyle(
                             fontFamily: 'Helvetica Neue',
                             fontSize: 8,
-                            fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                            color: sel ? AppColors.white : AppColors.monoGrey,
+                            fontWeight: sel
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                            color: sel
+                                ? (isDark
+                                    ? AppColors.solidDark
+                                    : AppColors.white)
+                                : AppColors.monoGrey,
                           ),
                         ),
                       ],

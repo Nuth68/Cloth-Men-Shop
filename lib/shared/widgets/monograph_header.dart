@@ -5,6 +5,7 @@ import 'steav_fashion_logo.dart';
 class MonographHeader extends StatelessWidget {
   final VoidCallback? onSearch;
   final VoidCallback? onBag;
+  final VoidCallback? onNotification;
   final List<Widget>? actions;
   final bool elevated;
 
@@ -12,6 +13,7 @@ class MonographHeader extends StatelessWidget {
     super.key,
     this.onSearch,
     this.onBag,
+    this.onNotification,
     this.actions,
     this.elevated = false,
   });
@@ -37,9 +39,9 @@ class MonographHeader extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: onSearch,
-              child: const Icon(
+              child: Icon(
                 Icons.search,
-                color: AppColors.monoBlack,
+                color: AppColors.textPrimary,
                 size: 22,
               ),
             ),
@@ -47,12 +49,24 @@ class MonographHeader extends StatelessWidget {
             SteavFashionLogo.small(),
             const Spacer(),
             if (actions != null) ...actions!,
+            if (onNotification != null)
+              GestureDetector(
+                onTap: onNotification,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    Icons.notifications_outlined,
+                    color: AppColors.textPrimary,
+                    size: 22,
+                  ),
+                ),
+              ),
             if (onBag != null)
               GestureDetector(
                 onTap: onBag,
-                child: const Icon(
+                child: Icon(
                   Icons.shopping_bag_outlined,
-                  color: AppColors.monoBlack,
+                  color: AppColors.textPrimary,
                   size: 22,
                 ),
               ),

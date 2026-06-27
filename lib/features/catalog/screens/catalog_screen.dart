@@ -45,7 +45,7 @@ class _CatalogView extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+          icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -57,7 +57,7 @@ class _CatalogView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list,
+            icon: Icon(Icons.filter_list,
                 color: AppColors.monoBlack, size: 22),
             onPressed: () {
               AppHaptics.light();
@@ -76,7 +76,7 @@ class _CatalogView extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.shopping_bag_outlined,
+            icon: Icon(Icons.shopping_bag_outlined,
                 color: AppColors.monoBlack, size: 22),
             onPressed: () {
               AppHaptics.light();

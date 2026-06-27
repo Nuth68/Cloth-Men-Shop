@@ -82,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             MonographHeader(
               onSearch: () {},
               onBag: () => context.push('/cart'),
+              onNotification: () {},
               elevated: true,
             ),
             Expanded(

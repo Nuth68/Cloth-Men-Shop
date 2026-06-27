@@ -40,7 +40,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       maxChildSize: 0.85,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
@@ -136,7 +136,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               // Bottom bar
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.white,
                   border: Border(
                     top: BorderSide(color: AppColors.monoDivider),

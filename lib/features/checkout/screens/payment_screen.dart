@@ -34,11 +34,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Payment',
-            style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
+            style: AppTypography.heading2.copyWith(color: AppColors.textPrimary)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -52,7 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.monoBlack,
+                color: AppColors.solidDark,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -85,7 +85,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF2D5A3D).withValues(alpha: 0.1),
+                color: AppColors.success.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -102,7 +102,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Total', style: AppTypography.bodyLarge.copyWith(color: AppColors.monoGrey)),
-                Text('\$660.00', style: AppTypography.price.copyWith(color: AppColors.monoBlack)),
+                Text('\$660.00', style: AppTypography.price.copyWith(color: AppColors.textPrimary)),
               ],
             ),
             const SizedBox(height: 24),

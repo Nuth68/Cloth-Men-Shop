@@ -369,7 +369,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                 color: AppColors.monoLightGrey.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.videocam_outlined, size: 18, color: AppColors.monoBlack),
+              child: Icon(Icons.videocam_outlined, size: 18, color: AppColors.monoBlack),
             ),
           ],
         ),

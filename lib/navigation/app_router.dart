@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'bottom_nav_bar.dart';
+import '../core/theme/theme_bloc.dart';
 import '../features/catalog/screens/catalog_screen.dart';
 import '../features/catalog/screens/product_detail_screen.dart';
 import '../data/models/product_model.dart';
@@ -91,7 +93,8 @@ CustomTransitionPage<T> _slideUpTransition<T>({
   );
 }
 
-final GoRouter appRouter = GoRouter(
+GoRouter appRouter({GlobalKey<NavigatorState>? navigatorKey}) => GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
@@ -254,6 +257,8 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Force rebuild on theme change so cached routes use correct AppColors
+    context.select<ThemeCubit, ThemeMode>((c) => c.state);
     final location = GoRouterState.of(context).uri.toString();
     final selectedIndex = _indexFor(location);
 

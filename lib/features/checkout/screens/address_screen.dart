@@ -16,7 +16,7 @@ class AddressScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
+          icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Shipping Address',

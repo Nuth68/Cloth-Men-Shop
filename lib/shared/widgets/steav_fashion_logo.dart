@@ -17,7 +17,7 @@ class SteavFashionLogo extends StatelessWidget {
     super.key,
     this.markSize = 40,
     this.gap = 12,
-    this.color = AppColors.monoBlack,
+    this.color = const Color(0xFF111111),
     this.showSubtitle = false,
     this.wordmarkSize = 16,
     this.wordmarkSpacing = 6,
