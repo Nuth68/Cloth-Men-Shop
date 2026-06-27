@@ -40,6 +40,8 @@ class _SizeSelectorState extends State<SizeSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -47,7 +49,6 @@ class _SizeSelectorState extends State<SizeSelector> {
           'Size',
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w500,
-            color: AppColors.monoBlack,
           ),
         ),
         const SizedBox(height: 8),
@@ -64,18 +65,11 @@ class _SizeSelectorState extends State<SizeSelector> {
                   setState(() => _selected = size);
                   widget.controller?.select(size);
                 },
-                selectedColor: AppColors.monoBlack,
-                backgroundColor: AppColors.monoLightGrey,
-                labelStyle: AppTypography.bodySmall.copyWith(
-                  color: isSelected
-                      ? AppColors.white
-                      : AppColors.monoBlack,
                   fontWeight:
                       isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             );

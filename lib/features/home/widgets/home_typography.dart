@@ -11,7 +11,6 @@ import '../../../core/theme/app_typography.dart';
 TextStyle monoSerif(
   double size, {
   FontWeight weight = FontWeight.w400,
-  Color color = AppColors.monoBlack,
   double? height,
   double letterSpacing = 0,
 }) {
@@ -28,7 +27,6 @@ TextStyle monoSerif(
 TextStyle monoSans(
   double size, {
   FontWeight weight = FontWeight.w400,
-  Color color = AppColors.monoBlack,
   double letterSpacing = 0.5,
 }) {
   return AppTypography.sans(

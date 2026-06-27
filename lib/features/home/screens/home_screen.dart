@@ -6,8 +6,6 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
 import '../../../shared/widgets/loading_indicator.dart';
-import '../../../shared/widgets/animated_list_item.dart';
-import '../../../shared/widgets/shimmer_loading.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/repositories/product_repository.dart';
@@ -47,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
     final repo = ProductRepository(gql);
     try {
-      final products = await repo.getProducts();
       if (!mounted) return;
       setState(() {
         _allProducts = products;
@@ -86,53 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               child: _loading
-                  ? _buildShimmer()
                   : RefreshIndicator(
                       onRefresh: _loadData,
                       child: CustomScrollView(
                         slivers: [
-                          // ── Compact hero banner ──
-                          SliverToBoxAdapter(child: _buildHeroBanner()),
-                          // ── Category pills ──
-                          SliverToBoxAdapter(child: _buildCategoryPills()),
-                          // ── Section header ──
-                          SliverToBoxAdapter(child: _buildSectionHeader()),
-                          // ── Product grid ──
-                          _filteredProducts.isEmpty
-                              ? const SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 60),
-                                    child: Center(
-                                      child: Text('No products found',
-                                          style: TextStyle(color: Colors.grey)),
-                                    ),
-                                  ),
-                                )
-                              : SliverPadding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  sliver: SliverGrid(
-                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 0.68,
-                                      crossAxisSpacing: 12,
-                                      mainAxisSpacing: 16,
-                                    ),
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) => AnimatedListItem(
-                                        index: index,
-                                        child: _ProductCard(
-                                          product: _filteredProducts[index],
-                                          onTap: () => context.push(
-                                            '/product-detail',
-                                            extra: _filteredProducts[index],
-                                          ),
-                                        ),
-                                      ),
-                                      childCount: _filteredProducts.length,
-                                    ),
-                                  ),
-                                ),
-                          const SliverToBoxAdapter(child: SizedBox(height: 40)),
                         ],
                       ),
                     ),

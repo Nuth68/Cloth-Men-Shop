@@ -14,7 +14,6 @@ class AppTheme {
         brightness: Brightness.light,
 
         // Color scheme
-        colorScheme: const ColorScheme.light(
           primary: AppColors.monoBlack,
           secondary: AppColors.brass,
           surface: AppColors.white,
@@ -25,7 +24,6 @@ class AppTheme {
         ),
 
         // AppBar
-        appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.white,
           foregroundColor: AppColors.monoBlack,
           elevation: 0,
@@ -39,7 +37,6 @@ class AppTheme {
           color: AppColors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
             side: const BorderSide(color: AppColors.monoDivider, width: 0.5),
           ),
           margin: EdgeInsets.zero,
@@ -52,22 +49,6 @@ class AppTheme {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide:
-                const BorderSide(color: AppColors.monoBlack, width: 1),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide:
-                const BorderSide(color: AppColors.error, width: 1),
           ),
           hintStyle: AppTypography.bodyMedium.copyWith(
             color: AppColors.monoGrey,
@@ -85,7 +66,6 @@ class AppTheme {
             disabledBackgroundColor: AppColors.monoGrey,
             disabledForegroundColor: AppColors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: AppTypography.button,
@@ -97,9 +77,6 @@ class AppTheme {
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.monoBlack,
-            side: const BorderSide(color: AppColors.monoBlack, width: 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: AppTypography.button,
@@ -107,16 +84,6 @@ class AppTheme {
         ),
 
         // Bottom sheets
-        bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-        ),
-
-        // Bottom nav
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: AppColors.white,
           selectedItemColor: AppColors.monoBlack,
           unselectedItemColor: AppColors.monoGrey,
           elevation: 0,
@@ -126,7 +93,6 @@ class AppTheme {
         ),
 
         // Icons
-        iconTheme: const IconThemeData(
           color: AppColors.monoBlack,
           size: 20,
         ),
@@ -143,7 +109,6 @@ class AppTheme {
           contentTextStyle: AppTypography.bodySmall.copyWith(
             color: AppColors.white,
           ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           behavior: SnackBarBehavior.floating,
         ),
 
@@ -190,7 +155,7 @@ class AppTheme {
           color: AppColors.darkCard,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
           ),
           margin: EdgeInsets.zero,
         ),
@@ -201,11 +166,11 @@ class AppTheme {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             borderSide: const BorderSide(color: AppColors.white, width: 1),
           ),
         ),
@@ -215,7 +180,7 @@ class AppTheme {
             backgroundColor: AppColors.white,
             foregroundColor: AppColors.monoBlack,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(2),
             ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: AppTypography.button,

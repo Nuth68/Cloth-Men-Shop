@@ -5,7 +5,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
-import '../../../shared/widgets/shimmer_loading.dart';
 
 class StylistBookingScreen extends StatefulWidget {
   const StylistBookingScreen({super.key});
@@ -19,16 +18,6 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
   int _selectedDayIndex = 0;
   int _selectedTimeIndex = -1;
 
-  static final List<_Stylist> _stylists = [
-    _Stylist("Julian Vane", "Bespoke Tailoring", "15 yrs · 4.9 ★ · 230 sessions",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
-        "Trained at Savile Row. Specializes in precision-fit blazers, overcoats, and formal evening wear."),
-    _Stylist("Elena Rossi", "Casual Luxe", "8 yrs · 4.8 ★ · 184 sessions",
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80",
-        "Effortless elevated casual. Expert in Italian knitwear, denim curation, and relaxed silhouettes."),
-    _Stylist("Marcus Thorne", "Archive & Vintage", "12 yrs · 5.0 ★ · 97 sessions",
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80",
-        "Rare archival sourcing. Curates one-of-a-kind statement pieces from private collections worldwide."),
   ];
 
   static final _times = ["09:00", "10:00", "11:00", "13:00", "14:30", "16:00", "17:30"];
@@ -56,57 +45,6 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 8),
-                    // ── Section heading ──
-                    _sectionTitle("SELECT YOUR STYLIST"),
-                    const SizedBox(height: 14),
-                    // ── Stylist carousel ──
-                    _buildStylistCarousel(),
-                    const SizedBox(height: 28),
-                    // ── Date picker ──
-                    _sectionTitle("SELECT DATE"),
-                    const SizedBox(height: 14),
-                    _buildDateStrip(),
-                    const SizedBox(height: 28),
-                    // ── Time slots ──
-                    _sectionTitle("SELECT TIME"),
-                    const SizedBox(height: 14),
-                    _buildTimeGrid(),
-                    const SizedBox(height: 32),
-                    // ── Session summary card ──
-                    _buildSummary(),
-                    const SizedBox(height: 28),
-                    // ── Book button ──
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 54,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            AppHaptics.heavy();
-                            final s = _stylists[_selectedStylist];
-                            final date = _nextDays[_selectedDayIndex];
-                            final time = _times[_selectedTimeIndex.clamp(0, _times.length - 1)];
-                            context.push('/stylist-chat', extra: {
-                              'conversationId': 'conv_${s.name}',
-                              'stylistName': s.name,
-                              'stylistAvatarUrl': s.imageUrl,
-                              'stylistSpecialty': '${s.specialty.toUpperCase()} STYLIST',
-                              'appointmentDate': '${date.day}/${date.month} at $time',
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.monoBlack,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            (_selectedTimeIndex >= 0)
-                                ? 'BOOK · ${_weekDays[_nextDays[_selectedDayIndex].weekday - 1]} ${_nextDays[_selectedDayIndex].day} at ${_times[_selectedTimeIndex]}'
-                                : 'BOOK APPOINTMENT',
-                            style: AppTypography.button.copyWith(color: AppColors.white, letterSpacing: 2),
-                          ),
                         ),
                       ),
                     ),
@@ -369,7 +307,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                 color: AppColors.monoLightGrey.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.videocam_outlined, size: 18, color: AppColors.monoBlack),
+              child: Icon(Icons.videocam_outlined, size: 18, color: AppColors.monoBlack),
             ),
           ],
         ),
@@ -382,4 +320,80 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
 class _Stylist {
   final String name, specialty, stats, imageUrl, bio;
   const _Stylist(this.name, this.specialty, this.stats, this.imageUrl, this.bio);
+}
+
+class _CalendarWidget extends StatelessWidget {
+  final DateTime selectedDate;
+  final ValueChanged<DateTime> onDateSelected;
+  const _CalendarWidget({
+    required this.selectedDate,
+    required this.onDateSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border.all(color: AppColors.monoDivider),
+      ),
+      child: Column(
+        children: [
+          Text("October 2024",
+              style: AppTypography.heading2.copyWith(
+                  color: AppColors.monoBlack)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                .map((d) => Text(d,
+                    style: AppTypography.labelSmall.copyWith(
+                        color: AppColors.monoGrey)))
+                .toList(),
+          ),
+          const SizedBox(height: 8),
+          ...List.generate(4, (row) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(7, (col) {
+                  final day = row * 7 + col - 1;
+                  if (day < 1 || day > 31) {
+                    return const SizedBox(width: 32, height: 32);
+                  }
+                  final isSelected = day == selectedDate.day;
+                  return GestureDetector(
+                    onTap: () => onDateSelected(
+                        DateTime(2024, 10, day)),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.monoBlack
+                            : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text("$day",
+                          style: AppTypography.bodySmall.copyWith(
+                            color: isSelected
+                                ? AppColors.white
+                                : AppColors.monoBlack,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          )),
+                    ),
+                  );
+                }),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
 }

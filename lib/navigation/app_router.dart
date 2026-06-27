@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'bottom_nav_bar.dart';
+import '../core/theme/theme_bloc.dart';
 import '../features/catalog/screens/catalog_screen.dart';
 import '../features/catalog/screens/product_detail_screen.dart';
 import '../data/models/product_model.dart';
@@ -91,7 +93,6 @@ CustomTransitionPage<T> _slideUpTransition<T>({
   );
 }
 
-final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
@@ -220,23 +221,6 @@ class _MainShellState extends State<MainShell> {
   final List<NavItem> _items = const [
     NavItem(
       label: 'Home',
-      icon: Icons.home_outlined,
-      activeIcon: Icons.home_rounded,
-    ),
-    NavItem(
-      label: 'Lookbook',
-      icon: Icons.dashboard_customize_outlined,
-      activeIcon: Icons.dashboard_customize,
-    ),
-    NavItem(
-      label: 'Stylist',
-      icon: Icons.star_outline_rounded,
-      activeIcon: Icons.star_rate_rounded,
-    ),
-    NavItem(
-      label: 'Account',
-      icon: Icons.person_2_outlined,
-      activeIcon: Icons.person_2_rounded,
     ),
   ];
 
@@ -254,6 +238,8 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Force rebuild on theme change so cached routes use correct AppColors
+    context.select<ThemeCubit, ThemeMode>((c) => c.state);
     final location = GoRouterState.of(context).uri.toString();
     final selectedIndex = _indexFor(location);
 

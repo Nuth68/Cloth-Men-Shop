@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_colors.dart';
 import 'navigation/app_router.dart';
@@ -10,7 +11,6 @@ import 'features/wishlist/bloc/wishlist_bloc.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: AppColors.white,
@@ -20,8 +20,30 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late final GoRouter _router;
+  ThemeMode _themeMode = ThemeMode.light;
+  Locale _locale = const Locale('en');
+
+  @override
+  void initState() {
+    super.initState();
+    _router = appRouter(navigatorKey: _navigatorKey);
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +51,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => WishlistBloc()),
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => LanguageCubit()),
       ],
-      child: MaterialApp.router(
-        title: 'Steav Fashion',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.light,
-        routerConfig: appRouter,
       ),
     );
   }

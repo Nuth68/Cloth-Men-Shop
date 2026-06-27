@@ -13,7 +13,6 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/animated_list_item.dart';
-import '../../../shared/widgets/steav_fashion_logo.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -113,7 +112,6 @@ class _RegisterFormState extends State<_RegisterForm> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 28),
-              SteavFashionLogo.medium(),
               const SizedBox(height: 2),
               const Divider(color: AppColors.monoDivider, height: 1),
               const SizedBox(height: 56),
@@ -146,7 +144,6 @@ class _RegisterFormState extends State<_RegisterForm> {
                     const SizedBox(height: 28),
                     CustomTextField(
                         label: 'EMAIL ADDRESS',
-                        hint: 'archive@Steav Fashion.com',
                         controller: widget.emailCtrl,
                         keyboardType: TextInputType.emailAddress),
                     const SizedBox(height: 28),

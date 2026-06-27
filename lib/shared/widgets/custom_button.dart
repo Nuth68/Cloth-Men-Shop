@@ -57,7 +57,6 @@ class CustomButton extends StatelessWidget {
             height: 20,
             width: 20,
             child: CircularProgressIndicator(
-              color: _foregroundColor,
               strokeWidth: 2,
             ),
           )
@@ -65,13 +64,11 @@ class CustomButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16, color: _foregroundColor),
                 const SizedBox(width: 8),
               ],
               Flexible(
                 child: Text(
                   label,
-                  style: AppTypography.button.copyWith(color: _foregroundColor),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -87,7 +84,6 @@ class CustomButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.monoBlack,
               disabledBackgroundColor: AppColors.monoGrey,
               shape: AppDecorations.buttonShape,
               padding: EdgeInsets.zero,
@@ -103,7 +99,6 @@ class CustomButton extends StatelessWidget {
           child: OutlinedButton(
             onPressed: isLoading ? null : onPressed,
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.monoBlack, width: 1),
               shape: AppDecorations.buttonShape,
               padding: EdgeInsets.zero,
             ),
@@ -122,13 +117,6 @@ class CustomButton extends StatelessWidget {
     }
   }
 
-  Color get _foregroundColor {
-    switch (variant) {
-      case CustomButtonVariant.primary:
-        return AppColors.white;
-      case CustomButtonVariant.outline:
-      case CustomButtonVariant.text:
-        return AppColors.monoBlack;
     }
   }
 }

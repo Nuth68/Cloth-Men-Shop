@@ -45,7 +45,6 @@ class _OrdersListView extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Orders',
@@ -118,13 +117,11 @@ class _OrderCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
               child: SizedBox(
                 width: 56,
                 height: 56,

@@ -113,7 +113,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     color: _currentPage == i
                         ? AppColors.monoBlack
                         : AppColors.monoDivider,
-                    borderRadius: BorderRadius.circular(12),
                   ),
                 );
               }),
