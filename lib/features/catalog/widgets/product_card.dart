@@ -18,11 +18,6 @@ class ProductCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-<<<<<<< Updated upstream
-          borderRadius: BorderRadius.circular(12),
-=======
-          borderRadius: BorderRadius.circular(4),
->>>>>>> Stashed changes
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
         child: Column(
@@ -60,25 +55,6 @@ class ProductCard extends StatelessWidget {
                             // Quick-add to cart
                           },
                           borderRadius: BorderRadius.circular(20),
-<<<<<<< Updated upstream
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.shopping_bag_outlined,
-                          size: 16,
-                          color: AppColors.monoBlack,
-                        ),
-                      ),
-=======
-                          child: const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 16,
-                              color: AppColors.monoBlack,
-                            ),
-                          ),
->>>>>>> Stashed changes
                         ),
                       ),
                     ),

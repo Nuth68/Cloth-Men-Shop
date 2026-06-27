@@ -93,12 +93,6 @@ CustomTransitionPage<T> _slideUpTransition<T>({
   );
 }
 
-<<<<<<< Updated upstream
-GoRouter appRouter({GlobalKey<NavigatorState>? navigatorKey}) => GoRouter(
-  navigatorKey: navigatorKey,
-=======
-final GoRouter appRouter = GoRouter(
->>>>>>> Stashed changes
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
@@ -227,43 +221,6 @@ class _MainShellState extends State<MainShell> {
   final List<NavItem> _items = const [
     NavItem(
       label: 'Home',
-<<<<<<< Updated upstream
-      icon: Icons.home_outlined,
-      activeIcon: Icons.home_rounded,
-    ),
-    NavItem(
-      label: 'Lookbook',
-      icon: Icons.dashboard_customize_outlined,
-      activeIcon: Icons.dashboard_customize,
-    ),
-    NavItem(
-      label: 'Stylist',
-      icon: Icons.star_outline_rounded,
-      activeIcon: Icons.star_rate_rounded,
-    ),
-    NavItem(
-      label: 'Account',
-      icon: Icons.person_2_outlined,
-      activeIcon: Icons.person_2_rounded,
-=======
-      icon: Icons.shopping_bag_outlined,
-      activeIcon: Icons.shopping_bag,
-    ),
-    NavItem(
-      label: 'Lookbook',
-      icon: Icons.menu_book_outlined,
-      activeIcon: Icons.menu_book,
-    ),
-    NavItem(
-      label: 'Stylist',
-      icon: Icons.design_services_outlined,
-      activeIcon: Icons.design_services,
-    ),
-    NavItem(
-      label: 'Account',
-      icon: Icons.person_outline,
-      activeIcon: Icons.person,
->>>>>>> Stashed changes
     ),
   ];
 

@@ -49,11 +49,6 @@ class _SizeSelectorState extends State<SizeSelector> {
           'Size',
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w500,
-<<<<<<< Updated upstream
-            color: AppColors.textPrimary,
-=======
-            color: AppColors.monoBlack,
->>>>>>> Stashed changes
           ),
         ),
         const SizedBox(height: 8),
@@ -70,31 +65,11 @@ class _SizeSelectorState extends State<SizeSelector> {
                   setState(() => _selected = size);
                   widget.controller?.select(size);
                 },
-<<<<<<< Updated upstream
-                selectedColor: isDark ? AppColors.brass : AppColors.monoBlack,
-                backgroundColor: isDark ? AppColors.darkSurface : AppColors.monoLightGrey,
-                labelStyle: AppTypography.bodySmall.copyWith(
-                  color: isSelected
-                      ? (isDark ? AppColors.solidDark : const Color(0xFFFFFFFF))
-                      : (isDark ? AppColors.monoGrey : AppColors.monoBlack),
-=======
-                selectedColor: AppColors.monoBlack,
-                backgroundColor: AppColors.monoLightGrey,
-                labelStyle: AppTypography.bodySmall.copyWith(
-                  color: isSelected
-                      ? AppColors.white
-                      : AppColors.monoBlack,
->>>>>>> Stashed changes
                   fontWeight:
                       isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(
-<<<<<<< Updated upstream
-                  borderRadius: BorderRadius.circular(12),
-=======
-                  borderRadius: BorderRadius.circular(2),
->>>>>>> Stashed changes
                 ),
               ),
             );

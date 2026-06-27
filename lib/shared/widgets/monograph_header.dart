@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-<<<<<<< Updated upstream
-import 'steav_fashion_logo.dart';
-=======
-import '../../core/theme/app_typography.dart';
->>>>>>> Stashed changes
 
 class MonographHeader extends StatelessWidget {
   final VoidCallback? onSearch;
@@ -38,67 +33,14 @@ class MonographHeader extends StatelessWidget {
             : null,
       ),
       child: Padding(
-<<<<<<< Updated upstream
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-=======
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
->>>>>>> Stashed changes
         child: Row(
           children: [
             GestureDetector(
               onTap: onSearch,
-<<<<<<< Updated upstream
-              child: Icon(
-                Icons.search,
-                color: AppColors.textPrimary,
-=======
-              child: const Icon(
-                Icons.search,
-                color: AppColors.monoBlack,
->>>>>>> Stashed changes
                 size: 22,
               ),
             ),
             const Spacer(),
-<<<<<<< Updated upstream
-            SteavFashionLogo.small(),
-            const Spacer(),
-            if (actions != null) ...actions!,
-            if (onNotification != null)
-              GestureDetector(
-                onTap: onNotification,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: AppColors.textPrimary,
-                    size: 22,
-                  ),
-                ),
-              ),
-            if (onBag != null)
-              GestureDetector(
-                onTap: onBag,
-                child: Icon(
-                  Icons.shopping_bag_outlined,
-                  color: AppColors.textPrimary,
-=======
-            Text(
-              'MONOGRAPH',
-              style: AppTypography.heading2.copyWith(
-                letterSpacing: 3,
-                color: AppColors.monoBlack,
-              ),
-            ),
-            const Spacer(),
-            if (actions != null) ...actions!,
-            if (onBag != null)
-              GestureDetector(
-                onTap: onBag,
-                child: const Icon(
-                  Icons.shopping_bag_outlined,
-                  color: AppColors.monoBlack,
->>>>>>> Stashed changes
                   size: 22,
                 ),
               ),

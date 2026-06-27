@@ -13,10 +13,6 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/animated_list_item.dart';
-<<<<<<< Updated upstream
-import '../../../shared/widgets/steav_fashion_logo.dart';
-=======
->>>>>>> Stashed changes
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -116,13 +112,6 @@ class _RegisterFormState extends State<_RegisterForm> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 28),
-<<<<<<< Updated upstream
-              SteavFashionLogo.medium(),
-=======
-              Text('MONOGRAPH',
-                  style: AppTypography.displayMedium.copyWith(
-                      letterSpacing: 6, fontWeight: FontWeight.w400)),
->>>>>>> Stashed changes
               const SizedBox(height: 2),
               const Divider(color: AppColors.monoDivider, height: 1),
               const SizedBox(height: 56),
@@ -155,11 +144,6 @@ class _RegisterFormState extends State<_RegisterForm> {
                     const SizedBox(height: 28),
                     CustomTextField(
                         label: 'EMAIL ADDRESS',
-<<<<<<< Updated upstream
-                        hint: 'archive@Steav Fashion.com',
-=======
-                        hint: 'archive@monograph.com',
->>>>>>> Stashed changes
                         controller: widget.emailCtrl,
                         keyboardType: TextInputType.emailAddress),
                     const SizedBox(height: 28),

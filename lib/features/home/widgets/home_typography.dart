@@ -11,11 +11,6 @@ import '../../../core/theme/app_typography.dart';
 TextStyle monoSerif(
   double size, {
   FontWeight weight = FontWeight.w400,
-<<<<<<< Updated upstream
-  Color color = const Color(0xFF111111),
-=======
-  Color color = AppColors.monoBlack,
->>>>>>> Stashed changes
   double? height,
   double letterSpacing = 0,
 }) {
@@ -32,11 +27,6 @@ TextStyle monoSerif(
 TextStyle monoSans(
   double size, {
   FontWeight weight = FontWeight.w400,
-<<<<<<< Updated upstream
-  Color color = const Color(0xFF111111),
-=======
-  Color color = AppColors.monoBlack,
->>>>>>> Stashed changes
   double letterSpacing = 0.5,
 }) {
   return AppTypography.sans(

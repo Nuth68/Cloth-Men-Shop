@@ -75,11 +75,6 @@ class _FitGuideWidgetState extends State<FitGuideWidget> {
                 ),
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(
-<<<<<<< Updated upstream
-                  borderRadius: BorderRadius.circular(12),
-=======
-                  borderRadius: BorderRadius.circular(2),
->>>>>>> Stashed changes
                 ),
               ),
             );

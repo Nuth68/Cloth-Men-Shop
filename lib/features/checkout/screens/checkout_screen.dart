@@ -67,11 +67,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             backgroundColor: AppColors.white,
             elevation: 0,
             leading: IconButton(
-<<<<<<< Updated upstream
-              icon: Icon(Icons.arrow_back, color: AppColors.monoBlack),
-=======
-              icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
->>>>>>> Stashed changes
               onPressed: () => Navigator.pop(context),
             ),
             title: Text('Checkout',
@@ -222,11 +217,6 @@ class _OrderItem extends StatelessWidget {
     return Row(
       children: [
         ClipRRect(
-<<<<<<< Updated upstream
-          borderRadius: BorderRadius.circular(12),
-=======
-          borderRadius: BorderRadius.circular(4),
->>>>>>> Stashed changes
           child: SizedBox(
             width: 60,
             height: 60,
