@@ -24,7 +24,7 @@ class _CategoryBarState extends State<CategoryBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: AppColors.surface(context),
       child: Column(
         children: [
           const Divider(height: 1, color: AppColors.monoDivider),

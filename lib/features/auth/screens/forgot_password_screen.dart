@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../core/constants/api_config.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
@@ -50,10 +51,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<void> _sendResetLink() async {
+    final l10n = AppLocalizations.of(context);
     final email = _emailCtrl.text.trim();
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email address')),
+        SnackBar(content: Text('${l10n.translate('email')} ${l10n.translate('required')}')),
       );
       return;
     }
@@ -84,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${l10n.translate('somethingWentWrong')}: $e')),
         );
       }
     } finally {
@@ -94,15 +96,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: _kBg,
-      body: SafeArea(
+      body: SafeArea(top: false, 
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 28),
-              Text('Steav Fashion', style: _serif(26, w: FontWeight.w400, ls: 6)),
+              Text(l10n.translate('appName'), style: _serif(26, w: FontWeight.w400, ls: 6)),
               const SizedBox(height: 2),
               const Divider(color: _kDivider, height: 1),
               const SizedBox(height: 72),
@@ -110,11 +113,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   children: [
-                    Text('FORGOT PASSWORD',
+                    Text(l10n.translate('forgotPassword'),
                         style: _serif(26, w: FontWeight.w600, ls: 2.5)),
                     const SizedBox(height: 14),
                     Text(
-                      'Enter your email address and we\'ll send you a link to reset your password.',
+                      l10n.translate('forgotPassword'),
                       textAlign: TextAlign.center,
                       style: _sans(14, c: const Color(0xFF555555), ls: 0.1),
                     ),
@@ -127,7 +130,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('EMAIL ADDRESS',
+                    Text(l10n.translate('email'),
                         style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                     const SizedBox(height: 10),
                     _Field(controller: _emailCtrl, hint: 'archive@Steav Fashion.com'),
@@ -138,14 +141,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _BlackBtn(
-                  label: _loading ? 'SENDING...' : 'SEND RESET LINK',
+                  label: _loading ? l10n.translate('signingIn') : l10n.translate('forgotPassword'),
                   onTap: _loading ? null : _sendResetLink,
                 ),
               ),
               const SizedBox(height: 32),
               GestureDetector(
                 onTap: () => context.pop(),
-                child: Text('BACK TO LOGIN',
+                child: Text(l10n.translate('signIn'),
                     style: _sans(12, c: const Color(0xFF777777), ls: 1.5)),
               ),
               const SizedBox(height: 40),

@@ -1,0 +1,434 @@
+[
+  {
+    "id": "1",
+    "name": "Classic Oxford Shirt",
+    "brand": "Steav",
+    "price": 89.00,
+    "description": "Premium cotton oxford shirt with button-down collar.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "https://images.unsplash.com/photo-1598033129183-c4f50d736b10?w=600&q=80",
+      "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80"
+    ],
+    "colors": ["White", "Blue", "Pink"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.5
+  },
+  {
+    "id": "2",
+    "name": "Slim Fit Chinos",
+    "brand": "Steav",
+    "price": 110.00,
+    "description": "Stretch cotton chinos with a modern slim silhouette.",
+    "categoryId": "Pants",
+    "imageUrl": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80"
+    ],
+    "colors": ["Khaki", "Navy", "Olive"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.3
+  },
+  {
+    "id": "3",
+    "name": "Wool Cashmere Overcoat",
+    "brand": "Steav",
+    "price": 320.00,
+    "description": "Luxurious wool-cashmere blend overcoat with peak lapels.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80"
+    ],
+    "colors": ["Charcoal", "Camel", "Black"],
+    "sizes": ["M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.8
+  },
+  {
+    "id": "4",
+    "name": "Italian Leather Loafers",
+    "brand": "Steav",
+    "price": 195.00,
+    "description": "Hand-stitched Italian leather loafers with a refined finish.",
+    "categoryId": "Shoes",
+    "imageUrl": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&q=80",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80"
+    ],
+    "colors": ["Brown", "Black", "Burgundy"],
+    "sizes": ["39", "40", "41", "42", "43"],
+    "isNew": true,
+    "rating": 4.7
+  },
+  {
+    "id": "5",
+    "name": "Canvas Weekender Bag",
+    "brand": "Steav",
+    "price": 145.00,
+    "description": "Durable canvas weekender with leather trim and brass hardware.",
+    "categoryId": "Bags",
+    "imageUrl": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80"
+    ],
+    "colors": ["Olive", "Navy", "Tan"],
+    "sizes": ["One Size"],
+    "isNew": false,
+    "rating": 4.6
+  },
+  {
+    "id": "6",
+    "name": "Linen Button-Down Shirt",
+    "brand": "Steav",
+    "price": 75.00,
+    "description": "Breathable linen shirt perfect for warm-weather styling.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1598033129183-c4f50d736b10?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1598033129183-c4f50d736b10?w=600&q=80",
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80"
+    ],
+    "colors": ["White", "Beige", "Light Blue"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.4
+  },
+  {
+    "id": "7",
+    "name": "Tailored Wool Trousers",
+    "brand": "Steav",
+    "price": 135.00,
+    "description": "Sharp tailored trousers in super 120s merino wool.",
+    "categoryId": "Pants",
+    "imageUrl": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80",
+      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80"
+    ],
+    "colors": ["Grey", "Navy", "Black"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.5
+  },
+  {
+    "id": "8",
+    "name": "Suede Chelsea Boots",
+    "brand": "Steav",
+    "price": 210.00,
+    "description": "Premium suede Chelsea boots with elastic side panels.",
+    "categoryId": "Shoes",
+    "imageUrl": "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?w=600&q=80",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&q=80",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80"
+    ],
+    "colors": ["Taupe", "Black", "Brown"],
+    "sizes": ["39", "40", "41", "42", "43"],
+    "isNew": false,
+    "rating": 4.6
+  },
+  {
+    "id": "9",
+    "name": "Merino Crewneck Sweater",
+    "brand": "Steav",
+    "price": 98.00,
+    "description": "Ultra-soft merino wool crewneck in a classic regular fit.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80",
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
+      "https://images.unsplash.com/photo-1434389677669-e08b4cda4a5e?w=600&q=80"
+    ],
+    "colors": ["Cream", "Charcoal", "Navy", "Burgundy"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.7
+  },
+  {
+    "id": "10",
+    "name": "Leather Biker Jacket",
+    "brand": "Steav",
+    "price": 385.00,
+    "description": "Full-grain leather biker jacket with satin lining and asymmetrical zip.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80"
+    ],
+    "colors": ["Black", "Brown"],
+    "sizes": ["M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.9
+  },
+  {
+    "id": "11",
+    "name": "Slim Fit Polo Shirt",
+    "brand": "Steav",
+    "price": 59.00,
+    "description": "Classic pique cotton polo with a modern slim fit.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "https://images.unsplash.com/photo-1598033129183-c4f50d736b10?w=600&q=80"
+    ],
+    "colors": ["Navy", "White", "Olive", "Black"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.3
+  },
+  {
+    "id": "12",
+    "name": "Wide-Leg Denim Jeans",
+    "brand": "Steav",
+    "price": 128.00,
+    "description": "Selvedge denim wide-leg jeans with a relaxed, contemporary drape.",
+    "categoryId": "Pants",
+    "imageUrl": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
+      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80"
+    ],
+    "colors": ["Indigo", "Black", "Light Wash"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.4
+  },
+  {
+    "id": "13",
+    "name": "Trench Coat",
+    "brand": "Steav",
+    "price": 275.00,
+    "description": "Classic double-breasted trench in water-resistant cotton gabardine.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80"
+    ],
+    "colors": ["Beige", "Navy", "Black"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.6
+  },
+  {
+    "id": "14",
+    "name": "Leather Crossbody Bag",
+    "brand": "Steav",
+    "price": 120.00,
+    "description": "Compact crossbody in pebbled leather with adjustable strap.",
+    "categoryId": "Bags",
+    "imageUrl": "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80"
+    ],
+    "colors": ["Black", "Brown"],
+    "sizes": ["One Size"],
+    "isNew": true,
+    "rating": 4.5
+  },
+  {
+    "id": "15",
+    "name": "Printed Cuban Shirt",
+    "brand": "Steav",
+    "price": 68.00,
+    "description": "Relaxed-fit Cuban collar shirt in a seasonal botanical print.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80",
+      "https://images.unsplash.com/photo-1598033129183-c4f50d736b10?w=600&q=80",
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80"
+    ],
+    "colors": ["Green Print", "Blue Print"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.2
+  },
+  {
+    "id": "16",
+    "name": "Leather Derby Shoes",
+    "brand": "Steav",
+    "price": 230.00,
+    "description": "Goodyear-welted derby shoes in polished calfskin leather.",
+    "categoryId": "Shoes",
+    "imageUrl": "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&q=80",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80"
+    ],
+    "colors": ["Oxblood", "Black", "Brown"],
+    "sizes": ["39", "40", "41", "42", "43"],
+    "isNew": false,
+    "rating": 4.8
+  },
+  {
+    "id": "17",
+    "name": "Cashmere Beanie",
+    "brand": "Steav",
+    "price": 55.00,
+    "description": "Ribbed cashmere beanie with a soft, luxurious hand feel.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=600&q=80",
+      "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?w=600&q=80",
+      "https://images.unsplash.com/photo-1601924638867-3a6de6b7a500?w=600&q=80"
+    ],
+    "colors": ["Charcoal", "Camel", "Navy"],
+    "sizes": ["One Size"],
+    "isNew": false,
+    "rating": 4.4
+  },
+  {
+    "id": "18",
+    "name": "Linen-Blend Blazer",
+    "brand": "Steav",
+    "price": 175.00,
+    "description": "Unstructured linen-blend blazer with patch pockets and a natural shoulder.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80"
+    ],
+    "colors": ["Tan", "Navy", "Light Grey"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true,
+    "rating": 4.5
+  },
+  {
+    "id": "19",
+    "name": "Japanese Selvedge Jeans",
+    "brand": "Steav",
+    "price": 155.00,
+    "description": "Raw Japanese selvedge denim in a straight fit. Fades beautifully over time.",
+    "categoryId": "Pants",
+    "imageUrl": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80",
+      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80"
+    ],
+    "colors": ["Raw Indigo", "Black"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.7
+  },
+  {
+    "id": "20",
+    "name": "Minimalist Sneakers",
+    "brand": "Steav",
+    "price": 130.00,
+    "description": "Clean, minimalist sneakers in Italian calf leather with a Margom sole.",
+    "categoryId": "Shoes",
+    "imageUrl": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&q=80",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80"
+    ],
+    "colors": ["White", "Black", "Grey"],
+    "sizes": ["39", "40", "41", "42", "43"],
+    "isNew": true,
+    "rating": 4.6
+  },
+  {
+    "id": "21",
+    "name": "Quilted Gilet Vest",
+    "brand": "Steav",
+    "price": 145.00,
+    "description": "Lightweight quilted gilet with stand collar and snap-button closure.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80",
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80"
+    ],
+    "colors": ["Navy", "Olive", "Black"],
+    "sizes": ["M", "L", "XL"],
+    "isNew": false,
+    "rating": 4.3
+  },
+  {
+    "id": "22",
+    "name": "Silk Tie Set",
+    "brand": "Steav",
+    "price": 65.00,
+    "description": "Hand-finished silk tie with a subtle jacquard pattern.",
+    "categoryId": "Shirts",
+    "imageUrl": "https://images.unsplash.com/photo-1589756823695-278bc923f548?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1589756823695-278bc923f548?w=600&q=80",
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80"
+    ],
+    "colors": ["Navy", "Burgundy", "Forest Green"],
+    "sizes": ["One Size"],
+    "isNew": false,
+    "rating": 4.5
+  },
+  {
+    "id": "23",
+    "name": "Leather Backpack",
+    "brand": "Steav",
+    "price": 185.00,
+    "description": "Full-grain leather backpack with padded laptop compartment.",
+    "categoryId": "Bags",
+    "imageUrl": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80",
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80"
+    ],
+    "colors": ["Brown", "Black"],
+    "sizes": ["One Size"],
+    "isNew": false,
+    "rating": 4.6
+  },
+  {
+    "id": "24",
+    "name": "Cashmere Scarf",
+    "brand": "Steav",
+    "price": 75.00,
+    "description": "Brushed cashmere scarf with fringed edges in a timeless herringbone weave.",
+    "categoryId": "Outerwear",
+    "imageUrl": "https://images.unsplash.com/photo-1601924638867-3a6de6b7a500?w=600&q=80",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1601924638867-3a6de6b7a500?w=600&q=80",
+      "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?w=600&q=80",
+      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=600&q=80"
+    ],
+    "colors": ["Grey Herringbone", "Camel"],
+    "sizes": ["One Size"],
+    "isNew": true,
+    "rating": 4.8
+  }
+]

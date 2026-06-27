@@ -15,7 +15,7 @@ class PressBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        color: AppColors.white,
+        color: AppColors.surface(context),
         padding: const EdgeInsets.symmetric(vertical: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -24,15 +24,8 @@ class PressBanner extends StatelessWidget {
                 (p) => Text(
                   p.$1,
                   style: p.$2
-                      ? AppTypography.serif(
-                          15,
-                          color: AppColors.monoBlack.withValues(alpha: 0.5),
-                        )
-                      : AppTypography.sans(
-                          11,
-                          color: AppColors.monoBlack.withValues(alpha: 0.4),
-                          letterSpacing: 1.2,
-                        ),
+                      ? AppTypography.serif(15, color: AppColors.monoBlack.withValues(alpha: 0.5))
+                      : AppTypography.sans(11, color: AppColors.monoBlack.withValues(alpha: 0.4), letterSpacing: 1.2),
                 ),
               )
               .toList(),

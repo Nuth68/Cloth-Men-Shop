@@ -1,0 +1,68 @@
+[
+  {
+    "id": "1",
+    "code": "SUMMER30",
+    "title": "Summer Sale",
+    "description": "30% off all summer collection items",
+    "discountPercent": 30,
+    "minOrder": 0,
+    "expiresInDays": 5,
+    "isActive": true,
+    "category": "Seasonal"
+  },
+  {
+    "id": "2",
+    "code": "FIRST15",
+    "title": "First Order",
+    "description": "15% off your first purchase",
+    "discountPercent": 15,
+    "minOrder": 50,
+    "expiresInDays": 30,
+    "isActive": true,
+    "category": "Welcome"
+  },
+  {
+    "id": "3",
+    "code": "FREESHIP",
+    "title": "Free Shipping",
+    "description": "Free shipping on orders over $100",
+    "discountPercent": 0,
+    "minOrder": 100,
+    "expiresInDays": 10,
+    "isActive": true,
+    "category": "Shipping"
+  },
+  {
+    "id": "4",
+    "code": "VIP20",
+    "title": "VIP Member",
+    "description": "20% off for VIP loyalty members",
+    "discountPercent": 20,
+    "minOrder": 0,
+    "expiresInDays": 15,
+    "isActive": true,
+    "category": "Loyalty"
+  },
+  {
+    "id": "5",
+    "code": "OUTER25",
+    "title": "Outerwear Special",
+    "description": "25% off all outerwear coats and jackets",
+    "discountPercent": 25,
+    "minOrder": 150,
+    "expiresInDays": 7,
+    "isActive": true,
+    "category": "Category"
+  },
+  {
+    "id": "6",
+    "code": "WEEKEND10",
+    "title": "Weekend Flash",
+    "description": "$10 off any purchase this weekend only",
+    "discountPercent": 0,
+    "minOrder": 75,
+    "expiresInDays": 2,
+    "isActive": false,
+    "category": "Flash"
+  }
+]

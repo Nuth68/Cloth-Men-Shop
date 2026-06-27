@@ -77,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
     return FadeTransition(
       opacity: _screenFadeOut,
       child: Scaffold(
-        backgroundColor: AppColors.monoOffWhite,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
           child: AnimatedBuilder(
             animation: _controller,

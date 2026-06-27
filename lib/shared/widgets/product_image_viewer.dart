@@ -78,6 +78,58 @@ class _ProductImageViewerState extends State<ProductImageViewer> {
             },
           ),
         ),
+        if (widget.imageUrls.length > 1) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 56,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: widget.imageUrls.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final isSelected = _currentPage == index;
+                return GestureDetector(
+                  onTap: () => _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  ),
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrls[index],
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) =>
+                            ShimmerLoading.banner(height: 56),
+                        errorWidget: (_, __, ___) => Container(
+                          decoration: AppDecorations.imagePlaceholder,
+                          child: const Icon(
+                            Icons.image_not_supported_outlined,
+                            size: 20,
+                            color: AppColors.monoGrey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
         if (widget.showDots && widget.imageUrls.length > 1) ...[
           const SizedBox(height: 12),
           Row(

@@ -7,15 +7,15 @@ class AppDecorations {
 
   // ── Cards ──
 
-  static BoxDecoration get card => BoxDecoration(
-        color: AppColors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
+  static BoxDecoration card(BuildContext context) => BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         border: Border.all(color: AppColors.monoDivider, width: 0.5),
       );
 
-  static BoxDecoration get cardElevated => BoxDecoration(
-        color: AppColors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
+  static BoxDecoration cardElevated(BuildContext context) => BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),

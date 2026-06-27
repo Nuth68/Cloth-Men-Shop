@@ -1,0 +1,80 @@
+[
+  {
+    "id": "1",
+    "name": "Steav Flagship - Toul Kork",
+    "address": "123 Street 289, Toul Kork, Phnom Penh",
+    "distance": 0.3,
+    "rating": 4.8,
+    "hours": "9:00 AM - 9:00 PM",
+    "phone": "+855 12 345 678",
+    "lat": 11.5760,
+    "lng": 104.8980,
+    "isOpenNow": true,
+    "hasTryOn": true
+  },
+  {
+    "id": "2",
+    "name": "Steav - Aeon Mall 1",
+    "address": "132 Sothearos Blvd, Tonle Bassac, Phnom Penh",
+    "distance": 2.5,
+    "rating": 4.6,
+    "hours": "10:00 AM - 10:00 PM",
+    "phone": "+855 12 456 789",
+    "lat": 11.5470,
+    "lng": 104.9200,
+    "isOpenNow": true,
+    "hasTryOn": true
+  },
+  {
+    "id": "3",
+    "name": "Steav - BKK1 Boutique",
+    "address": "45 Street 51, BKK1, Phnom Penh",
+    "distance": 4.2,
+    "rating": 4.5,
+    "hours": "10:00 AM - 8:00 PM",
+    "phone": "+855 12 567 890",
+    "lat": 11.5500,
+    "lng": 104.9160,
+    "isOpenNow": true,
+    "hasTryOn": false
+  },
+  {
+    "id": "4",
+    "name": "Steav - Siem Reap Heritage",
+    "address": "88 Pokambor Ave, Krong Siem Reap",
+    "distance": 8.5,
+    "rating": 4.7,
+    "hours": "10:00 AM - 9:00 PM",
+    "phone": "+855 12 678 901",
+    "lat": 13.3633,
+    "lng": 103.8564,
+    "isOpenNow": false,
+    "hasTryOn": true
+  },
+  {
+    "id": "5",
+    "name": "Steav - Battambang Outlet",
+    "address": "12 Street 3, Krong Battambang",
+    "distance": 12.0,
+    "rating": 4.3,
+    "hours": "9:00 AM - 7:00 PM",
+    "phone": "+855 12 789 012",
+    "lat": 13.0957,
+    "lng": 103.2022,
+    "isOpenNow": false,
+    "hasTryOn": false
+  },
+  {
+    "id": "6",
+    "name": "Steav - Sihanoukville Beach",
+    "address": "5 Serendipity Road, Krong Preah Sihanouk",
+    "distance": 15.0,
+    "rating": 4.4,
+    "hours": "10:00 AM - 8:00 PM",
+    "phone": "+855 12 890 123",
+    "lat": 10.6253,
+    "lng": 103.5239,
+    "isOpenNow": false,
+    "hasTryOn": false
+  }
+]

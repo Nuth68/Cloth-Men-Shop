@@ -1,0 +1,98 @@
+[
+  {
+    "id": "1",
+    "userName": "Sopheap M.",
+    "avatar": "SM",
+    "rating": 5,
+    "date": "2026-06-15",
+    "comment": "Perfect fit! The fabric quality is exceptional. Will buy more colors.",
+    "verifiedPurchase": true,
+    "size": "M",
+    "color": "White",
+    "fitFeedback": "true_to_size"
+  },
+  {
+    "id": "2",
+    "userName": "David T.",
+    "avatar": "DT",
+    "rating": 4,
+    "date": "2026-06-12",
+    "comment": "Really nice shirt, but the sleeves run slightly long for me. Otherwise great quality.",
+    "verifiedPurchase": true,
+    "size": "L",
+    "color": "Blue",
+    "fitFeedback": "runs_large"
+  },
+  {
+    "id": "3",
+    "userName": "Sreyneang K.",
+    "avatar": "SK",
+    "rating": 5,
+    "date": "2026-06-10",
+    "comment": "Beautiful craftsmanship. The stitching is impeccable and the material feels premium.",
+    "verifiedPurchase": true,
+    "size": "S",
+    "color": "Navy",
+    "fitFeedback": "true_to_size"
+  },
+  {
+    "id": "4",
+    "userName": "James R.",
+    "avatar": "JR",
+    "rating": 2,
+    "date": "2026-06-08",
+    "comment": "Color was slightly different from the photos online. Not bad quality but disappointed with the shade.",
+    "verifiedPurchase": true,
+    "size": "M",
+    "color": "Olive",
+    "fitFeedback": "true_to_size"
+  },
+  {
+    "id": "5",
+    "userName": "Bopha C.",
+    "avatar": "BC",
+    "rating": 5,
+    "date": "2026-06-05",
+    "comment": "My husband loves this! Bought it for our anniversary dinner and he looked stunning.",
+    "verifiedPurchase": true,
+    "size": "L",
+    "color": "Charcoal",
+    "fitFeedback": "true_to_size"
+  },
+  {
+    "id": "6",
+    "userName": "Michael L.",
+    "avatar": "ML",
+    "rating": 3,
+    "date": "2026-06-02",
+    "comment": "Decent quality but the sizing runs small. Had to exchange for a size up.",
+    "verifiedPurchase": true,
+    "size": "M",
+    "color": "Black",
+    "fitFeedback": "runs_small"
+  },
+  {
+    "id": "7",
+    "userName": "Sopanha Y.",
+    "avatar": "SY",
+    "rating": 4,
+    "date": "2026-05-28",
+    "comment": "Great everyday piece. Comfortable and washes well. Would recommend.",
+    "verifiedPurchase": true,
+    "size": "XL",
+    "color": "Beige",
+    "fitFeedback": "true_to_size"
+  },
+  {
+    "id": "8",
+    "userName": "Alex P.",
+    "avatar": "AP",
+    "rating": 1,
+    "date": "2026-05-25",
+    "comment": "Seam came undone after first wash. Expected better quality for the price point.",
+    "verifiedPurchase": true,
+    "size": "L",
+    "color": "Navy",
+    "fitFeedback": "true_to_size"
+  }
+]

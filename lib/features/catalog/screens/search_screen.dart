@@ -1,11 +1,21 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/haptics.dart';
+import '../../../shared/widgets/shimmer_loading.dart';
+import '../../../shared/widgets/loading_indicator.dart';
 import '../../../data/models/product_model.dart';
-import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/models/cart_item_model.dart';
 import '../../../data/datasources/local/cache_service.dart';
+import '../../../data/datasources/remote/graphql_service.dart';
+import '../../../data/repositories/product_repository.dart';
 import '../../../core/constants/api_config.dart';
-import '../widgets/product_card.dart';
+import '../../cart/bloc/cart_bloc.dart';
+import '../../cart/bloc/cart_event.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,212 +25,157 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final _searchCtrl = TextEditingController();
-  Timer? _debounce;
-
+  final _focusNode = FocusNode();
   List<ProductModel> _results = [];
   bool _loading = false;
+  bool _hasSearched = false;
 
-  String _selectedSize = '';
-  String _selectedFit = '';
-  String _selectedColor = '';
-
-  final _sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  final _fits = ['True to Size', 'Runs Small', 'Runs Large'];
-  final _colors = ['Black', 'White', 'Navy', 'Grey', 'Brown', 'Beige'];
+  static const _recent = ['Blazer', 'Merino', 'Boots', 'Cashmere', 'Linen Shirt', 'Trench Coat'];
 
   @override
-  void dispose() {
-    _searchCtrl.dispose();
-    _debounce?.cancel();
-    super.dispose();
-  }
+  void initState() { super.initState(); _focusNode.requestFocus(); }
 
-  void _onSearchChanged(String query) {
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 300), () => _search(query));
-  }
+  @override
+  void dispose() { _searchCtrl.dispose(); _focusNode.dispose(); super.dispose(); }
 
   Future<void> _search(String query) async {
-    if (query.trim().isEmpty) {
-      setState(() => _results = []);
-      return;
-    }
-
+    if (query.trim().isEmpty) { setState(() { _results = []; _hasSearched = false; }); return; }
     setState(() => _loading = true);
     try {
       final cache = CacheService();
       final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
-      final res = await gql.query(
-        r'''query searchProducts($query: String!) {
-          searchProducts(query: $query) {
-            id name description price imageUrl categoryId sizes colors fit isNew
-          }
-        }''',
-        variables: {'query': query},
-      );
-
-      if (res.data != null) {
-        final list = res.data!['searchProducts'] as List<dynamic>? ?? [];
-        setState(() {
-          _results = list
-              .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-              .where((p) {
-            if (_selectedSize.isNotEmpty && !p.sizes.contains(_selectedSize)) return false;
-            if (_selectedFit.isNotEmpty && p.fit != _selectedFit) return false;
-            if (_selectedColor.isNotEmpty && !p.colors.contains(_selectedColor)) return false;
-            return true;
-          }).toList();
-        });
-      }
-    } catch (_) {
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  void _reapplyFilters() {
-    if (_searchCtrl.text.trim().isNotEmpty) {
-      _search(_searchCtrl.text.trim());
-    }
+      final repo = ProductRepository(gql);
+      final all = await repo.getProducts();
+      final filtered = all.where((p) =>
+        p.name.toLowerCase().contains(query.toLowerCase()) ||
+        p.brand.toLowerCase().contains(query.toLowerCase())
+      ).toList();
+      if (mounted) setState(() { _results = filtered; _loading = false; _hasSearched = true; });
+    } catch (_) { if (mounted) setState(() => _loading = false); }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F1EF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: TextField(
-          controller: _searchCtrl,
-          autofocus: true,
-          onChanged: _onSearchChanged,
-          style: const TextStyle(fontSize: 16, color: Color(0xFF0D0D0D)),
-          cursorColor: const Color(0xFF0D0D0D),
-          decoration: InputDecoration(
-            hintText: 'Search suits, shirts...',
-            hintStyle: TextStyle(color: Colors.grey.shade400),
-            border: InputBorder.none,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor, elevation: 0,
+        title: Container(
+          height: 42,
+          decoration: BoxDecoration(color: AppColors.monoLightGrey.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(12)),
+          child: TextField(
+            controller: _searchCtrl, focusNode: _focusNode, autofocus: true,
+            onChanged: _search,
+            style: AppTypography.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface),
+            cursorColor: AppColors.monoBlack,
+            decoration: InputDecoration(
+              hintText: l10n.translate('searchHint'), hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.monoGrey),
+              prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.monoGrey),
+              suffixIcon: _searchCtrl.text.isNotEmpty
+                  ? IconButton(icon: const Icon(Icons.close, size: 18, color: AppColors.monoGrey),
+                      onPressed: () => setState(() { _searchCtrl.clear(); _results.clear(); _hasSearched = false; }))
+                  : null,
+              border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF0D0D0D)),
-          onPressed: () => context.pop(),
-        ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+      body: _loading
+          ? Padding(padding: const EdgeInsets.all(16), child: LoadingIndicator.shimmerProductGrid(count: 6))
+          : _hasSearched && _results.isEmpty
+              ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.search_off, size: 48, color: AppColors.monoGrey),
+                  const SizedBox(height: 12),
+                  Text(l10n.translate('noResultsFound'), style: AppTypography.bodyMedium.copyWith(color: AppColors.monoGrey)),
+                ]))
+              : _hasSearched
+                  ? _buildResults()
+                  : _buildRecent(),
+    );
+  }
+
+  Widget _buildRecent() {
+    final l10n = AppLocalizations.of(context);
+    return SingleChildScrollView(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(l10n.translate('recentSearches'), style: AppTypography.labelSmall.copyWith(letterSpacing: 1.5, color: AppColors.monoGrey)),
+      const SizedBox(height: 12),
+      Wrap(spacing: 8, runSpacing: 8, children: _recent.map((q) => _Pill(icon: Icons.history, text: q, onTap: () { _searchCtrl.text = q; _search(q); })).toList()),
+      const SizedBox(height: 32),
+      Text(l10n.translate('trending'), style: AppTypography.labelSmall.copyWith(letterSpacing: 1.5, color: AppColors.monoGrey)),
+      const SizedBox(height: 12),
+      Wrap(spacing: 8, runSpacing: 8, children: ['New Arrivals', 'Outerwear', 'Sale', 'Best Sellers', 'Formal'].map((q) => _Pill(icon: Icons.trending_up, text: q, onTap: () { _searchCtrl.text = q; _search(q); })).toList()),
+    ]));
+  }
+
+  Widget _buildResults() {
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: _results.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (_, i) {
+        final p = _results[i];
+        return GestureDetector(
+          onTap: () => context.push('/product-detail', extra: p),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: AppColors.surface(context), borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.monoDivider, width: 0.5)),
+            child: Row(children: [
+              Stack(
                 children: [
-                  _FilterChipGroup(
-                    label: 'Size',
-                    options: _sizes,
-                    selected: _selectedSize,
-                    onSelected: (v) {
-                      setState(() => _selectedSize = v);
-                      _reapplyFilters();
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  _FilterChipGroup(
-                    label: 'Fit',
-                    options: _fits,
-                    selected: _selectedFit,
-                    onSelected: (v) {
-                      setState(() => _selectedFit = v);
-                      _reapplyFilters();
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  _FilterChipGroup(
-                    label: 'Color',
-                    options: _colors,
-                    selected: _selectedColor,
-                    onSelected: (v) {
-                      setState(() => _selectedColor = v);
-                      _reapplyFilters();
-                    },
+                  ClipRRect(borderRadius: BorderRadius.circular(8), child: SizedBox(width: 80, height: 80,
+                    child: CachedNetworkImage(imageUrl: p.imageUrl, fit: BoxFit.cover,
+                      placeholder: (_, __) => ShimmerLoading.productCard(width: 80, height: 80),
+                      errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey)))),
+                  Positioned(
+                    bottom: 4, right: 4,
+                    child: GestureDetector(
+                      onTap: () {
+                        AppHaptics.medium();
+                        final cartBloc = context.read<CartBloc>();
+                        cartBloc.add(AddToCart(CartItemModel(id: p.id, product: p, selectedSize: p.sizes.isNotEmpty ? p.sizes.first : 'M', selectedColor: p.colors.isNotEmpty ? p.colors.first : '')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${p.name} added to cart'), duration: const Duration(seconds: 1), behavior: SnackBarBehavior.floating));
+                      },
+                      child: Container(width: 28, height: 28, decoration: BoxDecoration(color: AppColors.monoBlack, borderRadius: BorderRadius.circular(6)),
+                        child: const Icon(Icons.add_shopping_cart, color: AppColors.white, size: 14)),
+                    ),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(p.brand, style: AppTypography.labelSmall.copyWith(color: AppColors.monoGrey, letterSpacing: 1.5)),
+                const SizedBox(height: 2),
+                Text(p.name, style: AppTypography.sans(14, weight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 6),
+                Text('\$${p.price.toStringAsFixed(0)}', style: AppTypography.price.copyWith(fontSize: 15)),
+              ])),
+              const Icon(Icons.chevron_right, color: AppColors.monoGrey, size: 20),
+            ]),
           ),
-          Expanded(
-            child: _loading
-                ? const Center(child: CircularProgressIndicator())
-                : _results.isEmpty
-                    ? const Center(
-                        child: Text('No results found',
-                            style: TextStyle(color: Color(0xFF888888))),
-                      )
-                    : GridView.builder(
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.65,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
-                        itemCount: _results.length,
-                        itemBuilder: (_, i) => ProductCard(
-                          product: _results[i],
-                          onTap: () => context.push('/product-detail',
-                              extra: _results[i]),
-                        ),
-                      ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
-class _FilterChipGroup extends StatelessWidget {
-  final String label;
-  final List<String> options;
-  final String selected;
-  final ValueChanged<String> onSelected;
-
-  const _FilterChipGroup({
-    required this.label,
-    required this.options,
-    required this.selected,
-    required this.onSelected,
-  });
+class _Pill extends StatelessWidget {
+  final IconData icon; final String text; final VoidCallback onTap;
+  const _Pill({required this.icon, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('$label: ',
-            style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF888888))),
-        ...options.map((opt) {
-          final sel = opt == selected;
-          return Padding(
-            padding: const EdgeInsets.only(right: 4),
-            child: ChoiceChip(
-              label: Text(opt, style: const TextStyle(fontSize: 11)),
-              selected: sel,
-              onSelected: (_) => onSelected(sel ? '' : opt),
-              selectedColor: const Color(0xFF0D0D0D),
-              backgroundColor: Colors.white,
-              labelStyle: TextStyle(
-                color: sel ? Colors.white : const Color(0xFF0D0D0D),
-                fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-              ),
-              visualDensity: VisualDensity.compact,
-            ),
-          );
-        }),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(color: AppColors.monoLightGrey.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(20)),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 14, color: AppColors.monoGrey),
+          const SizedBox(width: 6),
+          Text(text, style: AppTypography.bodySmall.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+        ]),
+      ),
     );
   }
 }

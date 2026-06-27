@@ -28,6 +28,9 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
         size: event.size,
         color: event.color,
         fit: event.fit,
+        minPrice: event.minPrice,
+        maxPrice: event.maxPrice,
+        brands: event.brands,
       );
       emit(CatalogLoaded(products));
     } catch (e) {

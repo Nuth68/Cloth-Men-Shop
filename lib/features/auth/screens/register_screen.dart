@@ -10,6 +10,7 @@ import '../../../data/datasources/local/cache_service.dart';
 import '../../../core/constants/api_config.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/animated_list_item.dart';
@@ -82,19 +83,20 @@ class _RegisterFormState extends State<_RegisterForm> {
   bool _obscure = true;
 
   void _register() {
+    final l10n = AppLocalizations.of(context);
     final name = widget.nameCtrl.text.trim();
     final email = widget.emailCtrl.text.trim();
     final password = widget.passCtrl.text;
     final confirm = widget.confirmPassCtrl.text;
     if (name.isEmpty || email.isEmpty || password.isEmpty || confirm.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
+        SnackBar(content: Text(l10n.translate('pleaseFillAllFields'))),
       );
       return;
     }
     if (password != confirm) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
+        SnackBar(content: Text(l10n.translate('passwordsDoNotMatch'))),
       );
       return;
     }
@@ -105,9 +107,10 @@ class _RegisterFormState extends State<_RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: AppColors.monoOffWhite,
-      body: SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(top: false, 
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,12 +124,12 @@ class _RegisterFormState extends State<_RegisterForm> {
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: AnimatedColumn(
                   children: [
-                    Text('CREATE ACCOUNT',
+                    Text(l10n.translate('createAccount'),
                         style: AppTypography.displayMedium.copyWith(
                             letterSpacing: 2.5)),
                     const SizedBox(height: 14),
                     Text(
-                      'Join the archive. Fill in the details below.',
+                      l10n.translate('theArchive'),
                       textAlign: TextAlign.center,
                       style: AppTypography.bodyMedium.copyWith(
                           color: const Color(0xFF555555), letterSpacing: 0.1),
@@ -140,25 +143,25 @@ class _RegisterFormState extends State<_RegisterForm> {
                 child: AnimatedColumn(
                   children: [
                     CustomTextField(
-                        label: 'FULL NAME',
-                        hint: 'John Doe',
+                        label: l10n.translate('fullName'),
+                        hint: l10n.translate('fullNameHint'),
                         controller: widget.nameCtrl),
                     const SizedBox(height: 28),
                     CustomTextField(
-                        label: 'EMAIL ADDRESS',
-                        hint: 'archive@Steav Fashion.com',
+                        label: l10n.translate('email'),
+                        hint: l10n.translate('emailHint'),
                         controller: widget.emailCtrl,
                         keyboardType: TextInputType.emailAddress),
                     const SizedBox(height: 28),
                     CustomTextField(
-                        label: 'PASSWORD',
-                        hint: '••••••••',
+                        label: l10n.translate('password'),
+                        hint: l10n.translate('passwordHint'),
                         controller: widget.passCtrl,
                         obscure: _obscure),
                     const SizedBox(height: 28),
                     CustomTextField(
-                      label: 'CONFIRM PASSWORD',
-                      hint: '••••••••',
+                      label: l10n.translate('password'),
+                      hint: l10n.translate('passwordHint'),
                       controller: widget.confirmPassCtrl,
                       obscure: _obscure,
                       suffixIcon: GestureDetector(
@@ -188,11 +191,11 @@ class _RegisterFormState extends State<_RegisterForm> {
                           ? CrossFadeState.showSecond
                           : CrossFadeState.showFirst,
                       firstChild: CustomButton(
-                        label: 'CREATE ACCOUNT',
+                        label: l10n.translate('createAccount'),
                         onPressed: _register,
                       ),
-                      secondChild: const CustomButton(
-                        label: 'CREATING ACCOUNT...',
+                      secondChild: CustomButton(
+                        label: l10n.translate('signingIn'),
                         isLoading: true,
                       ),
                     );
@@ -203,7 +206,7 @@ class _RegisterFormState extends State<_RegisterForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Already have an account?  ',
+                  Text(l10n.translate('alreadyHaveAccount'),
                       style: AppTypography.bodyMedium.copyWith(
                           color: const Color(0xFF555555),
                           letterSpacing: 0.1)),
@@ -211,14 +214,14 @@ class _RegisterFormState extends State<_RegisterForm> {
                     onTap: () => context.go('/login'),
                     child: Column(
                       children: [
-                        Text('SIGN IN',
+                        Text(l10n.translate('signIn'),
                             style: AppTypography.bodyMedium.copyWith(
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.5)),
                         const SizedBox(height: 1),
                         Container(
                             height: 1,
-                            color: AppColors.monoBlack,
+
                             width: 60),
                       ],
                     ),
@@ -228,7 +231,7 @@ class _RegisterFormState extends State<_RegisterForm> {
               const SizedBox(height: 18),
               GestureDetector(
                 onTap: () => context.go('/home'),
-                child: Text('GUEST CHECKOUT',
+                child: Text(l10n.translate('guestCheckout'),
                     style: AppTypography.bodySmall.copyWith(
                         color: const Color(0xFF777777),
                         letterSpacing: 1.5)),

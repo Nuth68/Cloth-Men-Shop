@@ -46,16 +46,22 @@ class ProductRepository {
     String? size,
     String? color,
     String? fit,
+    double minPrice = 0,
+    double maxPrice = 500,
+    List<String> brands = const [],
   }) async {
     const query = '''
-      query FilterProducts(\$sizes: [String!], \$color: String, \$fit: String) {
-        products(sizes: \$sizes, color: \$color, fit: \$fit) { $_productFields }
+      query FilterProducts(\$sizes: [String!], \$color: String, \$fit: String, \$minPrice: Float, \$maxPrice: Float, \$brands: [String!]) {
+        products(sizes: \$sizes, color: \$color, fit: \$fit, minPrice: \$minPrice, maxPrice: \$maxPrice, brands: \$brands) { $_productFields }
       }
     ''';
     final res = await _gql.query(query, variables: {
       if (size != null) 'sizes': [size],
       if (color != null) 'color': color,
       if (fit != null) 'fit': fit,
+      'minPrice': minPrice,
+      'maxPrice': maxPrice,
+      if (brands.isNotEmpty) 'brands': brands,
     });
     final list = res.data!['products'] as List<dynamic>;
     return list

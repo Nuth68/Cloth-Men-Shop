@@ -8,16 +8,16 @@ import '../../core/theme/app_colors.dart';
 class SteavFashionLogo extends StatelessWidget {
   final double markSize;
   final double gap;
-  final Color color;
   final bool showSubtitle;
   final double wordmarkSize;
   final double wordmarkSpacing;
+  final Color? color;
 
   const SteavFashionLogo({
     super.key,
     this.markSize = 40,
     this.gap = 12,
-    this.color = AppColors.monoBlack,
+    this.color,
     this.showSubtitle = false,
     this.wordmarkSize = 16,
     this.wordmarkSpacing = 6,
@@ -28,7 +28,7 @@ class SteavFashionLogo extends StatelessWidget {
     return SteavFashionLogo(
       markSize: 24,
       gap: 8,
-      color: color ?? AppColors.monoBlack,
+      color: color,
       wordmarkSize: 13,
       wordmarkSpacing: 3,
     );
@@ -39,7 +39,7 @@ class SteavFashionLogo extends StatelessWidget {
     return SteavFashionLogo(
       markSize: 44,
       gap: 14,
-      color: color ?? AppColors.monoBlack,
+      color: color,
       wordmarkSize: 18,
       wordmarkSpacing: 4,
       showSubtitle: true,
@@ -51,7 +51,7 @@ class SteavFashionLogo extends StatelessWidget {
     return SteavFashionLogo(
       markSize: 64,
       gap: 18,
-      color: color ?? AppColors.monoBlack,
+      color: color,
       wordmarkSize: 24,
       wordmarkSpacing: 8,
       showSubtitle: true,
@@ -60,13 +60,14 @@ class SteavFashionLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = color ?? Theme.of(context).colorScheme.onSurface;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // SF geometric mark
         CustomPaint(
           size: Size(markSize, markSize),
-          painter: _SFMarkPainter(color: color),
+          painter: _SFMarkPainter(color: c),
         ),
         SizedBox(height: gap),
         // Wordmark
@@ -76,7 +77,7 @@ class SteavFashionLogo extends StatelessWidget {
             fontFamily: 'Helvetica Neue',
             fontSize: wordmarkSize,
             fontWeight: FontWeight.w700,
-            color: color,
+            color: c,
             letterSpacing: wordmarkSpacing,
           ),
         ),
@@ -85,7 +86,7 @@ class SteavFashionLogo extends StatelessWidget {
           Container(
             width: markSize * 0.5,
             height: 1,
-            color: color.withValues(alpha: 0.4),
+            color: c.withValues(alpha: 0.4),
           ),
         ],
       ],

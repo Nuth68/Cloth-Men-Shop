@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/theme_bloc.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/language_bloc.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
 import '../../../shared/widgets/loading_indicator.dart';
@@ -27,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
         final repo = AuthRepository(gql, cache);
         return ProfileBloc(repo)..add(const LoadProfile());
       },
-      child: const _ProfileView(),
+      child: _ProfileView(),
     );
   }
 }
@@ -37,16 +40,25 @@ class _ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to locale changes so the entire profile page rebuilds when language switches
+    final locale = context.watch<LanguageCubit>().state;
     return Scaffold(
-      backgroundColor: AppColors.monoOffWhite,
-      body: SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(top: false, 
         child: BlocBuilder<ProfileBloc, ProfileState>(
+          key: ValueKey('profile_${locale.languageCode}'),
           builder: (context, state) {
+            final l10n = AppLocalizations.of(context);
             if (state is ProfileLoading) {
-              return const Column(
+              return Column(
                 children: [
-                  MonographHeader(),
-                  Expanded(child: LoadingIndicator()),
+                  MonographHeader(
+                    onSearch: () => context.push('/search'),
+                    onBag: () => context.push('/cart'),
+                    onNotification: () => context.push('/notifications'),
+                    elevated: true,
+                  ),
+                  const Expanded(child: LoadingIndicator()),
                 ],
               );
             }
@@ -58,7 +70,12 @@ class _ProfileView extends StatelessWidget {
 
             return Column(
               children: [
-                const MonographHeader(),
+                MonographHeader(
+                  onSearch: () => context.push('/search'),
+                  onBag: () => context.push('/cart'),
+                  onNotification: () => context.push('/notifications'),
+                  elevated: true,
+                ),
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -66,29 +83,39 @@ class _ProfileView extends StatelessWidget {
                       const SizedBox(height: 8),
                       _ProfileCard(name: userName, email: userEmail),
                       const SizedBox(height: 28),
-                      _SettingsGroup(title: 'Account', items: [
-                        _SettingItem(icon: Icons.person_outline, label: 'Edit Profile', onTap: () => context.push('/edit-profile')),
-                        _SettingItem(icon: Icons.location_on_outlined, label: 'Shipping Addresses', onTap: () => context.push('/address')),
-                        _SettingItem(icon: Icons.credit_card_outlined, label: 'Payment Methods', onTap: () => context.push('/payment')),
+                      _SettingsGroup(title: l10n.translate('account'), items: [
+                        _SettingItem(icon: Icons.location_on_outlined, label: l10n.translate('shippingAddress'), onTap: () => context.push('/address')),
+                        _SettingItem(icon: Icons.credit_card_outlined, label: l10n.translate('paymentMethods'), onTap: () => context.push('/payment')),
                       ]),
                       const SizedBox(height: 6),
-                      _SettingsGroup(title: 'Shopping', items: [
-                        _SettingItem(icon: Icons.shopping_bag_outlined, label: 'Orders', onTap: () => context.push('/orders')),
-                        _SettingItem(icon: Icons.favorite_outline, label: 'Wishlist', onTap: () => context.push('/wishlist')),
+                      _SettingsGroup(title: l10n.translate('shopping'), items: [
+                        _SettingItem(icon: Icons.shopping_bag_outlined, label: l10n.translate('orders'), onTap: () => context.push('/orders')),
+                        _SettingItem(icon: Icons.favorite_outline, label: l10n.translate('wishlist'), onTap: () => context.push('/wishlist')),
+                        _SettingItem(icon: Icons.star_outline, label: l10n.translate('reviews'), onTap: () => context.push('/reviews')),
+                        _SettingItem(icon: Icons.local_offer_outlined, label: l10n.translate('promotions'), onTap: () => context.push('/promotions')),
                       ]),
                       const SizedBox(height: 6),
-                      _SettingsGroup(title: 'Preferences', items: [
-                        _SettingItem(icon: Icons.notifications_outlined, label: 'Notifications', onTap: () {}),
-                        _SettingItem(icon: Icons.lock_outline, label: 'Privacy', onTap: () {}),
+                      _SettingsGroup(title: l10n.translate('discover'), items: [
+                        _SettingItem(icon: Icons.map_outlined, label: l10n.translate('storeLocations'), onTap: () => context.push('/map')),
                       ]),
                       const SizedBox(height: 6),
-                      _SettingsGroup(title: 'Support', items: [
-                        _SettingItem(icon: Icons.help_outline, label: 'Help Center', onTap: () {}),
-                        _SettingItem(icon: Icons.info_outline, label: 'About', onTap: () {}),
+                      _SettingsGroup(title: l10n.translate('preferences'), items: [
+                        _SettingItem(icon: Icons.notifications_outlined, label: l10n.translate('notifications'), onTap: () => context.push('/notifications')),
+                        _SettingItem(icon: Icons.lock_outline, label: l10n.translate('privacy'), onTap: () => context.push('/info', extra: _privacyData(l10n))),
+                      ]),
+                      const SizedBox(height: 6),
+                      _SettingsGroup(title: l10n.translate('appearance'), items: [
+                        _DarkModeToggle(),
+                        _LanguageSelector(),
+                      ]),
+                      const SizedBox(height: 6),
+                      _SettingsGroup(title: l10n.translate('support'), items: [
+                        _SettingItem(icon: Icons.help_outline, label: l10n.translate('helpCenter'), onTap: () => context.push('/info', extra: _helpData(l10n))),
+                        _SettingItem(icon: Icons.info_outline, label: l10n.translate('about'), onTap: () => context.push('/info', extra: _aboutData(l10n))),
                       ]),
                       const SizedBox(height: 28),
                       _LogoutButton(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -100,10 +127,20 @@ class _ProfileView extends StatelessWidget {
     );
   }
 
+  Map<String, String> _privacyData(AppLocalizations l10n) => {'title': l10n.translate('privacy'), 'type': 'privacy'};
+  Map<String, String> _helpData(AppLocalizations l10n) => {'title': l10n.translate('helpCenter'), 'type': 'help'};
+  Map<String, String> _aboutData(AppLocalizations l10n) => {'title': l10n.translate('about'), 'type': 'about'};
+
   Widget _buildGuestView(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
-        const MonographHeader(),
+        MonographHeader(
+          onSearch: () => context.push('/search'),
+          onBag: () => context.push('/cart'),
+          onNotification: () => context.push('/notifications'),
+          elevated: true,
+        ),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -112,7 +149,7 @@ class _ProfileView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: AppColors.surface(context),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.monoDivider, width: 0.5),
                 ),
@@ -120,22 +157,28 @@ class _ProfileView extends StatelessWidget {
                   children: [
                     const Icon(Icons.person_outline, size: 64, color: AppColors.monoGrey),
                     const SizedBox(height: 20),
-                    Text('Welcome to Your Archive', style: AppTypography.heading2.copyWith(color: AppColors.monoBlack), textAlign: TextAlign.center),
+                    Text(l10n.translate('welcomeArchive'), style: AppTypography.heading2.copyWith(color: Theme.of(context).colorScheme.onSurface), textAlign: TextAlign.center),
                     const SizedBox(height: 12),
-                    Text('Sign in to access your profile, orders, and saved items.', style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey), textAlign: TextAlign.center),
+                    Text(l10n.translate('signInPrompt'), style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey), textAlign: TextAlign.center),
                     const SizedBox(height: 28),
-                    CustomButton(label: 'SIGN IN', onPressed: () => context.go('/login')),
+                    CustomButton(label: l10n.translate('signIn'), onPressed: () => context.go('/login')),
                     const SizedBox(height: 12),
-                    CustomButton.outline(label: 'CREATE ACCOUNT', onPressed: () => context.go('/register')),
+                    CustomButton.outline(label: l10n.translate('createAccount'), onPressed: () => context.go('/register')),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-              _SettingsGroup(title: 'Support', items: [
-                _SettingItem(icon: Icons.help_outline, label: 'Help Center', onTap: () {}),
-                _SettingItem(icon: Icons.info_outline, label: 'About', onTap: () {}),
+              const SizedBox(height: 6),
+              _SettingsGroup(title: l10n.translate('appearance'), items: [
+                _DarkModeToggle(),
+                _LanguageSelector(),
               ]),
-              const SizedBox(height: 32),
+              const SizedBox(height: 6),
+              _SettingsGroup(title: l10n.translate('support'), items: [
+                _SettingItem(icon: Icons.help_outline, label: l10n.translate('helpCenter'), onTap: () {}),
+                _SettingItem(icon: Icons.info_outline, label: l10n.translate('about'), onTap: () {}),
+              ]),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -147,6 +190,7 @@ class _ProfileView extends StatelessWidget {
 class _LogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
@@ -154,10 +198,10 @@ class _LogoutButton extends StatelessWidget {
           AppHaptics.medium();
           final cache = CacheService();
           await cache.clearToken();
-          context.go('/login');
+          if (context.mounted) context.go('/login');
         },
         icon: const Icon(Icons.logout, size: 18),
-        label: const Text('Log Out'),
+        label: Text(l10n.translate('logout')),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.monoGrey,
           side: const BorderSide(color: AppColors.monoDivider),
@@ -178,7 +222,7 @@ class _ProfileCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.monoDivider, width: 0.5),
       ),
@@ -194,7 +238,7 @@ class _ProfileCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
+                Text(name, style: AppTypography.heading2.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 2),
                 Text(email, style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey)),
               ],
@@ -212,7 +256,7 @@ class _ProfileCard extends StatelessWidget {
 
 class _SettingsGroup extends StatelessWidget {
   final String title;
-  final List<_SettingItem> items;
+  final List<Widget> items;
   const _SettingsGroup({required this.title, required this.items});
 
   @override
@@ -226,7 +270,7 @@ class _SettingsGroup extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.surface(context),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.monoDivider, width: 0.5),
           ),
@@ -242,6 +286,109 @@ class _SettingsGroup extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DarkModeToggle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeCubit>().state == ThemeMode.dark;
+    return InkWell(
+      onTap: () => context.read<ThemeCubit>().toggle(),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              size: 20,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context).translate('darkMode'),
+                style: AppTypography.bodyLarge.copyWith(color: Theme.of(context).colorScheme.onSurface),
+              ),
+            ),
+            Switch.adaptive(
+              value: isDark,
+              onChanged: (_) => context.read<ThemeCubit>().toggle(),
+              activeTrackColor: isDark ? AppColors.brass : AppColors.monoBlack,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageSelector extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.watch<LanguageCubit>().state;
+    final langName = {
+      'km': 'ភាសាខ្មែរ',
+      'en': 'English',
+    }[locale.languageCode] ?? 'ភាសាខ្មែរ';
+    return InkWell(
+      onTap: () => _showLanguagePicker(context),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(Icons.language_outlined, size: 20, color: Theme.of(context).colorScheme.onSurface),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(AppLocalizations.of(context).translate('language'), style: AppTypography.bodyLarge.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+            ),
+            Text(langName, style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey)),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, size: 20, color: Theme.of(context).colorScheme.onSurface),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2))),
+              const SizedBox(height: 16),
+              Text(AppLocalizations.of(context).translate('selectLanguage'), style: AppTypography.heading2),
+              const SizedBox(height: 8),
+              _langOption(context, 'ភាសាខ្មែរ', const Locale('km')),
+              _langOption(context, 'English', const Locale('en')),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _langOption(BuildContext context, String label, Locale locale) {
+    final active = context.read<LanguageCubit>().state == locale;
+    return ListTile(
+      title: Text(label),
+      trailing: active ? Icon(Icons.check, color: Theme.of(context).colorScheme.onSurface) : null,
+      onTap: () {
+        context.read<LanguageCubit>().setLocale(locale);
+        context.pop();
+      },
     );
   }
 }
@@ -264,10 +411,10 @@ class _SettingItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.monoGrey),
+            Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurface),
             const SizedBox(width: 14),
-            Expanded(child: Text(label, style: AppTypography.bodyLarge.copyWith(color: AppColors.monoBlack))),
-            const Icon(Icons.chevron_right, size: 20, color: AppColors.monoGrey),
+            Expanded(child: Text(label, style: AppTypography.bodyLarge.copyWith(color: Theme.of(context).colorScheme.onSurface))),
+            Icon(Icons.chevron_right, size: 20, color: Theme.of(context).colorScheme.onSurface),
           ],
         ),
       ),

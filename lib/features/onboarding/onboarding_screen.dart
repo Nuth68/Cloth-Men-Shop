@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/l10n/app_localizations.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../data/datasources/local/cache_service.dart';
 
@@ -16,26 +17,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  static const _slides = [
-    _Slide(
-      title: 'The Archive\nAwaits',
-      subtitle:
-          'Discover meticulously curated pieces designed to outlast the season.',
-      icon: Icons.archive_outlined,
-    ),
-    _Slide(
-      title: 'Your Personal\nStylist',
-      subtitle:
-          'Book one-on-one consultations with expert stylists who understand your language.',
-      icon: Icons.design_services_outlined,
-    ),
-    _Slide(
-      title: 'Crafted to\nPerfection',
-      subtitle:
-          'Every piece is a documented study in silhouette, material, and movement.',
-      icon: Icons.auto_awesome_outlined,
-    ),
-  ];
+  List<_Slide> _buildSlides(AppLocalizations l10n) => [
+        _Slide(
+          title: l10n.translate('slideArchiveTitle'),
+          subtitle: l10n.translate('slideArchiveSubtitle'),
+          icon: Icons.archive_outlined,
+        ),
+        _Slide(
+          title: l10n.translate('slideStylistTitle'),
+          subtitle: l10n.translate('slideStylistSubtitle'),
+          icon: Icons.design_services_outlined,
+        ),
+        _Slide(
+          title: l10n.translate('slideCraftedTitle'),
+          subtitle: l10n.translate('slideCraftedSubtitle'),
+          icon: Icons.auto_awesome_outlined,
+        ),
+      ];
 
   @override
   void dispose() {
@@ -45,9 +43,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final slides = _buildSlides(l10n);
     return Scaffold(
-      backgroundColor: AppColors.monoOffWhite,
-      body: SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(top: false, 
         child: Column(
           children: [
             // Skip button
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: () => context.go('/login'),
-                child: Text('SKIP',
+                child: Text(l10n.translate('skip'),
                     style: AppTypography.labelSmall.copyWith(
                         color: AppColors.monoGrey)),
               ),
@@ -66,9 +66,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _pageController,
                 onPageChanged: (i) =>
                     setState(() => _currentPage = i),
-                itemCount: _slides.length,
+                itemCount: slides.length,
                 itemBuilder: (_, i) {
-                  final slide = _slides[i];
+                  final slide = slides[i];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40),
@@ -77,13 +77,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Icon(slide.icon,
                             size: 72,
-                            color: AppColors.monoBlack),
+                           ),
                         const SizedBox(height: 48),
                         Text(slide.title,
                             textAlign: TextAlign.center,
                             style: AppTypography.displayLarge
                                 .copyWith(
-                                    color: AppColors.monoBlack,
+
                                     letterSpacing: 2)),
                         const SizedBox(height: 20),
                         Text(slide.subtitle,
@@ -101,7 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             // Dots
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_slides.length, (i) {
+              children: List.generate(slides.length, (i) {
                 return AnimatedContainer(
                   duration:
                       const Duration(milliseconds: 200),
@@ -124,11 +124,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 32, vertical: 16),
               child: CustomButton(
-                label: _currentPage == _slides.length - 1
-                    ? 'GET STARTED'
-                    : 'NEXT',
+                label: _currentPage == slides.length - 1
+                    ? l10n.translate('getStarted')
+                    : l10n.translate('next'),
                 onPressed: () async {
-                  if (_currentPage < _slides.length - 1) {
+                  if (_currentPage < slides.length - 1) {
                     _pageController.nextPage(
                       duration:
                           const Duration(milliseconds: 400),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../shared/widgets/monograph_header.dart';
-import '../../../shared/widgets/shimmer_loading.dart';
 
 class StylistBookingScreen extends StatefulWidget {
   const StylistBookingScreen({super.key});
@@ -14,28 +14,47 @@ class StylistBookingScreen extends StatefulWidget {
 }
 
 class _StylistBookingScreenState extends State<StylistBookingScreen> {
-  final PageController _pageCtrl = PageController(viewportFraction: 0.85);
-  int _selectedStylist = 0;
-  int _selectedDayIndex = 0;
-  int _selectedTimeIndex = -1;
+  final _pageCtrl = PageController(viewportFraction: 0.85);
+  int _selStylist = 0;
+  int _selDay = 0;
+  int _selTime = -1;
 
-  static final List<_Stylist> _stylists = [
-    _Stylist("Julian Vane", "Bespoke Tailoring", "15 yrs · 4.9 ★ · 230 sessions",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
-        "Trained at Savile Row. Specializes in precision-fit blazers, overcoats, and formal evening wear."),
-    _Stylist("Elena Rossi", "Casual Luxe", "8 yrs · 4.8 ★ · 184 sessions",
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80",
-        "Effortless elevated casual. Expert in Italian knitwear, denim curation, and relaxed silhouettes."),
-    _Stylist("Marcus Thorne", "Archive & Vintage", "12 yrs · 5.0 ★ · 97 sessions",
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80",
-        "Rare archival sourcing. Curates one-of-a-kind statement pieces from private collections worldwide."),
+  static final _stylists = [
+    _S(
+      "Julian Vane",
+      "Bespoke Tailoring",
+      "15 yrs · 4.9 · 230",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500",
+      "Savile Row trained. Precision blazers and formal wear.",
+    ),
+    _S(
+      "Elena Rossi",
+      "Casual Luxe",
+      "8 yrs · 4.8 · 184",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500",
+      "Italian knitwear, denim curation, relaxed silhouettes.",
+    ),
+    _S(
+      "Marcus Thorne",
+      "Archive & Vintage",
+      "12 yrs · 5.0 · 97",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500",
+      "Rare archival sourcing. Statement pieces worldwide.",
+    ),
   ];
 
-  static final _times = ["09:00", "10:00", "11:00", "13:00", "14:30", "16:00", "17:30"];
-  static final _weekDays = ["M", "T", "W", "T", "F", "S", "S"];
-
-  // Generate next 10 days
-  List<DateTime> get _nextDays => List.generate(10, (i) => DateTime.now().add(Duration(days: i)));
+  static final _times = [
+    "09:00",
+    "10:00",
+    "11:00",
+    "13:00",
+    "14:30",
+    "16:00",
+    "17:30",
+  ];
+  static final _wd = ["M", "T", "W", "T", "F", "S", "S"];
+  List<DateTime> get _days =>
+      List.generate(10, (i) => DateTime.now().add(Duration(days: i)));
 
   @override
   void dispose() {
@@ -44,39 +63,46 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
+    final l10n = AppLocalizations.of(ctx);
+    final d = Theme.of(ctx).brightness == Brightness.dark;
+    final bg = d ? AppColors.darkBg : AppColors.monoOffWhite;
+    final sf = d ? AppColors.darkCard : AppColors.white;
+    final tx = d ? AppColors.white : AppColors.monoBlack;
+    final sb = d ? AppColors.brass : AppColors.monoBlack;
+    final st = d ? AppColors.monoBlack : AppColors.white;
+
     return Scaffold(
-      backgroundColor: AppColors.monoOffWhite,
-      body: SafeArea(
+      backgroundColor: bg,
+      body: SafeArea(top: false, 
         child: Column(
           children: [
-            const MonographHeader(elevated: true),
+            MonographHeader(
+              onSearch: () => context.push('/search'),
+              onBag: () => context.push('/cart'),
+              onNotification: () => context.push('/notifications'),
+              elevated: true,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 8),
-                    // ── Section heading ──
-                    _sectionTitle("SELECT YOUR STYLIST"),
+                    _lbl(l10n.translate('selectStylist')),
                     const SizedBox(height: 14),
-                    // ── Stylist carousel ──
-                    _buildStylistCarousel(),
+                    _carousel(d, bg, tx),
                     const SizedBox(height: 28),
-                    // ── Date picker ──
-                    _sectionTitle("SELECT DATE"),
+                    _lbl(l10n.translate('selectDate')),
                     const SizedBox(height: 14),
-                    _buildDateStrip(),
+                    _dates(d, sf, tx, sb, st),
                     const SizedBox(height: 28),
-                    // ── Time slots ──
-                    _sectionTitle("SELECT TIME"),
+                    _lbl(l10n.translate('selectTime')),
                     const SizedBox(height: 14),
-                    _buildTimeGrid(),
+                    _times_(d, sf, tx, sb, st),
                     const SizedBox(height: 32),
-                    // ── Session summary card ──
-                    _buildSummary(),
+                    _summary(d, sf, tx),
                     const SizedBox(height: 28),
-                    // ── Book button ──
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: SizedBox(
@@ -85,32 +111,43 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             AppHaptics.heavy();
-                            final s = _stylists[_selectedStylist];
-                            final date = _nextDays[_selectedDayIndex];
-                            final time = _times[_selectedTimeIndex.clamp(0, _times.length - 1)];
-                            context.push('/stylist-chat', extra: {
-                              'conversationId': 'conv_${s.name}',
-                              'stylistName': s.name,
-                              'stylistAvatarUrl': s.imageUrl,
-                              'stylistSpecialty': '${s.specialty.toUpperCase()} STYLIST',
-                              'appointmentDate': '${date.day}/${date.month} at $time',
-                            });
+                            final s = _stylists[_selStylist];
+                            final day = _days[_selDay];
+                            final t =
+                                _times[_selTime.clamp(0, _times.length - 1)];
+                            context.push(
+                              '/stylist-chat',
+                              extra: {
+                                'conversationId': 'conv_${s.n}',
+                                'stylistName': s.n,
+                                'stylistAvatarUrl': s.img,
+                                'stylistSpecialty':
+                                    '${s.sp.toUpperCase()} ${l10n.translate('expertStylist')}',
+                              },
+                            );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.monoBlack,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: d
+                                ? AppColors.brass
+                                : AppColors.monoBlack,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             elevation: 0,
                           ),
                           child: Text(
-                            (_selectedTimeIndex >= 0)
-                                ? 'BOOK · ${_weekDays[_nextDays[_selectedDayIndex].weekday - 1]} ${_nextDays[_selectedDayIndex].day} at ${_times[_selectedTimeIndex]}'
-                                : 'BOOK APPOINTMENT',
-                            style: AppTypography.button.copyWith(color: AppColors.white, letterSpacing: 2),
+                            _selTime >= 0
+                                ? '${l10n.translate('bookAppointment')} · ${_wd[_days[_selDay].weekday - 1]} ${_days[_selDay].day} at ${_times[_selTime]}'
+                                : l10n.translate('bookAppointment'),
+                            style: AppTypography.button.copyWith(
+                              color: d ? AppColors.monoBlack : AppColors.white,
+                              letterSpacing: 2,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -121,16 +158,19 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
     );
   }
 
-  Widget _sectionTitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20),
-      child: Text(text,
-          style: AppTypography.labelSmall.copyWith(letterSpacing: 2, color: AppColors.monoGrey)),
-    );
-  }
+  Widget _lbl(String t) => Padding(
+    padding: const EdgeInsets.only(left: 20),
+    child: Text(
+      t,
+      style: AppTypography.labelSmall.copyWith(
+        letterSpacing: 2,
+        color: AppColors.monoGrey,
+      ),
+    ),
+  );
 
-  // ── Stylist carousel ──
-  Widget _buildStylistCarousel() {
+  Widget _carousel(bool d, Color bg, Color tx) {
+    final l10n = AppLocalizations.of(context);
     return SizedBox(
       height: 340,
       child: PageView.builder(
@@ -138,11 +178,11 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
         itemCount: _stylists.length,
         onPageChanged: (i) {
           AppHaptics.selection();
-          setState(() => _selectedStylist = i);
+          setState(() => _selStylist = i);
         },
         itemBuilder: (_, i) {
           final s = _stylists[i];
-          final selected = i == _selectedStylist;
+          final sel = i == _selStylist;
           return AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             margin: EdgeInsets.only(
@@ -154,14 +194,23 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
             child: GestureDetector(
               onTap: () {
                 AppHaptics.selection();
-                _pageCtrl.animateToPage(i, duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
-                setState(() => _selectedStylist = i);
+                _pageCtrl.animateToPage(
+                  i,
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeOutCubic,
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: selected
-                      ? [BoxShadow(color: AppColors.monoBlack.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 4))]
+                  boxShadow: sel
+                      ? [
+                          BoxShadow(
+                            color: AppColors.monoBlack.withValues(alpha: 0.12),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
                       : null,
                 ),
                 child: ClipRRect(
@@ -170,59 +219,97 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                     fit: StackFit.expand,
                     children: [
                       CachedNetworkImage(
-                        imageUrl: s.imageUrl,
+                        imageUrl: s.img,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => ShimmerLoading.banner(height: 340),
-                        errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey),
+                        errorWidget: (_, __, ___) =>
+                            Container(color: AppColors.monoLightGrey),
                       ),
-                      // Gradient overlay
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.85)],
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.85),
+                            ],
                             stops: const [0.5, 1.0],
                           ),
                         ),
                       ),
-                      // Selected indicator
-                      if (selected)
+                      if (sel)
                         Positioned(
-                          top: 12, right: 12,
+                          top: 12,
+                          right: 12,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Text("SELECTED", style: AppTypography.labelSmall.copyWith(color: AppColors.monoBlack, fontWeight: FontWeight.w700)),
+                            child: Text(
+                              l10n.translate('selected'),
+                              style: AppTypography.labelSmall.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
                         ),
-                      // Info
                       Positioned(
-                        left: 20, right: 20, bottom: 24,
+                        left: 20,
+                        right: 20,
+                        bottom: 24,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(s.name,
-                                style: AppTypography.serif(22, weight: FontWeight.w700, color: AppColors.white)),
+                            Text(
+                              s.n,
+                              style: AppTypography.serif(
+                                22,
+                                weight: FontWeight.w700,
+                                color: AppColors.white,
+                              ),
+                            ),
                             const SizedBox(height: 4),
-                            Text(s.specialty.toUpperCase(),
-                                style: AppTypography.labelSmall.copyWith(color: AppColors.brass, letterSpacing: 2)),
+                            Text(
+                              s.sp.toUpperCase(),
+                              style: AppTypography.labelSmall.copyWith(
+                                color: AppColors.brass,
+                                letterSpacing: 2,
+                              ),
+                            ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.star, size: 12, color: AppColors.brass),
+                                const Icon(
+                                  Icons.star,
+                                  size: 12,
+                                  color: AppColors.brass,
+                                ),
                                 const SizedBox(width: 4),
-                                Text(s.stats,
-                                    style: AppTypography.bodySmall.copyWith(color: Colors.white70)),
+                                Text(
+                                  s.st,
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: Colors.white70,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Text(s.bio, maxLines: 2, overflow: TextOverflow.ellipsis,
-                                style: AppTypography.bodySmall.copyWith(color: Colors.white54, height: 1.4)),
+                            Text(
+                              s.bio,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: Colors.white54,
+                                height: 1.4,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -237,49 +324,74 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
     );
   }
 
-  // ── Date strip ──
-  Widget _buildDateStrip() {
-    final days = _nextDays;
-    const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  Widget _dates(bool d, Color sf, Color tx, Color sb, Color st) {
+    final m = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
+    ];
     return SizedBox(
       height: 82,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: days.length,
+        itemCount: _days.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (_, i) {
-          final d = days[i];
-          final sel = i == _selectedDayIndex;
+          final day = _days[i];
+          final sel = i == _selDay;
           return GestureDetector(
             onTap: () {
               AppHaptics.selection();
-              setState(() => _selectedDayIndex = i);
+              setState(() => _selDay = i);
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: 64,
               decoration: BoxDecoration(
-                color: sel ? AppColors.monoBlack : AppColors.white,
+                color: sel ? sb : sf,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: sel ? AppColors.monoBlack : AppColors.monoDivider),
+                border: Border.all(color: sel ? sb : AppColors.monoDivider),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(_weekDays[d.weekday - 1],
-                      style: AppTypography.labelSmall.copyWith(
-                          color: sel ? Colors.white70 : AppColors.monoGrey,
-                          fontWeight: FontWeight.w600)),
+                  Text(
+                    _wd[day.weekday - 1],
+                    style: AppTypography.labelSmall.copyWith(
+                      color: sel
+                          ? (d ? AppColors.monoBlack : Colors.white70)
+                          : AppColors.monoGrey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 6),
-                  Text("${d.day}",
-                      style: AppTypography.heading2.copyWith(
-                          color: sel ? AppColors.white : AppColors.monoBlack,
-                          fontSize: 20)),
+                  Text(
+                    "${day.day}",
+                    style: AppTypography.heading2.copyWith(
+                      color: sel ? st : tx,
+                      fontSize: 20,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(months[d.month - 1],
-                      style: AppTypography.labelSmall.copyWith(
-                          color: sel ? Colors.white54 : AppColors.monoGrey, fontSize: 9)),
+                  Text(
+                    m[day.month - 1],
+                    style: AppTypography.labelSmall.copyWith(
+                      color: sel
+                          ? (d ? AppColors.monoBlack : Colors.white54)
+                          : AppColors.monoGrey,
+                      fontSize: 9,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -289,33 +401,34 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
     );
   }
 
-  // ── Time grid ──
-  Widget _buildTimeGrid() {
+  Widget _times_(bool d, Color sf, Color tx, Color sb, Color st) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
         spacing: 10,
         runSpacing: 10,
         children: List.generate(_times.length, (i) {
-          final sel = i == _selectedTimeIndex;
+          final sel = i == _selTime;
           return GestureDetector(
             onTap: () {
               AppHaptics.selection();
-              setState(() => _selectedTimeIndex = i);
+              setState(() => _selTime = i);
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
               decoration: BoxDecoration(
-                color: sel ? AppColors.monoBlack : AppColors.white,
+                color: sel ? sb : sf,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: sel ? AppColors.monoBlack : AppColors.monoDivider),
+                border: Border.all(color: sel ? sb : AppColors.monoDivider),
               ),
-              child: Text(_times[i],
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: sel ? AppColors.white : AppColors.monoBlack,
-                    fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                  )),
+              child: Text(
+                _times[i],
+                style: AppTypography.bodyMedium.copyWith(
+                  color: sel ? st : tx,
+                  fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
             ),
           );
         }),
@@ -323,17 +436,17 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
     );
   }
 
-  // ── Session summary ──
-  Widget _buildSummary() {
-    final s = _stylists[_selectedStylist];
-    final d = _nextDays[_selectedDayIndex];
-    final time = _selectedTimeIndex >= 0 ? _times[_selectedTimeIndex] : null;
+  Widget _summary(bool d, Color sf, Color tx) {
+    final l10n = AppLocalizations.of(context);
+    final s = _stylists[_selStylist];
+    final day = _days[_selDay];
+    final t = _selTime >= 0 ? _times[_selTime] : null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: sf,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.monoDivider),
         ),
@@ -342,9 +455,15 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
-                imageUrl: s.imageUrl, width: 56, height: 56, fit: BoxFit.cover,
-                placeholder: (_, __) => const SizedBox(width: 56, height: 56),
-                errorWidget: (_, __, ___) => Container(width: 56, height: 56, color: AppColors.monoLightGrey),
+                imageUrl: s.img,
+                width: 56,
+                height: 56,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) => Container(
+                  width: 56,
+                  height: 56,
+                  color: AppColors.monoLightGrey,
+                ),
               ),
             ),
             const SizedBox(width: 14),
@@ -352,24 +471,38 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("60 min Consultation", style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
+                  Text(
+                    l10n.translate('minConsultation'),
+                    style: AppTypography.heading2.copyWith(color: tx),
+                  ),
                   const SizedBox(height: 2),
-                  Text("with ${s.name}", style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey)),
-                  if (time != null) ...[
+                  Text(
+                    '${l10n.translate('with')} ${s.n}',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.monoGrey,
+                    ),
+                  ),
+                  if (t != null) ...[
                     const SizedBox(height: 4),
-                    Text("${_weekDays[d.weekday - 1]} ${d.day}/${d.month} · $time",
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.brass, fontWeight: FontWeight.w600)),
+                    Text(
+                      "${_wd[day.weekday - 1]} ${day.day}/${day.month} · $t",
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.brass,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ],
               ),
             ),
             Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: AppColors.monoLightGrey.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.videocam_outlined, size: 18, color: AppColors.monoBlack),
+              child: const Icon(Icons.videocam_outlined, size: 18),
             ),
           ],
         ),
@@ -378,8 +511,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
   }
 }
 
-// ── Data class ──
-class _Stylist {
-  final String name, specialty, stats, imageUrl, bio;
-  const _Stylist(this.name, this.specialty, this.stats, this.imageUrl, this.bio);
+class _S {
+  final String n, sp, st, img, bio;
+  const _S(this.n, this.sp, this.st, this.img, this.bio);
 }

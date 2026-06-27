@@ -17,7 +17,7 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.surface(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
@@ -48,7 +48,7 @@ class ProductCard extends StatelessWidget {
                       right: 8,
                       bottom: 8,
                       child: Material(
-                        color: AppColors.white,
+                        color: AppColors.surface(context),
                         shape: const CircleBorder(),
                         elevation: 2,
                         child: InkWell(
@@ -56,14 +56,14 @@ class ProductCard extends StatelessWidget {
                             // Quick-add to cart
                           },
                           borderRadius: BorderRadius.circular(20),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 16,
-                              color: AppColors.monoBlack,
-                            ),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.shopping_bag_outlined,
+                          size: 16,
+                         
+                        ),
+                      ),
                         ),
                       ),
                     ),
@@ -81,7 +81,7 @@ class ProductCard extends StatelessWidget {
                     style: AppTypography.sans(
                       13,
                       weight: FontWeight.w500,
-                      color: AppColors.monoBlack,
+                     
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

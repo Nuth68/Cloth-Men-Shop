@@ -47,7 +47,7 @@ class _FitGuideWidgetState extends State<FitGuideWidget> {
           'Fit',
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w500,
-            color: AppColors.monoBlack,
+           
           ),
         ),
         const SizedBox(height: 8),

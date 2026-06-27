@@ -21,11 +21,11 @@ class PhilosophySection extends StatelessWidget {
             fit: BoxFit.cover,
             placeholder: (_, __) => ShimmerLoading.banner(height: 260),
             errorWidget: (_, __, ___) =>
-                Container(color: AppColors.monoBlack),
+                Container(color: Theme.of(context).colorScheme.onSurface),
           ),
         ),
         Container(
-          color: AppColors.monoOffWhite,
+          color: AppColors.background(context),
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 36),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class PhilosophySection extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.monoBlack),
+                    border: Border.all(color: Theme.of(context).colorScheme.onSurface),
                   ),
                   child: Text(
                     'READ OUR MANIFESTO',

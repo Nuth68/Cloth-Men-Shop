@@ -5,9 +5,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../../../shared/widgets/loading_indicator.dart';
 import '../../../shared/widgets/animated_list_item.dart';
+import '../../../shared/widgets/monograph_header.dart';
 import '../../../data/models/order_model.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
@@ -39,64 +41,69 @@ class _OrdersListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text('Orders',
-            style: AppTypography.heading2.copyWith(color: AppColors.monoBlack)),
-      ),
-      body: BlocBuilder<OrdersBloc, OrdersState>(
-        builder: (context, state) {
-          if (state is OrdersLoading) {
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: LoadingIndicator.shimmerList(count: 3),
-            );
-          }
-          if (state is OrdersError) {
-            return EmptyStateWidget(
-              state: EmptyState.error,
-              title: 'Couldn\'t load orders',
-              message: state.message,
-              actionLabel: 'Retry',
-              onAction: () =>
-                  context.read<OrdersBloc>().add(const LoadOrders()),
-            );
-          }
-          if (state is OrdersLoaded) {
-            final orders = state.orders;
-            if (orders.isEmpty) {
-              return EmptyStateWidget(
-                state: EmptyState.empty,
-                title: 'No orders yet',
-                message: 'Your purchase history will appear here.',
-                icon: Icons.receipt_long_outlined,
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<OrdersBloc>().add(const LoadOrders());
-                await Future.delayed(const Duration(milliseconds: 300));
-              },
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: orders.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (_, i) => AnimatedListItem(
-                  index: i,
-                  child: _OrderCard(order: orders[i]),
-                ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(top: false, 
+        child: Column(
+          children: [
+            MonographHeader(
+              onBack: () => context.pop(),
+              onBag: () => context.push('/cart'),
+              onNotification: () => context.push('/notifications'),
+              elevated: true,
+            ),
+            Expanded(
+              child: BlocBuilder<OrdersBloc, OrdersState>(
+                builder: (context, state) {
+                  if (state is OrdersLoading) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: LoadingIndicator.shimmerList(count: 3),
+                    );
+                  }
+                  if (state is OrdersError) {
+                    return EmptyStateWidget(
+                      state: EmptyState.error,
+                      title: l10n.translate('couldntLoadOrders'),
+                      message: state.message,
+                      actionLabel: l10n.translate('retry'),
+                      onAction: () =>
+                          context.read<OrdersBloc>().add(const LoadOrders()),
+                    );
+                  }
+                  if (state is OrdersLoaded) {
+                    final orders = state.orders;
+                    if (orders.isEmpty) {
+                      return EmptyStateWidget(
+                        state: EmptyState.empty,
+                        title: l10n.translate('noOrdersYet'),
+                        message: l10n.translate('purchaseHistory'),
+                        icon: Icons.receipt_long_outlined,
+                      );
+                    }
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<OrdersBloc>().add(const LoadOrders());
+                        await Future.delayed(const Duration(milliseconds: 300));
+                      },
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: orders.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 12),
+                        itemBuilder: (_, i) => AnimatedListItem(
+                          index: i,
+                          child: _OrderCard(order: orders[i]),
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -108,6 +115,7 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDelivered = order.status.toLowerCase() == 'delivered';
     return GestureDetector(
       onTap: () {
@@ -117,7 +125,7 @@ class _OrderCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.surface(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
@@ -144,13 +152,13 @@ class _OrderCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Order #${order.id}',
+                  Text('${l10n.translate('order')} #${order.id}',
                       style: AppTypography.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.monoBlack)),
+                         )),
                   const SizedBox(height: 4),
                   Text(
-                      '${order.items.length} item${order.items.length > 1 ? 's' : ''}',
+                      '${order.items.length} ${l10n.translate('items')}',
                       style: AppTypography.bodySmall
                           .copyWith(color: AppColors.monoGrey)),
                   const SizedBox(height: 4),
@@ -169,7 +177,7 @@ class _OrderCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                order.status.toUpperCase(),
+                l10n.translate(order.status.toLowerCase()),
                 style: AppTypography.labelSmall.copyWith(
                   color: isDelivered ? AppColors.success : AppColors.warning,
                 ),

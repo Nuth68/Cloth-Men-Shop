@@ -1,140 +1,57 @@
 import 'package:flutter/material.dart';
 
 /// Single source of truth for all text styles in the app.
-///
-/// Georgia (serif)  — display, headings, editorial moments
-/// Helvetica Neue (sans) — body, labels, buttons, UI
+/// Locale-aware: uses system fonts for Khmer, Georgia/Helvetica for others.
 class AppTypography {
   AppTypography._();
 
   static const String _serif = 'Georgia';
   static const String _sans = 'Helvetica Neue';
+  // Use system default for Khmer (iOS/Android have built-in Khmer support)
+  static const String _khmerSans = 'sans-serif';
+  static const String _khmerSerif = 'serif';
 
-  // ── Serif / Display ──
-  static const TextStyle displayLarge = TextStyle(
-    fontFamily: _serif,
-    fontSize: 28,
-    fontWeight: FontWeight.w700,
-    height: 1.18,
-    letterSpacing: 4,
-  );
+  static Locale _locale = const Locale('en');
+  static void setLocale(Locale locale) => _locale = locale;
 
-  static const TextStyle displayMedium = TextStyle(
-    fontFamily: _serif,
-    fontSize: 26,
-    fontWeight: FontWeight.w600,
-    height: 1.2,
-    letterSpacing: 2.5,
-  );
+  static bool get _isKhmer => _locale.languageCode == 'km';
 
-  static const TextStyle heading1 = TextStyle(
-    fontFamily: _serif,
-    fontSize: 22,
-    fontWeight: FontWeight.w700,
-    height: 1.2,
-  );
+  static String get serifFamily => _isKhmer ? _khmerSerif : _serif;
+  static String get sansFamily => _isKhmer ? _khmerSans : _sans;
 
-  static const TextStyle heading2 = TextStyle(
-    fontFamily: _serif,
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    height: 1.2,
-    letterSpacing: 0.5,
-  );
+  static String get primaryFont => serifFamily;
 
-  // ── Sans / Body ──
-  static const TextStyle bodyLarge = TextStyle(
-    fontFamily: _sans,
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    height: 1.5,
-  );
+  // ── Display ──
+  static TextStyle get displayLarge => TextStyle(fontFamily: serifFamily, fontSize: 28, fontWeight: FontWeight.w700, height: 1.18, letterSpacing: _isKhmer ? 1 : 4);
+  static TextStyle get displayMedium => TextStyle(fontFamily: serifFamily, fontSize: 26, fontWeight: FontWeight.w600, height: 1.2, letterSpacing: _isKhmer ? 1 : 2.5);
+  static TextStyle get heading1 => TextStyle(fontFamily: serifFamily, fontSize: 22, fontWeight: FontWeight.w700, height: 1.2);
+  static TextStyle get heading2 => TextStyle(fontFamily: serifFamily, fontSize: 18, fontWeight: FontWeight.w600, height: 1.2, letterSpacing: 0.5);
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontFamily: _sans,
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    height: 1.5,
-  );
-
-  static const TextStyle bodySmall = TextStyle(
-    fontFamily: _sans,
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    height: 1.4,
-  );
+  // ── Body ──
+  static TextStyle get bodyLarge => TextStyle(fontFamily: sansFamily, fontSize: 16, fontWeight: FontWeight.w400, height: 1.5);
+  static TextStyle get bodyMedium => TextStyle(fontFamily: sansFamily, fontSize: 14, fontWeight: FontWeight.w400, height: 1.5);
+  static TextStyle get bodySmall => TextStyle(fontFamily: sansFamily, fontSize: 12, fontWeight: FontWeight.w400, height: 1.4);
 
   // ── Labels ──
-  static const TextStyle labelLarge = TextStyle(
-    fontFamily: _sans,
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.5,
-  );
-
-  static const TextStyle labelSmall = TextStyle(
-    fontFamily: _sans,
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.8,
-  );
+  static TextStyle get labelLarge => TextStyle(fontFamily: sansFamily, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1.5);
+  static TextStyle get labelSmall => TextStyle(fontFamily: sansFamily, fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 1.8);
 
   // ── Button ──
-  static const TextStyle button = TextStyle(
-    fontFamily: _sans,
-    fontSize: 13,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.5,
-  );
+  static TextStyle get button => TextStyle(fontFamily: sansFamily, fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 1.5);
 
   // ── Price ──
-  static const TextStyle price = TextStyle(
-    fontFamily: _sans,
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-  );
+  static TextStyle get price => TextStyle(fontFamily: sansFamily, fontSize: 20, fontWeight: FontWeight.w700);
 
-  // ── Caption (backward compat) ──
-  static const TextStyle caption = bodySmall;
+  // ── Aliases ──
+  static TextStyle get caption => bodySmall;
+  static TextStyle get body => bodyLarge;
 
-  // ── Backward-compatible body alias ──
-  static const TextStyle body = bodyLarge;
-
-  // ── Helpers for easy migration ──
-  static TextStyle serif(
-    double size, {
-    FontWeight weight = FontWeight.w400,
-    Color? color,
-    double? height,
-    double? letterSpacing,
-  }) {
-    return TextStyle(
-      fontFamily: _serif,
-      fontSize: size,
-      fontWeight: weight,
-      color: color,
-      height: height,
-      letterSpacing: letterSpacing,
-    );
+  // ── Helpers ──
+  static TextStyle serif(double size, {FontWeight weight = FontWeight.w400, Color? color, double? height, double? letterSpacing}) {
+    return TextStyle(fontFamily: serifFamily, fontSize: size, fontWeight: weight, color: color, height: height, letterSpacing: letterSpacing);
   }
 
-  static TextStyle sans(
-    double size, {
-    FontWeight weight = FontWeight.w400,
-    Color? color,
-    double? height,
-    double? letterSpacing,
-  }) {
-    return TextStyle(
-      fontFamily: _sans,
-      fontSize: size,
-      fontWeight: weight,
-      color: color,
-      height: height,
-      letterSpacing: letterSpacing,
-    );
+  static TextStyle sans(double size, {FontWeight weight = FontWeight.w400, Color? color, double? height, double? letterSpacing}) {
+    return TextStyle(fontFamily: sansFamily, fontSize: size, fontWeight: weight, color: color, height: height, letterSpacing: letterSpacing);
   }
-
-  /// The primary font family for backward compatibility.
-  static const String primaryFont = _serif;
 }

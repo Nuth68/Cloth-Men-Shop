@@ -41,7 +41,7 @@ class CartItemTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.surface(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.monoDivider, width: 0.5),
         ),
@@ -77,7 +77,7 @@ class CartItemTile extends StatelessWidget {
                       item.product.name,
                       style: AppTypography.bodyMedium.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.monoBlack,
+                       
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -86,7 +86,7 @@ class CartItemTile extends StatelessWidget {
                     Text(
                       '\$${item.totalPrice.toStringAsFixed(2)}',
                       style: AppTypography.price.copyWith(
-                        color: AppColors.monoBlack,
+                       
                         fontSize: 16,
                       ),
                     ),
@@ -167,7 +167,7 @@ class _QtyButton extends StatelessWidget {
           border: Border.all(color: AppColors.monoDivider),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, size: 14, color: AppColors.monoBlack),
+        child: Icon(icon, size: 14),
       ),
     );
   }

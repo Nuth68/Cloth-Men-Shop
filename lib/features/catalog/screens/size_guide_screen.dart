@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/widgets/monograph_header.dart';
 
 const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
@@ -55,91 +58,96 @@ class _SizeGuideScreenState extends State<SizeGuideScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final data = _isMale ? _maleData : _femaleData;
     final sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
     return Scaffold(
       backgroundColor: _kBg,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: _kBlack),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text('SIZE GUIDE', style: _serif(18, w: FontWeight.w600, ls: 2)),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      body: SafeArea(top: false, 
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                _GenderTab(label: 'MALE', selected: _isMale, onTap: () => setState(() => _isMale = true)),
-                const SizedBox(width: 12),
-                _GenderTab(label: 'FEMALE', selected: !_isMale, onTap: () => setState(() => _isMale = false)),
-              ],
+            MonographHeader(
+              onBack: () => context.pop(),
+              onBag: () => context.push('/cart'),
+              onNotification: () => context.push('/notifications'),
+              elevated: true,
             ),
-            const SizedBox(height: 24),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _kDivider),
-              ),
-              child: Column(
-                children: [
-                  _TableRow(
-                    cells: [
-                      _TableCell('SIZE', isHeader: true),
-                      _TableCell('CHEST (in)', isHeader: true),
-                      _TableCell('WAIST (in)', isHeader: true),
-                      _TableCell('HIP (in)', isHeader: true),
-                      _TableCell('LENGTH (in)', isHeader: true),
-                    ],
-                    isHeader: true,
-                  ),
-                  ...sizes.map((size) {
-                    final m = data[size]!;
-                    return _TableRow(
-                      cells: [
-                        _TableCell(size),
-                        _TableCell(m['chest']!),
-                        _TableCell(m['waist']!),
-                        _TableCell(m['hip']!),
-                        _TableCell(m['length']!),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        _GenderTab(label: l10n.translate('male'), selected: _isMale, onTap: () => setState(() => _isMale = true)),
+                        const SizedBox(width: 12),
+                        _GenderTab(label: l10n.translate('female'), selected: !_isMale, onTap: () => setState(() => _isMale = false)),
                       ],
-                    );
-                  }),
-                ],
+                    ),
+                    const SizedBox(height: 24),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _kDivider),
+                      ),
+                      child: Column(
+                        children: [
+                          _TableRow(
+                            cells: [
+                              _TableCell(l10n.translate('size'), isHeader: true),
+                              _TableCell('${l10n.translate('chest')} (in)', isHeader: true),
+                              _TableCell('${l10n.translate('waist')} (in)', isHeader: true),
+                              _TableCell('${l10n.translate('hip')} (in)', isHeader: true),
+                              _TableCell('${l10n.translate('length')} (in)', isHeader: true),
+                            ],
+                            isHeader: true,
+                          ),
+                          ...sizes.map((size) {
+                            final m = data[size]!;
+                            return _TableRow(
+                              cells: [
+                                _TableCell(size),
+                                _TableCell(m['chest']!),
+                                _TableCell(m['waist']!),
+                                _TableCell(m['hip']!),
+                                _TableCell(m['length']!),
+                              ],
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Text(l10n.translate('howToMeasure'), style: _serif(18, w: FontWeight.w600, ls: 2)),
+                    const SizedBox(height: 16),
+                    _MeasureStep(
+                      number: '1',
+                      title: l10n.translate('chest'),
+                      description: l10n.translate('chestMeasure'),
+                    ),
+                    _MeasureStep(
+                      number: '2',
+                      title: l10n.translate('waist'),
+                      description: l10n.translate('waistMeasure'),
+                    ),
+                    _MeasureStep(
+                      number: '3',
+                      title: l10n.translate('hip'),
+                      description: l10n.translate('hipMeasure'),
+                    ),
+                    _MeasureStep(
+                      number: '4',
+                      title: l10n.translate('length'),
+                      description: l10n.translate('lengthMeasure'),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 32),
-            Text('HOW TO MEASURE', style: _serif(18, w: FontWeight.w600, ls: 2)),
-            const SizedBox(height: 16),
-            _MeasureStep(
-              number: '1',
-              title: 'Chest',
-              description: 'Measure around the fullest part of your chest, keeping the tape measure horizontal and snug but not tight.',
-            ),
-            _MeasureStep(
-              number: '2',
-              title: 'Waist',
-              description: 'Measure around your natural waistline, keeping the tape comfortably loose.',
-            ),
-            _MeasureStep(
-              number: '3',
-              title: 'Hip',
-              description: 'Measure around the fullest part of your hips, about 7-8 inches below your waistline.',
-            ),
-            _MeasureStep(
-              number: '4',
-              title: 'Length',
-              description: 'Measure from the top of your shoulder down to where you want the garment to end.',
-            ),
-            const SizedBox(height: 40),
           ],
         ),
       ),

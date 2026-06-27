@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/widgets/monograph_header.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
@@ -24,30 +26,27 @@ class _CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.monoBlack),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Cart',
-          style: AppTypography.heading2.copyWith(
-            color: AppColors.monoBlack,
-          ),
-        ),
-      ),
-      body: BlocBuilder<CartBloc, CartState>(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(top: false, 
+        child: Column(
+          children: [
+            MonographHeader(
+              onBack: () => context.pop(),
+              onBag: () => context.push('/cart'),
+              onNotification: () => context.push('/notifications'),
+              elevated: true,
+            ),
+            Expanded(
+              child: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
           if (state is CartInitial) {
-            return const EmptyStateWidget(
+            return EmptyStateWidget(
               state: EmptyState.empty,
-              title: 'Your cart is empty',
-              message: 'Add items to get started.',
-              actionLabel: 'Shop Now',
+              title: l10n.translate('cartEmpty'),
+              message: l10n.translate('cartEmptyMessage'),
+              actionLabel: l10n.translate('shopNow'),
               onAction: null,
               icon: Icons.shopping_bag_outlined,
             );
@@ -57,9 +56,9 @@ class _CartView extends StatelessWidget {
             if (items.isEmpty) {
               return EmptyStateWidget(
                 state: EmptyState.empty,
-                title: 'Your cart is empty',
-                message: 'Add items to get started.',
-                actionLabel: 'Shop Now',
+                title: l10n.translate('cartEmpty'),
+                message: l10n.translate('cartEmptyMessage'),
+                actionLabel: l10n.translate('shopNow'),
                 icon: Icons.shopping_bag_outlined,
                 onAction: () => context.go('/shop'),
               );
@@ -84,8 +83,8 @@ class _CartView extends StatelessWidget {
                 // Bottom checkout bar
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: AppColors.white,
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
                     border: Border(
                       top: BorderSide(color: AppColors.monoDivider),
                     ),
@@ -99,16 +98,16 @@ class _CartView extends StatelessWidget {
                               MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Total',
+                              l10n.translate('total'),
                               style: AppTypography.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.monoBlack,
+                               
                               ),
                             ),
                             Text(
                               '\$${state.total.toStringAsFixed(2)}',
                               style: AppTypography.price.copyWith(
-                                color: AppColors.monoBlack,
+                               
                               ),
                             ),
                           ],
@@ -131,9 +130,9 @@ class _CartView extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              'CHECKOUT',
+                              l10n.translate('checkout'),
                               style: AppTypography.button.copyWith(
-                                color: AppColors.white,
+                                color: AppColors.surface(context),
                               ),
                             ),
                           ),
@@ -147,6 +146,10 @@ class _CartView extends StatelessWidget {
           }
           return const SizedBox.shrink();
         },
+      ),
+            ),
+          ],
+        ),
       ),
     );
   }

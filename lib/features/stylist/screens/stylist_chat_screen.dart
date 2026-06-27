@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../bloc/chat_bloc.dart';
@@ -10,387 +11,214 @@ import '../../../data/repositories/chat_repository.dart';
 import '../../../data/models/message_model.dart';
 import '../../../data/models/product_model.dart';
 import '../../../shared/widgets/shimmer_loading.dart';
+import '../../../shared/widgets/monograph_header.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 class StylistChatScreen extends StatelessWidget {
   final String conversationId, stylistName, stylistAvatarUrl, stylistSpecialty;
-  const StylistChatScreen({
-    super.key,
-    required this.conversationId,
-    required this.stylistName,
-    this.stylistAvatarUrl = 'https://i.pravatar.cc/150?u=elena',
-    this.stylistSpecialty = 'EXPERT STYLIST',
-  });
+  const StylistChatScreen({super.key, required this.conversationId, required this.stylistName,
+    this.stylistAvatarUrl = 'https://i.pravatar.cc/150?u=elena', this.stylistSpecialty = 'EXPERT STYLIST'});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          ChatBloc(const ChatRepository())..add(LoadMessages(conversationId)),
-      child: _ChatScreenBody(
-        conversationId: conversationId,
-        stylistName: stylistName,
-        stylistAvatarUrl: stylistAvatarUrl,
-        stylistSpecialty: stylistSpecialty,
-      ),
+      create: (_) => ChatBloc(const ChatRepository())..add(LoadMessages(conversationId)),
+      child: _ChatScreenBody(conversationId: conversationId, stylistName: stylistName,
+        stylistAvatarUrl: stylistAvatarUrl, stylistSpecialty: stylistSpecialty),
     );
   }
 }
 
 class _ChatScreenBody extends StatefulWidget {
   final String conversationId, stylistName, stylistAvatarUrl, stylistSpecialty;
-  const _ChatScreenBody({
-    required this.conversationId,
-    required this.stylistName,
-    required this.stylistAvatarUrl,
-    required this.stylistSpecialty,
-  });
+  const _ChatScreenBody({required this.conversationId, required this.stylistName,
+    required this.stylistAvatarUrl, required this.stylistSpecialty});
   @override
   State<_ChatScreenBody> createState() => _ChatScreenBodyState();
 }
 
 class _ChatScreenBodyState extends State<_ChatScreenBody> {
-  final TextEditingController _messageCtrl = TextEditingController();
-  final ScrollController _scrollCtrl = ScrollController();
+  final _msgCtrl = TextEditingController();
+  final _scrollCtrl = ScrollController();
+  bool _isTyping = false;
 
   @override
-  void dispose() {
-    _messageCtrl.dispose();
-    _scrollCtrl.dispose();
-    super.dispose();
-  }
+  void dispose() { _msgCtrl.dispose(); _scrollCtrl.dispose(); super.dispose(); }
 
-  void _scrollToBottom() {
+  void _scrollDown() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollCtrl.hasClients) {
-        _scrollCtrl.animateTo(_scrollCtrl.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut);
-      }
+      if (_scrollCtrl.hasClients) _scrollCtrl.animateTo(_scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
     });
   }
 
-  void _sendMessage() {
-    final text = _messageCtrl.text.trim();
+  void _send() {
+    final text = _msgCtrl.text.trim();
     if (text.isEmpty) return;
-    context.read<ChatBloc>().add(SendMessage(
-          conversationId: widget.conversationId,
-          text: text,
-        ));
-    _messageCtrl.clear();
+    context.read<ChatBloc>().add(SendMessage(conversationId: widget.conversationId, text: text));
+    _msgCtrl.clear();
+    setState(() => _isTyping = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocConsumer<ChatBloc, ChatState>(
-      listener: (context, state) {
-        if (state is ChatLoaded) _scrollToBottom();
-      },
+      listener: (_, state) { if (state is ChatLoaded) _scrollDown(); },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            backgroundColor: AppColors.white,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back,
-                  color: AppColors.monoBlack),
-              onPressed: () => Navigator.pop(context),
-            ),
-            title: Row(
+          backgroundColor: AppColors.surface(context),
+          body: SafeArea(top: false, 
+            child: Column(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage:
-                      NetworkImage(widget.stylistAvatarUrl),
+                MonographHeader(
+                  onBack: () => context.pop(),
+                  onBag: () => context.push('/cart'),
+                  onNotification: () => context.push('/notifications'),
+                  elevated: true,
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.stylistName,
-                        style: AppTypography.heading2.copyWith(
-                            color: AppColors.monoBlack)),
-                    Row(
-                      children: [
-                        const Icon(Icons.circle,
-                            size: 8, color: AppColors.success),
-                        const SizedBox(width: 6),
-                        Text("ONLINE",
-                            style: AppTypography.bodySmall.copyWith(
-                                color: AppColors.success,
-                                fontWeight: FontWeight.w500)),
-                        const SizedBox(width: 8),
-                        Text(widget.stylistSpecialty,
-                            style: AppTypography.bodySmall.copyWith(
-                                color: AppColors.brass,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                  ],
+                // Stylist info row
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(children: [
+                    CircleAvatar(radius: 18, backgroundImage: NetworkImage(widget.stylistAvatarUrl)),
+                    const SizedBox(width: 10),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(widget.stylistName, style: AppTypography.heading2, maxLines: 1),
+                      Row(children: [
+                        const Icon(Icons.circle, size: 7, color: AppColors.success),
+                        const SizedBox(width: 4),
+                        Text(l10n.translate('online'), style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+                      ]),
+                    ])),
+                  ]),
+                ),
+                Expanded(
+                  child: state is ChatLoading
+                      ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface))
+                      : state is ChatLoaded ? _buildChat(state) : const SizedBox(),
                 ),
               ],
             ),
           ),
-          body: state is ChatLoading
-              ? const Center(child: CircularProgressIndicator())
-              : state is ChatLoaded
-                  ? _buildChatBody(state)
-                  : const SizedBox.shrink(),
         );
       },
     );
   }
 
-  Widget _buildChatBody(ChatLoaded state) {
-    return Column(
-      children: [
-        if (state.messages.isNotEmpty)
-          Center(
+  Widget _buildChat(ChatLoaded state) {
+    final l10n = AppLocalizations.of(context);
+    return Column(children: [
+      if (state.messages.isNotEmpty)
+        Center(child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          decoration: BoxDecoration(color: AppColors.monoLightGrey.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(20)),
+          child: Text(_formatDate(state.messages.first.timestamp),
+              style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey)),
+        )),
+      Expanded(
+        child: ListView.builder(
+          controller: _scrollCtrl, padding: const EdgeInsets.symmetric(horizontal: 14),
+          itemCount: state.messages.length,
+          itemBuilder: (_, i) => _buildBubble(state.messages[i]),
+        ),
+      ),
+      // Input bar
+      Container(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+        decoration: BoxDecoration(color: AppColors.surface(context), border: const Border(top: BorderSide(color: AppColors.monoDivider))),
+        child: Row(children: [
+          IconButton(icon: const Icon(Icons.image_outlined, size: 22, color: AppColors.monoGrey), onPressed: () {}),
+          Expanded(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(color: AppColors.monoLightGrey.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(24)),
+            child: TextField(
+              controller: _msgCtrl, onChanged: (_) => setState(() => _isTyping = _msgCtrl.text.isNotEmpty),
+              style: AppTypography.bodyMedium,
+              decoration: InputDecoration(hintText: l10n.translate('messageHint'), border: InputBorder.none, hintStyle: const TextStyle(color: AppColors.monoGrey)),
+              onSubmitted: (_) => _send(),
+            ),
+          )),
+          const SizedBox(width: 6),
+          GestureDetector(
+            onTap: _isTyping ? _send : null,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 16),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.monoLightGrey,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                  _formatDateHeader(
-                      state.messages.first.timestamp),
-                  style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.monoGrey,
-                      fontWeight: FontWeight.w500)),
+              width: 36, height: 36,
+              decoration: BoxDecoration(color: _isTyping ? AppColors.monoBlack : AppColors.monoLightGrey, shape: BoxShape.circle),
+              child: const Icon(Icons.send_rounded, size: 16, color: AppColors.white),
             ),
           ),
-        Expanded(
-          child: SingleChildScrollView(
-            controller: _scrollCtrl,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                ...state.messages.map(_buildMessageItem),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: const BoxDecoration(
-            color: AppColors.white,
-            border: Border(
-                top: BorderSide(color: AppColors.monoDivider)),
-          ),
-          child: Row(
-            children: [
-              IconButton(
-                  icon: const Icon(Icons.attach_file), onPressed: () {}),
-              IconButton(
-                  icon: const Icon(Icons.camera_alt_outlined),
-                  onPressed: () {}),
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: AppColors.monoLightGrey,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: TextField(
-                    controller: _messageCtrl,
-                    style: AppTypography.bodyMedium,
-                    decoration: const InputDecoration(
-                      hintText: "WRITE A MESSAGE...",
-                      border: InputBorder.none,
-                      hintStyle:
-                          TextStyle(color: AppColors.monoGrey),
-                    ),
-                    onSubmitted: (_) => _sendMessage(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed:
-                    state.isSending ? null : _sendMessage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.monoBlack,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
-                ),
-                child: Text("SEND",
-                    style: AppTypography.button.copyWith(
-                        color: AppColors.white)),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(12),
-          color: AppColors.monoOffWhite,
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.lock, size: 16, color: AppColors.monoGrey),
-              SizedBox(width: 8),
-              Text("ENCRYPTED EDITORIAL CONSULTATION",
-                  style: TextStyle(
-                      fontSize: 12, color: AppColors.monoGrey)),
-            ],
-          ),
-        ),
-      ],
-    );
+        ]),
+      ),
+    ]);
   }
 
-  Widget _buildMessageItem(MessageModel msg) {
-    if (msg.isFromStylist) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            margin: const EdgeInsets.only(right: 60),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.monoLightGrey,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (msg.product != null) ...[
-                  _buildProductCard(msg.product!),
-                  const SizedBox(height: 12),
-                ],
-                Text(msg.text,
-                    style: AppTypography.bodyLarge.copyWith(
-                        height: 1.4, color: AppColors.monoBlack)),
-                const SizedBox(height: 8),
-                Text(_formatTime(msg.timestamp),
-                    style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.monoGrey)),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+  Widget _buildBubble(MessageModel msg) {
+    final isMe = !msg.isFromStylist;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          margin: const EdgeInsets.only(left: 60),
-          padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [
+        if (msg.product != null) _buildProductCard(msg.product!),
+        Container(
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.72),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.monoBlack,
-            borderRadius: BorderRadius.circular(12),
+            color: isMe ? AppColors.monoBlack : AppColors.monoLightGrey.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(16), topRight: const Radius.circular(16),
+              bottomLeft: isMe ? const Radius.circular(16) : const Radius.circular(4),
+              bottomRight: isMe ? const Radius.circular(4) : const Radius.circular(16),
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(msg.text,
-                  style: AppTypography.bodyLarge.copyWith(
-                      height: 1.4, color: AppColors.white)),
-              const SizedBox(height: 8),
-              Text(_formatTime(msg.timestamp),
-                  style: AppTypography.bodySmall.copyWith(
-                      color: Colors.white54)),
-            ],
-          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(msg.text, style: AppTypography.bodyLarge.copyWith(height: 1.35, color: isMe ? AppColors.white : null)),
+            const SizedBox(height: 4),
+            Text(_formatTime(msg.timestamp), style: AppTypography.bodySmall.copyWith(color: isMe ? Colors.white54 : AppColors.monoGrey)),
+          ]),
         ),
-      ),
+      ]),
     );
   }
 
-  Widget _buildProductCard(ProductModel product) {
+  Widget _buildProductCard(ProductModel p) {
+    final l10n = AppLocalizations.of(context);
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.monoDivider),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12)),
-            child: SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (_, __) =>
-                    ShimmerLoading.banner(height: 200),
-                errorWidget: (_, __, ___) => Container(
-                    color: AppColors.monoLightGrey),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("NEW ARRIVAL",
-                    style: AppTypography.labelSmall.copyWith(
-                        color: AppColors.error)),
-                const SizedBox(height: 8),
-                Text(product.name,
-                    style: AppTypography.heading2.copyWith(
-                        color: AppColors.monoBlack)),
-                const SizedBox(height: 8),
-                Text(product.description,
-                    style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.monoGrey)),
-                const SizedBox(height: 12),
-                Text(
-                    "\$${product.price.toStringAsFixed(2)}",
-                    style: AppTypography.price),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.monoBlack,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 14),
-                    ),
-                    child: Text("ADD TO SELECTION",
-                        style: AppTypography.button.copyWith(
-                            color: AppColors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.only(bottom: 12),
+      width: MediaQuery.of(context).size.width * 0.72,
+      decoration: BoxDecoration(border: Border.all(color: AppColors.monoDivider), borderRadius: BorderRadius.circular(12)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(11)), child: SizedBox(height: 160, width: double.infinity,
+          child: CachedNetworkImage(imageUrl: p.imageUrl, fit: BoxFit.cover,
+            placeholder: (_, __) => ShimmerLoading.banner(height: 160),
+            errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey)))),
+        Padding(padding: const EdgeInsets.all(10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(l10n.translate('newArrivalTag'), style: AppTypography.labelSmall.copyWith(color: AppColors.error)),
+          const SizedBox(height: 6),
+          Text(p.name, style: AppTypography.heading2), const SizedBox(height: 4),
+          Text(p.description, style: AppTypography.bodySmall.copyWith(color: AppColors.monoGrey), maxLines: 2),
+          const SizedBox(height: 10),
+          Row(children: [
+            Text('\$${p.price.toStringAsFixed(0)}', style: AppTypography.price),
+            const Spacer(),
+            SizedBox(height: 34, child: ElevatedButton(
+              onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: AppColors.monoBlack, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), padding: const EdgeInsets.symmetric(horizontal: 12)),
+              child: Text(l10n.translate('addToCart'), style: AppTypography.button.copyWith(color: AppColors.white, fontSize: 11)),
+            )),
+          ]),
+        ])),
+      ]),
     );
   }
 
   String _formatTime(DateTime t) {
-    final hour = t.hour > 12 ? t.hour - 12 : t.hour;
-    final min = t.minute.toString().padLeft(2, '0');
-    final amPm = t.hour >= 12 ? 'PM' : 'AM';
-    return '$hour:$min $amPm';
+    final h = t.hour > 12 ? t.hour - 12 : (t.hour == 0 ? 12 : t.hour);
+    return '${h}:${t.minute.toString().padLeft(2, '0')} ${t.hour >= 12 ? 'PM' : 'AM'}';
   }
 
-  String _formatDateHeader(DateTime t) {
-    const days = [
-      'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY',
-      'FRIDAY', 'SATURDAY', 'SUNDAY'
-    ];
-    const months = [
-      'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-      'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'
-    ];
-    return '${days[t.weekday - 1]}, ${months[t.month - 1]} ${t.day}';
+  String _formatDate(DateTime t) {
+    const d = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return '${d[t.weekday - 1]}, ${m[t.month - 1]} ${t.day}';
   }
 }

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // ── Core palette ──
-  static const Color monoBlack = Color(0xFF111111);
-  static const Color monoOffWhite = Color(0xFFF7F6F4);
+  // ── Static palette (no dynamic switching — use Theme.of(context) for that) ──
   static const Color white = Color(0xFFFFFFFF);
+  static const Color monoOffWhite = Color(0xFFF7F6F4);
+  static const Color monoBlack = Color(0xFF111111);
+  static const Color solidDark = Color(0xFF111111);
 
   // ── Accent ──
   static const Color brass = Color(0xFFC8A96E);
@@ -27,7 +28,7 @@ class AppColors {
   static const Color darkSurface = Color(0xFF1E1E1E);
   static const Color darkCard = Color(0xFF2A2A2A);
 
-  // ── Backward-compatible aliases ──
+  // ── Aliases ──
   static const Color navy = monoBlack;
   static const Color charcoal = monoBlack;
   static const Color slate = Color(0xFF5A6570);
@@ -36,4 +37,13 @@ class AppColors {
   static const Color offWhite = monoOffWhite;
   static const Color black = monoBlack;
   static const Color accent = brass;
+  static const Color textPrimary = monoBlack;
+
+  /// Returns surface color adapted to theme brightness (white in light, darkCard in dark).
+  static Color surface(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1A1A1A) : white;
+
+  /// Returns background color adapted to theme brightness.
+  static Color background(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? darkBg : monoOffWhite;
 }

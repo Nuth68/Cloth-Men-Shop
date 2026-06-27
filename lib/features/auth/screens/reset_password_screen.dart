@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
 import '../../../core/constants/api_config.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
@@ -62,19 +63,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
+    final l10n = AppLocalizations.of(context);
     final newPass = _newPassCtrl.text;
     final confirmPass = _confirmPassCtrl.text;
 
     if (newPass.isEmpty || confirmPass.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
+        SnackBar(content: Text(l10n.translate('required'))),
       );
       return;
     }
 
     if (newPass != confirmPass) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
+        SnackBar(content: Text(l10n.translate('password'))),
       );
       return;
     }
@@ -104,14 +106,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password reset successfully')),
+          SnackBar(content: Text(l10n.translate('profileUpdated'))),
         );
         context.go('/login');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${l10n.translate('somethingWentWrong')}: $e')),
         );
       }
     } finally {
@@ -121,15 +123,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: _kBg,
-      body: SafeArea(
+      body: SafeArea(top: false, 
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 28),
-              Text('Steav Fashion', style: _serif(26, w: FontWeight.w400, ls: 6)),
+              Text(l10n.translate('appName'), style: _serif(26, w: FontWeight.w400, ls: 6)),
               const SizedBox(height: 2),
               const Divider(color: _kDivider, height: 1),
               const SizedBox(height: 72),
@@ -137,11 +140,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   children: [
-                    Text('RESET PASSWORD',
+                    Text(l10n.translate('forgotPassword'),
                         style: _serif(26, w: FontWeight.w600, ls: 2.5)),
                     const SizedBox(height: 14),
                     Text(
-                      'Choose a new password for your account.',
+                      l10n.translate('password'),
                       textAlign: TextAlign.center,
                       style: _sans(14, c: const Color(0xFF555555), ls: 0.1),
                     ),
@@ -154,7 +157,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('NEW PASSWORD',
+                    Text(l10n.translate('password'),
                         style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                     const SizedBox(height: 10),
                     _Field(
@@ -172,7 +175,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    Text('CONFIRM PASSWORD',
+                    Text(l10n.translate('password'),
                         style: _sans(10, w: FontWeight.w600, ls: 1.8)),
                     const SizedBox(height: 10),
                     _Field(
@@ -196,14 +199,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _BlackBtn(
-                  label: _loading ? 'RESETTING...' : 'RESET PASSWORD',
+                  label: _loading ? l10n.translate('signingIn') : l10n.translate('forgotPassword'),
                   onTap: _loading ? null : _resetPassword,
                 ),
               ),
               const SizedBox(height: 32),
               GestureDetector(
                 onTap: () => context.go('/login'),
-                child: Text('BACK TO LOGIN',
+                child: Text(l10n.translate('signIn'),
                     style: _sans(12, c: const Color(0xFF777777), ls: 1.5)),
               ),
               const SizedBox(height: 40),

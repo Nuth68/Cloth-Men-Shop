@@ -20,7 +20,7 @@ class HeroSection extends StatelessWidget {
             fit: BoxFit.cover,
             placeholder: (_, __) => ShimmerLoading.banner(height: 460),
             errorWidget: (_, __, ___) =>
-                Container(color: AppColors.monoBlack),
+                Container(color: Theme.of(context).colorScheme.onSurface),
           ),
           const DecoratedBox(
             decoration: BoxDecoration(
@@ -45,7 +45,7 @@ class HeroSection extends StatelessWidget {
                   style: AppTypography.serif(
                     26,
                     weight: FontWeight.w700,
-                    color: AppColors.white,
+                    color: AppColors.surface(context),
                     height: 1.18,
                   ),
                 ),
@@ -77,7 +77,7 @@ class _OutlineBtn extends StatelessWidget {
             style: AppTypography.sans(
               9,
               weight: FontWeight.w500,
-              color: AppColors.white,
+              color: AppColors.surface(context),
               letterSpacing: 2.2,
             ),
           ),
