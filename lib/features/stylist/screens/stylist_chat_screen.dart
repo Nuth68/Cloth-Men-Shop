@@ -47,8 +47,10 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
 
   void _scrollDown() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollCtrl.hasClients) _scrollCtrl.animateTo(_scrollCtrl.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+      if (_scrollCtrl.hasClients) {
+        _scrollCtrl.animateTo(_scrollCtrl.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+      }
     });
   }
 
@@ -190,8 +192,8 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(11)), child: SizedBox(height: 160, width: double.infinity,
           child: CachedNetworkImage(imageUrl: p.imageUrl, fit: BoxFit.cover,
-            placeholder: (_, __) => ShimmerLoading.banner(height: 160),
-            errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey)))),
+            placeholder: (_, _) => ShimmerLoading.banner(height: 160),
+            errorWidget: (_, _, _) => Container(color: AppColors.monoLightGrey)))),
         Padding(padding: const EdgeInsets.all(10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(l10n.translate('newArrivalTag'), style: AppTypography.labelSmall.copyWith(color: AppColors.error)),
           const SizedBox(height: 6),
@@ -213,7 +215,7 @@ class _ChatScreenBodyState extends State<_ChatScreenBody> {
 
   String _formatTime(DateTime t) {
     final h = t.hour > 12 ? t.hour - 12 : (t.hour == 0 ? 12 : t.hour);
-    return '${h}:${t.minute.toString().padLeft(2, '0')} ${t.hour >= 12 ? 'PM' : 'AM'}';
+      return '$h:${t.minute.toString().padLeft(2, '0')} ${t.hour >= 12 ? 'PM' : 'AM'}';
   }
 
   String _formatDate(DateTime t) {

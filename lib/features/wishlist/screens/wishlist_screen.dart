@@ -149,8 +149,8 @@ class _FavCard extends StatelessWidget {
                         width: 100, height: 130,
                         child: CachedNetworkImage(
                           imageUrl: product.imageUrl, fit: BoxFit.cover,
-                          placeholder: (_, __) => ShimmerLoading.productCard(width: 100, height: 130),
-                          errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey),
+                          placeholder: (_, _) => ShimmerLoading.productCard(width: 100, height: 130),
+                          errorWidget: (_, _, _) => Container(color: AppColors.monoLightGrey),
                         ),
                       ),
                     ),

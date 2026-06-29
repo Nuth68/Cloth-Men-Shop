@@ -112,7 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _results.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final p = _results[i];
         return GestureDetector(
@@ -125,8 +125,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   ClipRRect(borderRadius: BorderRadius.circular(8), child: SizedBox(width: 80, height: 80,
                     child: CachedNetworkImage(imageUrl: p.imageUrl, fit: BoxFit.cover,
-                      placeholder: (_, __) => ShimmerLoading.productCard(width: 80, height: 80),
-                      errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey)))),
+                      placeholder: (_, _) => ShimmerLoading.productCard(width: 80, height: 80),
+                      errorWidget: (_, _, _) => Container(color: AppColors.monoLightGrey)))),
                   Positioned(
                     bottom: 4, right: 4,
                     child: GestureDetector(

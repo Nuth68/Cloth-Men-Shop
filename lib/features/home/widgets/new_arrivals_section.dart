@@ -94,9 +94,9 @@ class _ProductCard extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: product.imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) =>
+                  placeholder: (_, _) =>
                       ShimmerLoading.productCard(height: 240),
-                  errorWidget: (_, __, ___) => Container(
+                  errorWidget: (_, _, _) => Container(
                     color: AppColors.monoLightGrey,
                   ),
                 ),

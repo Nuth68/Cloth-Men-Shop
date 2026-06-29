@@ -216,7 +216,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Widget _orderItem(CartItemModel item, Color tx) {
     return Row(children: [
-      ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 56, height: 56, child: CachedNetworkImage(imageUrl: item.product.imageUrl, fit: BoxFit.cover, placeholder: (_, __) => ShimmerLoading.productCard(width: 56, height: 56), errorWidget: (_, __, ___) => Container(color: AppColors.monoDivider)))),
+      ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 56, height: 56, child: CachedNetworkImage(imageUrl: item.product.imageUrl, fit: BoxFit.cover, placeholder: (_, _) => ShimmerLoading.productCard(width: 56, height: 56), errorWidget: (_, _, _) => Container(color: AppColors.monoDivider)))),
       const SizedBox(width: 12),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(item.product.name, style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w600, color: tx), maxLines: 1, overflow: TextOverflow.ellipsis),

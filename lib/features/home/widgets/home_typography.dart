@@ -4,7 +4,6 @@
 // This file is kept as a re-export so existing imports don't break during
 // the migration. Remove once all screens have been migrated.
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 
 @Deprecated('Use AppTypography.serif() from core/theme/app_typography.dart')

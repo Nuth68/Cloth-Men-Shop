@@ -58,9 +58,9 @@ class CartItemTile extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: item.product.imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) =>
+                  placeholder: (_, _) =>
                       ShimmerLoading.productCard(width: 90, height: 100),
-                  errorWidget: (_, __, ___) => Container(
+                  errorWidget: (_, _, _) => Container(
                     color: AppColors.monoLightGrey,
                   ),
                 ),

@@ -1,3 +1,5 @@
+// ignore_for_file: use_null_aware_elements
+
 import '../models/product_model.dart';
 import '../models/category_model.dart';
 import '../datasources/remote/graphql_service.dart';

@@ -18,8 +18,8 @@ class HeroSection extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: heroUrl,
             fit: BoxFit.cover,
-            placeholder: (_, __) => ShimmerLoading.banner(height: 460),
-            errorWidget: (_, __, ___) =>
+            placeholder: (_, _) => ShimmerLoading.banner(height: 460),
+            errorWidget: (_, _, _) =>
                 Container(color: Theme.of(context).colorScheme.onSurface),
           ),
           const DecoratedBox(

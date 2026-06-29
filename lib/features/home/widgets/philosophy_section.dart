@@ -19,8 +19,8 @@ class PhilosophySection extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: doorwayUrl,
             fit: BoxFit.cover,
-            placeholder: (_, __) => ShimmerLoading.banner(height: 260),
-            errorWidget: (_, __, ___) =>
+            placeholder: (_, _) => ShimmerLoading.banner(height: 260),
+            errorWidget: (_, _, _) =>
                 Container(color: Theme.of(context).colorScheme.onSurface),
           ),
         ),

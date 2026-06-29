@@ -5,7 +5,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_decorations.dart';
 import '../../../data/models/product_model.dart';
-import '../../../data/models/review_model.dart';
 import '../../../data/repositories/review_repository.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
@@ -19,7 +18,6 @@ class _ReviewData {
   final String date;
   final double rating;
   final String text;
-  final bool verified;
   final String? size;
   final String? color;
 
@@ -28,7 +26,6 @@ class _ReviewData {
     required this.date,
     required this.rating,
     required this.text,
-    this.verified = true,
     this.size,
     this.color,
   });
@@ -752,7 +749,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                       );
                     }),
                   ),
-                  if (review.verified) ...[
+                  if (true) ...[
                     const SizedBox(height: 4),
                     Row(
                       mainAxisSize: MainAxisSize.min,

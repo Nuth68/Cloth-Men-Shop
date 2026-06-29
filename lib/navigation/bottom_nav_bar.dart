@@ -28,7 +28,6 @@ class FashionBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final tabs = items.take(4).toList();
 
     return Container(

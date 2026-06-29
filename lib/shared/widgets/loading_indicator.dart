@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 import 'shimmer_loading.dart';
 
 class LoadingIndicator extends StatelessWidget {

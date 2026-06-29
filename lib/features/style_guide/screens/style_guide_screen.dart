@@ -8,7 +8,6 @@ import '../../../shared/widgets/monograph_header.dart';
 import '../../../shared/widgets/shimmer_loading.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../data/models/product_model.dart';
-import '../../../data/models/look_model.dart';
 import '../../../data/repositories/look_repository.dart';
 import '../../../data/datasources/remote/graphql_service.dart';
 import '../../../data/datasources/local/cache_service.dart';
@@ -274,8 +273,8 @@ class _LookbookScreenState extends State<LookbookScreen> {
             imageUrl:
                 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80',
             fit: BoxFit.cover,
-            placeholder: (_, __) => ShimmerLoading.banner(height: 200),
-            errorWidget: (_, __, ___) =>
+            placeholder: (_, _) => ShimmerLoading.banner(height: 200),
+            errorWidget: (_, _, _) =>
                 Container(color: Theme.of(context).colorScheme.onSurface),
           ),
           Container(
@@ -341,7 +340,7 @@ class _LookbookScreenState extends State<LookbookScreen> {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: tags.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          separatorBuilder: (_, _) => const SizedBox(width: 8),
           itemBuilder: (_, i) {
             final selected = i == _selectedTag;
             return GestureDetector(
@@ -396,10 +395,12 @@ class _LookbookScreenState extends State<LookbookScreen> {
       final gql = GraphqlService(baseUrls: ApiConfig.baseUrls, cache: cache);
       final repo = LookRepository(gql);
       final looks = await repo.getLooks();
-      if (mounted) setState(() {
-        _looks = looks.map((l) => _Look(title: l.title, subtitle: l.subtitle, image: l.image, height: l.height, tag: l.tag, productId: l.id)).toList();
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _looks = looks.map((l) => _Look(title: l.title, subtitle: l.subtitle, image: l.image, height: l.height, tag: l.tag, productId: l.id)).toList();
+          _loading = false;
+        });
+      }
     } catch (_) { if (mounted) setState(() => _loading = false); }
   }
 
@@ -509,9 +510,9 @@ class _LookbookPageCard extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: look.image,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) =>
+                    placeholder: (_, _) =>
                         ShimmerLoading.productCard(height: 460),
-                    errorWidget: (_, __, ___) =>
+                    errorWidget: (_, _, _) =>
                         Container(color: AppColors.monoLightGrey),
                   ),
                 ),

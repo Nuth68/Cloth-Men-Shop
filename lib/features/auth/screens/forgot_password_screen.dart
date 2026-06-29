@@ -9,7 +9,6 @@ const _kBg = Color(0xFFF2F1EF);
 const _kBlack = Color(0xFF0D0D0D);
 const _kGrey = Color(0xFFAAAAAA);
 const _kDivider = Color(0xFFD8D6D2);
-const _kRed = Color(0xFFB94040);
 const _kHint = Color(0xFFBBBBBB);
 
 TextStyle _serif(double sz,

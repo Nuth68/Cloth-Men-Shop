@@ -127,19 +127,17 @@ class _ShimmerBox extends StatelessWidget {
   final double? width;
   final double height;
   final double borderRadius;
-  final double widthFraction;
 
   const _ShimmerBox({
     this.width,
     this.height = 16,
     this.borderRadius = 4,
-    this.widthFraction = 1.0,
   });
 
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
-      widthFactor: widthFraction,
+      widthFactor: 1.0,
       child: Container(
         width: width,
         height: height,

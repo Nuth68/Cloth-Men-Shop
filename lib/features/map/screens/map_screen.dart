@@ -46,7 +46,7 @@ class _MapScreenState extends State<MapScreen> {
                 initialCenter: const LatLng(11.5564, 104.9282),
                 initialZoom: 12.5,
                 minZoom: 4, maxZoom: 18,
-                onTap: (_, __) => setState(() => _selectedStore = null),
+                onTap: (_, _) => setState(() => _selectedStore = null),
               ),
               children: [
                 TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'com.steav.fashion'),

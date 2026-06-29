@@ -51,8 +51,8 @@ class OrderDetailScreen extends StatelessWidget {
                                   child: CachedNetworkImage(
                                     imageUrl: item.product.imageUrl,
                                     fit: BoxFit.cover,
-                                    placeholder: (_, __) => ShimmerLoading.productCard(width: 64, height: 64),
-                                    errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey),
+                                    placeholder: (_, _) => ShimmerLoading.productCard(width: 64, height: 64),
+                                    errorWidget: (_, _, _) => Container(color: AppColors.monoLightGrey),
                                   ),
                                 ),
                               ),

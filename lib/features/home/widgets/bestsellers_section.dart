@@ -48,9 +48,9 @@ class BestsellersSection extends StatelessWidget {
                                 child: CachedNetworkImage(
                                   imageUrl: p.imageUrl,
                                   fit: BoxFit.cover,
-                                  placeholder: (_, __) =>
+                                  placeholder: (_, _) =>
                                       ShimmerLoading.productCard(height: 180),
-                                  errorWidget: (_, __, ___) => Container(
+                                  errorWidget: (_, _, _) => Container(
                                     color: AppColors.monoLightGrey,
                                   ),
                                 ),

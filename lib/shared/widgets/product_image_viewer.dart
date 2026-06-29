@@ -16,7 +16,7 @@ class ProductImageViewer extends StatefulWidget {
     this.showDots = true,
   }) : imageUrls = [imageUrl];
 
-  ProductImageViewer.gallery({
+  const ProductImageViewer.gallery({
     super.key,
     required this.imageUrls,
     this.height = 380,
@@ -60,10 +60,10 @@ class _ProductImageViewerState extends State<ProductImageViewer> {
                   imageUrl: widget.imageUrls[index],
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  placeholder: (_, __) => ShimmerLoading.banner(
+                  placeholder: (_, _) => ShimmerLoading.banner(
                     height: widget.height,
                   ),
-                  errorWidget: (_, __, ___) => Container(
+                  errorWidget: (_, _, _) => Container(
                     decoration: AppDecorations.imagePlaceholder,
                     child: const Center(
                       child: Icon(
@@ -86,7 +86,7 @@ class _ProductImageViewerState extends State<ProductImageViewer> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               itemCount: widget.imageUrls.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final isSelected = _currentPage == index;
                 return GestureDetector(
@@ -112,9 +112,9 @@ class _ProductImageViewerState extends State<ProductImageViewer> {
                       child: CachedNetworkImage(
                         imageUrl: widget.imageUrls[index],
                         fit: BoxFit.cover,
-                        placeholder: (_, __) =>
+                        placeholder: (_, _) =>
                             ShimmerLoading.banner(height: 56),
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           decoration: AppDecorations.imagePlaceholder,
                           child: const Icon(
                             Icons.image_not_supported_outlined,

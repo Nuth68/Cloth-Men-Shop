@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (_, i) {
           final s = _slides[i];
           return Stack(fit: StackFit.expand, children: [
-            CachedNetworkImage(imageUrl: s.image, fit: BoxFit.cover, placeholder: (_, __) => ShimmerLoading.banner(height: 420), errorWidget: (_, __, ___) => Container(color: AppColors.monoBlack)),
+            CachedNetworkImage(imageUrl: s.image, fit: BoxFit.cover, placeholder: (_, _) => ShimmerLoading.banner(height: 420), errorWidget: (_, _, _) => Container(color: AppColors.monoBlack)),
             Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)], stops: const [0.4, 1.0]))),
             Positioned(left: 24, bottom: 44, right: 24, child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
               Text(s.title, style: AppTypography.serif(28, weight: FontWeight.w700, color: AppColors.white, height: 1.1)),
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, i) => SizedBox(width: 165, child: _ProductCard(product: products[i], onTap: () => context.push('/product-detail', extra: products[i]))),
       )),
     ]);
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: cats.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          separatorBuilder: (_, _) => const SizedBox(width: 8),
           itemBuilder: (_, i) => GestureDetector(
             onTap: () => context.push('/shop'),
             child: Container(
@@ -234,7 +234,7 @@ class _ProductCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
             child: Stack(fit: StackFit.expand, children: [
-              ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(11)), child: CachedNetworkImage(imageUrl: product.imageUrl, fit: BoxFit.cover, width: double.infinity, placeholder: (_, __) => ShimmerLoading.productCard(), errorWidget: (_, __, ___) => Container(color: AppColors.monoLightGrey))),
+              ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(11)), child: CachedNetworkImage(imageUrl: product.imageUrl, fit: BoxFit.cover, width: double.infinity, placeholder: (_, _) => ShimmerLoading.productCard(), errorWidget: (_, _, _) => Container(color: AppColors.monoLightGrey))),
               Positioned(bottom: 6, right: 6, child: GestureDetector(
                 onTap: () {
                   AppHaptics.medium();

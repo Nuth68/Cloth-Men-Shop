@@ -164,8 +164,7 @@ class AppTheme {
 
   // ── Dark theme ──
 
-  static ThemeData get dark => ThemeData.dark().copyWith(
-        useMaterial3: true,
+  static ThemeData get dark => ThemeData.dark(useMaterial3: true).copyWith(
         scaffoldBackgroundColor: AppColors.darkBg,
 
         colorScheme: const ColorScheme.dark(

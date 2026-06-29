@@ -112,9 +112,6 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                           onPressed: () {
                             AppHaptics.heavy();
                             final s = _stylists[_selStylist];
-                            final day = _days[_selDay];
-                            final t =
-                                _times[_selTime.clamp(0, _times.length - 1)];
                             context.push(
                               '/stylist-chat',
                               extra: {
@@ -221,7 +218,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                       CachedNetworkImage(
                         imageUrl: s.img,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) =>
+                        errorWidget: (_, _, _) =>
                             Container(color: AppColors.monoLightGrey),
                       ),
                       Container(
@@ -345,7 +342,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: _days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (_, i) {
           final day = _days[i];
           final sel = i == _selDay;
@@ -459,7 +456,7 @@ class _StylistBookingScreenState extends State<StylistBookingScreen> {
                 width: 56,
                 height: 56,
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => Container(
+                errorWidget: (_, _, _) => Container(
                   width: 56,
                   height: 56,
                   color: AppColors.monoLightGrey,

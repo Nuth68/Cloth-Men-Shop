@@ -219,7 +219,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.5)),
                         const SizedBox(height: 1),
-                        Container(
+                        const SizedBox(
                             height: 1,
 
                             width: 60),

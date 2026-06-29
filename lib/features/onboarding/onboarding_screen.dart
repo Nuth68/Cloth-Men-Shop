@@ -137,7 +137,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   } else {
                     final cache = CacheService();
                     await cache.setOnboardingComplete();
-                    if (mounted) context.go('/login');
+                    if (!mounted) return;
+                    if (!context.mounted) return;
+                    context.go('/login');
                   }
                 },
               ),

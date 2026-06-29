@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/l10n/app_localizations.dart';
@@ -105,7 +104,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   : ListView.separated(
                       padding: const EdgeInsets.all(16),
                       itemCount: _notifications.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
                       itemBuilder: (_, i) {
                         final n = _notifications[i];
                         return _NotificationCard(

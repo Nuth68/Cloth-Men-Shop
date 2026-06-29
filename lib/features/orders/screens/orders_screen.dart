@@ -141,7 +141,7 @@ class _OrderCard extends StatelessWidget {
                     ? CachedNetworkImage(
                         imageUrl: order.items.first.product.imageUrl,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                             color: AppColors.monoLightGrey),
                       )
                     : Container(color: AppColors.monoLightGrey),

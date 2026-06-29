@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/steav_fashion_logo.dart';
 import '../../data/datasources/local/cache_service.dart';
 

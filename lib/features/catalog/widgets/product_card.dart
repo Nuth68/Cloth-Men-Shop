@@ -37,9 +37,9 @@ class ProductCard extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: product.imageUrl,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) =>
+                        placeholder: (_, _) =>
                             ShimmerLoading.productCard(),
-                        errorWidget: (_, __, ___) =>
+                        errorWidget: (_, _, _) =>
                             const Icon(Icons.image, color: AppColors.monoGrey),
                       ),
                     ),

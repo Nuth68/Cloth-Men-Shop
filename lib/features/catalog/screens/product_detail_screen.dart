@@ -129,7 +129,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: _relatedProducts.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    separatorBuilder: (_, _) => const SizedBox(width: 12),
                     itemBuilder: (_, i) {
                       final rp = _relatedProducts[i];
                       return GestureDetector(
@@ -139,8 +139,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             children: [
                               ClipRRect(borderRadius: BorderRadius.circular(10),
                                 child: CachedNetworkImage(imageUrl: rp.imageUrl, height: 170, width: 150, fit: BoxFit.cover,
-                                  placeholder: (_, __) => Container(height: 170, color: AppColors.monoDivider),
-                                  errorWidget: (_, __, ___) => Container(height: 170, color: AppColors.monoDivider))),
+                                  placeholder: (_, _) => Container(height: 170, color: AppColors.monoDivider),
+                                  errorWidget: (_, _, _) => Container(height: 170, color: AppColors.monoDivider))),
                               Positioned(
                                 bottom: 6, right: 6,
                                 child: GestureDetector(
