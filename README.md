@@ -13,19 +13,19 @@ A full-stack fashion e-commerce platform built with **Flutter** (mobile app) and
 
 | Home | Login | Register | Catalog |
 |------|-------|----------|---------|
-| ![Home](Cloth-Men-Shop/image/Home.png) | ![Login](Cloth-Men-Shop/image/login.png) | ![Register](Cloth-Men-Shop/image/register.png) | ![List Product](Cloth-Men-Shop/image/listproduct.png) |
+| ![Home](image/Home.png) | ![Login](image/login.png) | ![Register](image/register.png) | ![List Product](image/listproduct.png) |
 
 | Product Detail | Search | Filter | Lookbook |
 |----------------|--------|--------|----------|
-| ![Product Detail](Cloth-Men-Shop/image/productdeatail.png) | ![Search](Cloth-Men-Shop/image/search.png) | ![Filter](Cloth-Men-Shop/image/filter.png) | ![Lookbook](Cloth-Men-Shop/image/lookbook.png) |
+| ![Product Detail](image/productdeatail.png) | ![Search](image/search.png) | ![Filter](image/filter.png) | ![Lookbook](image/lookbook.png) |
 
 | Account | Stylist Chat | Payment | Location |
 |---------|-------------|---------|----------|
-| ![Account](Cloth-Men-Shop/image/account.png) | ![Stylist](Cloth-Men-Shop/image/stylist.png) | ![Payment](Cloth-Men-Shop/image/payment.png) | ![Location](Cloth-Men-Shop/image/location.png) |
+| ![Account](image/account.png) | ![Stylist](image/stylist.png) | ![Payment](image/payment.png) | ![Location](image/location.png) |
 
 | Dark Mode | Notifications | Loading | Khmer Text |
 |-----------|---------------|---------|------------|
-| ![Dark Mode](Cloth-Men-Shop/image/darkmode.png) | ![Notifications](Cloth-Men-Shop/image/notification.png) | ![Loading](Cloth-Men-Shop/image/loading.png) | ![Khmer Text](Cloth-Men-Shop/image/textkhmer.png) |
+| ![Dark Mode](image/darkmode.png) | ![Notifications](image/notification.png) | ![Loading](image/loading.png) | ![Khmer Text](image/textkhmer.png) |
 
 ---
 
