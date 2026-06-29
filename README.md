@@ -438,14 +438,7 @@ flutter run
 
 The app connects to the API at the URL configured in `lib/core/constants/api_config.dart`.
 
----
 
-## Test Account
-
-- **Email**: `test@monograph.com`
-- **Password**: `password123`
-
----
 
 ## License
 
