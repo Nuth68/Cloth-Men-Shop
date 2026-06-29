@@ -45,7 +45,7 @@ class _AddressScreenState extends State<AddressScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(top: false, child: Column(children: [
-        MonographHeader(onBack: () => context.pop(), onBag: () => context.push('/cart'), onNotification: () => context.push('/notifications'), elevated: true),
+        MonographHeader(onBack: () { if (context.canPop()) { context.pop(); } else { context.go('/home'); } }, onBag: () => context.push('/cart'), onNotification: () => context.push('/notifications'), elevated: true),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -125,7 +125,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 ])),
               ]),
               const SizedBox(height: 28),
-              CustomButton(label: l10n.translate('continueToPayment'), onPressed: () { context.pop(); context.push('/payment'); }),
+              CustomButton(label: l10n.translate('continueToPayment'), onPressed: () { if (context.canPop()) { context.pop(); } context.push('/payment'); }),
               const SizedBox(height: 16),
             ])),
           ),

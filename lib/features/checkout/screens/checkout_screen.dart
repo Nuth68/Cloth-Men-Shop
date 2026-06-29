@@ -84,7 +84,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBg : AppColors.monoOffWhite,
       body: SafeArea(top: false, child: Column(children: [
-        MonographHeader(onBack: () => context.pop(), onBag: () => context.push('/cart'), onNotification: () => context.push('/notifications'), elevated: true),
+        MonographHeader(onBack: () { if (context.canPop()) { context.pop(); } else { context.go('/home'); } }, onBag: () => context.push('/cart'), onNotification: () => context.push('/notifications'), elevated: true),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

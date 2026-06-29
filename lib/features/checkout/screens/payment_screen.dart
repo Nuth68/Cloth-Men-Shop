@@ -28,7 +28,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           children: [
             MonographHeader(
-              onBack: () => context.pop(),
+              onBack: () {
+                if (context.canPop()) { context.pop(); } else { context.go('/home'); }
+              },
               onBag: () => context.push('/cart'),
               onNotification: () => context.push('/notifications'),
               elevated: true,
